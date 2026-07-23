@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 
 # --- CONFIGURACIÓN ---
-API_KEY = "1abc53997c1b26e3b447796665e36e44"
+API_KEY = os.environ.get("API_SPORTS_KEY")
 BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {'x-apisports-key': API_KEY}
 
