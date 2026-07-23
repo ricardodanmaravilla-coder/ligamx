@@ -186,9 +186,15 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
             "Over 2.5": round(prob_over * 100, 1),
             "Under 2.5": round(100.0 - (prob_over * 100), 1)  # <--- Faltaba esto
         },
-        "Goles_Individuales": {
-            equipo_local: {"goles": round(lambda_local, 1), "prob": round((sum(1 for g in goles_l if g == round(lambda_local)) / n_sims) * 100, 1)},
-            equipo_visita: {"goles": round(lambda_visita, 1), "prob": round((sum(1 for g in goles_v if g == round(lambda_visita)) / n_sims) * 100, 1)}
+       "Goles_Individuales": {
+            equipo_local: {
+                "goles": int(round(lambda_local)), # Número entero realista (ej. 1 o 2)
+                "prob": round((np.sum(goles_l == int(round(lambda_local))) / n_sims) * 100, 1) # Probabilidad real de anotar exactamente esos goles
+            },
+            equipo_visita: {
+                "goles": int(round(lambda_visita)), # Número entero realista (ej. 0 o 1)
+                "prob": round((np.sum(goles_v == int(round(lambda_visita))) / n_sims) * 100, 1)
+            }
         },
         "Corners_Individuales": {
             equipo_local: {"corners": val_freq_corn_l, "prob": round(prob_freq_corn_l, 1)},
