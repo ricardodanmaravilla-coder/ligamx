@@ -30,7 +30,7 @@ jobs:
           API_SPORTS_KEY: ${{ secrets.API_SPORTS_KEY }}
         # 👇 IMPORTANTE: Cambia "mi_archivo.py" por la ruta exacta en tu repositorio
         # Ejemplo: Si está dentro de una carpeta, usa "python modules/actualizar.py"
-        run: python modules/actualizar_bd.py 
+        run: python actualizar_bd.py 
 
       - name: Guardar el nuevo CSV en el repositorio
         run: |
