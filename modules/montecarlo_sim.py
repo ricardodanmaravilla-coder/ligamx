@@ -80,9 +80,8 @@ def calcular_lambdas_ajustadas(df, equipo_local, equipo_visita):
 
 def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     """
-    Ejecuta 10,000 iteraciones de Montecarlo.
+    Ejecuta 10,000 iteraciones de Montecarlo reales para Goles, Corners y Tarjetas.
     """
-    # Intentar cargar el histórico de forma segura
     if df_historico is None:
         try:
             df_historico = pd.read_csv('data/historico_liga_mx.csv')
@@ -92,16 +91,15 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
             except FileNotFoundError:
                 return "Error: No se encontró el archivo historico_liga_mx.csv"
 
-    # 1. Obtener Lambdas Ajustadas por Fuerza del Oponente
+    # ==========================================
+    # 1. SIMULACIÓN DE GOLES (Fuerza Relativa y Dixon-Coles)
+    # ==========================================
     lambda_local, lambda_visita = calcular_lambdas_ajustadas(df_historico, equipo_local, equipo_visita)
-    
     n_sims = 10000
     
-    # 2. Generar simulación cruda de Poisson
     goles_l = np.random.poisson(lambda_local, n_sims)
     goles_v = np.random.poisson(lambda_visita, n_sims)
     
-    # 3. Calcular matriz probabilística inicial cruda
     resultados_exactos = {}
     for i in range(n_sims):
         marcador = f"{goles_l[i]}-{goles_v[i]}"
@@ -110,28 +108,75 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     for k in resultados_exactos.keys():
         resultados_exactos[k] = resultados_exactos[k] / n_sims
         
-    # 4. APLICAR CORRECCIÓN DIXON-COLES
     matriz_corregida = aplicar_dixon_coles(lambda_local, lambda_visita, resultados_exactos, rho=-0.15)
     
-    # 5. Reconstruir 1X2 basándose en la matriz corregida
-    prob_local = 0.0
-    prob_visita = 0.0
-    prob_empate = 0.0
-    prob_over = 0.0
-    
+    prob_local, prob_visita, prob_empate, prob_over = 0.0, 0.0, 0.0, 0.0
     for marcador, prob in matriz_corregida.items():
         gl, gv = map(int, marcador.split('-'))
-        if gl > gv:
-            prob_local += prob
-        elif gv > gl:
-            prob_visita += prob
-        else:
-            prob_empate += prob
-            
-        if (gl + gv) > 2.5:
-            prob_over += prob
-            
-    # Retornar el diccionario con los resultados
+        if gl > gv: prob_local += prob
+        elif gv > gl: prob_visita += prob
+        else: prob_empate += prob
+        if (gl + gv) > 2.5: prob_over += prob
+
+    # ==========================================
+    # 2. SIMULACIÓN REAL DE CORNERS (Poisson)
+    # ==========================================
+    # Definir nombres de columnas (Ajusta si en tu CSV se llaman diferente)
+    col_corn_l = 'Corners_L' if 'Corners_L' in df_historico.columns else 'Corners_Local'
+    col_corn_v = 'Corners_V' if 'Corners_V' in df_historico.columns else 'Corners_Visita'
+
+    if col_corn_l in df_historico.columns and col_corn_v in df_historico.columns:
+        df_l_loc = df_historico[df_historico['Local'] == equipo_local]
+        df_v_vis = df_historico[df_historico['Visitante'] == equipo_visita]
+        
+        lambda_corn_l = df_l_loc[col_corn_l].mean() if not df_l_loc.empty else 5.0
+        lambda_corn_v = df_v_vis[col_corn_v].mean() if not df_v_vis.empty else 4.5
+        
+        if pd.isna(lambda_corn_l): lambda_corn_l = 5.0
+        if pd.isna(lambda_corn_v): lambda_corn_v = 4.5
+    else:
+        # Valores promedio de la Liga MX si no existen las columnas
+        lambda_corn_l, lambda_corn_v = 5.2, 4.3
+
+    corners_l_sim = np.random.poisson(lambda_corn_l, n_sims)
+    corners_v_sim = np.random.poisson(lambda_corn_v, n_sims)
+    corners_totales_sim = corners_l_sim + corners_v_sim
+    prob_over_9_5_corners = (np.sum(corners_totales_sim > 9.5) / n_sims) * 100
+
+    # Probabilidad del valor más frecuente de corners
+    val_freq_corn_l = int(lambda_corn_l)
+    prob_freq_corn_l = (np.sum(corners_l_sim == val_freq_corn_l) / n_sims) * 100
+    val_freq_corn_v = int(lambda_corn_v)
+    prob_freq_corn_v = (np.sum(corners_v_sim == val_freq_corn_v) / n_sims) * 100
+
+    # ==========================================
+    # 3. SIMULACIÓN REAL DE TARJETAS (Poisson)
+    # ==========================================
+    col_tarj_l = 'Tarjetas_L' if 'Tarjetas_L' in df_historico.columns else 'Amarillas_L'
+    col_tarj_v = 'Tarjetas_V' if 'Tarjetas_V' in df_historico.columns else 'Amarillas_V'
+
+    if col_tarj_l in df_historico.columns and col_tarj_v in df_historico.columns:
+        lambda_tarj_l = df_l_loc[col_tarj_l].mean() if not df_l_loc.empty else 2.5
+        lambda_tarj_v = df_v_vis[col_tarj_v].mean() if not df_v_vis.empty else 2.5
+        
+        if pd.isna(lambda_tarj_l): lambda_tarj_l = 2.5
+        if pd.isna(lambda_tarj_v): lambda_tarj_v = 2.5
+    else:
+        lambda_tarj_l, lambda_tarj_v = 2.5, 2.7
+
+    tarjetas_l_sim = np.random.poisson(lambda_tarj_l, n_sims)
+    tarjetas_v_sim = np.random.poisson(lambda_tarj_v, n_sims)
+    tarjetas_totales_sim = tarjetas_l_sim + tarjetas_v_sim
+    prob_over_4_5_tarjetas = (np.sum(tarjetas_totales_sim > 4.5) / n_sims) * 100
+
+    val_freq_tarj_l = int(lambda_tarj_l)
+    prob_freq_tarj_l = (np.sum(tarjetas_l_sim == val_freq_tarj_l) / n_sims) * 100
+    val_freq_tarj_v = int(lambda_tarj_v)
+    prob_freq_tarj_v = (np.sum(tarjetas_v_sim == val_freq_tarj_v) / n_sims) * 100
+
+    # ==========================================
+    # 4. CONSOLIDACIÓN DE RESULTADOS
+    # ==========================================
     return {
         "Resultado_1X2": {
             "Gana Local": round(prob_local * 100, 1),
@@ -141,20 +186,18 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
         "Goles_Over_Under": {
             "Over 2.5": round(prob_over * 100, 1)
         },
-        # Calculamos los promedios esperados de goles para mostrar
         "Goles_Individuales": {
             equipo_local: {"goles": round(lambda_local, 1), "prob": round((sum(1 for g in goles_l if g == round(lambda_local)) / n_sims) * 100, 1)},
             equipo_visita: {"goles": round(lambda_visita, 1), "prob": round((sum(1 for g in goles_v if g == round(lambda_visita)) / n_sims) * 100, 1)}
         },
-        # Valores simulados de corners y tarjetas como respaldo para que no falle app.py
         "Corners_Individuales": {
-            equipo_local: {"corners": 5, "prob": 35.0},
-            equipo_visita: {"corners": 4, "prob": 30.0}
+            equipo_local: {"corners": val_freq_corn_l, "prob": round(prob_freq_corn_l, 1)},
+            equipo_visita: {"corners": val_freq_corn_v, "prob": round(prob_freq_corn_v, 1)}
         },
         "Tarjetas_Individuales": {
-            equipo_local: {"tarjetas": 2, "prob": 40.0},
-            equipo_visita: {"tarjetas": 2, "prob": 40.0}
+            equipo_local: {"tarjetas": val_freq_tarj_l, "prob": round(prob_freq_tarj_l, 1)},
+            equipo_visita: {"tarjetas": val_freq_tarj_v, "prob": round(prob_freq_tarj_v, 1)}
         },
-        "Corners_Totales": {"Over 9.5 Corners": 48.5},
-        "Tarjetas_Totales": {"Over 4.5 Tarjetas": 55.0}
+        "Corners_Totales": {"Over 9.5 Corners": round(prob_over_9_5_corners, 1)},
+        "Tarjetas_Totales": {"Over 4.5 Tarjetas": round(prob_over_4_5_tarjetas, 1)}
     }
