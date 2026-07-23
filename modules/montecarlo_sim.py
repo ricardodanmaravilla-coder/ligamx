@@ -84,12 +84,13 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     """
     if df_historico is None:
         try:
-            df_historico = pd.read_csv('data/historico_liga_mx.csv')
+            # Aquí está la corrección: ponemos el nombre exacto de tu archivo
+            df_historico = pd.read_csv('data/historico_ligamx_completo.csv')
         except FileNotFoundError:
             try:
-                df_historico = pd.read_csv('liga_mx_analytics/data/historico_liga_mx.csv')
+                df_historico = pd.read_csv('liga_mx_analytics/data/historico_ligamx_completo.csv')
             except FileNotFoundError:
-                return "Error: No se encontró el archivo historico_liga_mx.csv"
+                return "Error: No se encontró el archivo historico_ligamx_completo.csv"
 
     # ==========================================
     # 1. SIMULACIÓN DE GOLES (Fuerza Relativa y Dixon-Coles)
