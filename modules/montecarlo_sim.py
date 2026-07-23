@@ -78,6 +78,49 @@ def calcular_lambdas_ajustadas(df, equipo_local, equipo_visita):
     
     return max(lambda_local, 0.1), max(lambda_visita, 0.1)
 
+import pandas as pd
+import numpy as np
+
+def calcular_lambdas_ewma(df, equipo_local, equipo_visita, alpha=0.15):
+    """
+    Calcula las Lambdas utilizando Media Móvil Exponencial (EWMA).
+    Los partidos más recientes tienen mayor peso (alpha) que los antiguos.
+    """
+    # Asegurar que el DataFrame esté ordenado por fecha si existe la columna
+    if 'Fecha' in df.columns:
+        df = df.sort_values(by='Fecha', ascending=True)
+
+    col_l = 'Goles_L' if 'Goles_L' in df.columns else 'Puntos_L'
+    col_v = 'Goles_V' if 'Goles_V' in df.columns else 'Puntos_V'
+    
+    # 1. Filtrar partidos de los equipos
+    df_l_loc = df[df['Local'] == equipo_local]
+    df_l_vis = df[df['Visitante'] == equipo_local]
+    df_v_loc = df[df['Local'] == equipo_visita]
+    df_v_vis = df[df['Visitante'] == equipo_visita]
+
+    # Función interna para calcular promedio ponderado exponencial (EWMA)
+    def ewma_ser(serie, a=alpha):
+        if serie.empty:
+            return 1.2 # Valor predeterminado de respaldo
+        # .ewm(alpha=a).mean() calcula la media ponderada dando más peso al final de la serie
+        return float(serie.ewm(alpha=a).mean().iloc[-1])
+
+    # Unificar goles anotados y recibidos en orden cronológico para aplicar EWMA
+    # (Para simplificar y mantener robustez, aplicamos EWMA a las series históricas de cada equipo)
+    goles_fav_local = pd.concat([df_l_loc[col_l], df_l_vis[col_v]])
+    goles_rec_local = pd.concat([df_l_loc[col_v], df_l_vis[col_l]])
+    
+    goles_fav_visita = pd.concat([df_v_loc[col_l], df_v_vis[col_v]])
+    goles_rec_visita = pd.concat([df_v_loc[col_v], df_v_vis[col_l]])
+
+    # Obtener la expectativa ponderada reciente
+    lambda_l_calc = ewma_ser(goles_fav_local) * 0.5 + ewma_ser(goles_rec_visita) * 0.5
+    lambda_v_calc = ewma_ser(goles_fav_visita) * 0.5 + ewma_ser(goles_rec_local) * 0.5
+
+    # Acotar para evitar valores absurdos o ceros absolutos
+    return max(lambda_l_calc, 0.2), max(lambda_v_calc, 0.2)
+
 def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     """
     Ejecuta 10,000 iteraciones de Montecarlo reales para Goles, Corners y Tarjetas.
