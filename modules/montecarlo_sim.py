@@ -28,6 +28,56 @@ def aplicar_dixon_coles(lambda_l, lambda_v, prob_matriz, rho=-0.15):
 
     return prob_matriz
 
+def calcular_lambdas_ajustadas(df, equipo_local, equipo_visita):
+    """
+    Calcula la expectativa de goles (Lambda) ajustada por la fuerza de ataque 
+    y defensa relativa al promedio de toda la Liga MX.
+    """
+    # 1. Calcular promedios globales de la liga
+    # (Asumiendo que las columnas se llaman 'Goles_L' y 'Goles_V' o similar en tu CSV)
+    col_l = 'Goles_L' if 'Goles_L' in df.columns else 'Puntos_L'
+    col_v = 'Goles_V' if 'Goles_V' in df.columns else 'Puntos_V'
+    
+    media_goles_local_liga = df[col_l].mean()
+    media_goles_visita_liga = df[col_v].mean()
+    
+    # Prevención de división por cero en casos extremos
+    media_goles_local_liga = max(media_goles_local_liga, 0.01)
+    media_goles_visita_liga = max(media_goles_visita_liga, 0.01)
+
+    # 2. Extraer historial de los equipos involucrados
+    df_local_como_local = df[df['Local'] == equipo_local]
+    df_local_como_visita = df[df['Visitante'] == equipo_local]
+    
+    df_visita_como_local = df[df['Local'] == equipo_visita]
+    df_visita_como_visita = df[df['Visitante'] == equipo_visita]
+
+    # Promedios del Equipo Local
+    avg_goles_anotados_local = df_local_como_local[col_l].mean() if not df_local_como_local.empty else media_goles_local_liga
+    avg_goles_recibidos_local = df_local_como_local[col_v].mean() if not df_local_como_local.empty else media_goles_visita_liga
+    
+    # Promedios del Equipo Visitante
+    avg_goles_anotados_visita = df_visita_como_visita[col_v].mean() if not df_visita_como_visita.empty else media_goles_visita_liga
+    avg_goles_recibidos_visita = df_visita_como_visita[col_l].mean() if not df_visita_como_visita.empty else media_goles_local_liga
+
+    # 3. Calcular Fuerza de Ataque (Ratio vs Liga)
+    fuerza_ataque_local = avg_goles_anotados_local / media_goles_local_liga
+    fuerza_ataque_visita = avg_goles_anotados_visita / media_goles_visita_liga
+
+    # 4. Calcular Fuerza de Defensa (Ratio vs Liga)
+    # Una defensa fuerte tendrá un valor menor a 1.0 (permite menos goles que el promedio)
+    fuerza_defensa_local = avg_goles_recibidos_local / media_goles_visita_liga
+    fuerza_defensa_visita = avg_goles_recibidos_visita / media_goles_local_liga
+
+    # 5. Cálculo Final de Lambdas Cruzadas
+    lambda_local = fuerza_ataque_local * fuerza_defensa_visita * media_goles_local_liga
+    lambda_visita = fuerza_ataque_visita * fuerza_defensa_local * media_goles_visita_liga
+
+    # Si tienes variables de altitud o impacto arbitral, puedes multiplicarlas aquí.
+    # Ejemplo: lambda_local *= factor_altitud
+    
+    return max(lambda_local, 0.1), max(lambda_visita, 0.1)
+
 def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     """
     Ejecuta 10,000 iteraciones de Montecarlo.
