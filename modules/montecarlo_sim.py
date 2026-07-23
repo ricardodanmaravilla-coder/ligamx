@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-def aplicar_dixon_coles(lambda_l, lambda_v, prob_matriz, rho=-0.15):
+def aplicar_dixon_coles(lambda_l, lambda_v, prob_matriz, rho=-0.05):
     """
     Ajusta la matriz de probabilidades de marcadores exactos utilizando 
     la correlación de Dixon-Coles para inflar los empates de baja anotación.
@@ -28,7 +28,7 @@ def aplicar_dixon_coles(lambda_l, lambda_v, prob_matriz, rho=-0.15):
 
     return prob_matriz
 
-def calcular_lambdas_ewma_y_fuerza(df, equipo_local, equipo_visita, alpha=0.2):
+def calcular_lambdas_ewma_y_fuerza(df, equipo_local, equipo_visita, alpha=0.8):
     """
     Calcula las Lambdas combinando Fuerza del Oponente y Ponderación Temporal (EWMA).
     """
