@@ -187,6 +187,7 @@ def escanear_jornada_actual(temporada_actual=2026):
                             "Fixture_ID": fix_id
                         })
         except Exception as e:
+            print("Error al registrar:", e)
             continue
             
     return oportunidades_oro
