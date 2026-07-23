@@ -88,7 +88,7 @@ def escanear_jornada_actual(temporada_actual=2026):
                 prob = prob_dict.get(llave, 0)
                 cuota = cuotas.get(llave)
                 
-                if cuota and cuota > 1.0 and prob >= 70.0: # <--- FILTRO DE ORO
+                if cuota and cuota > 1.0 and prob >= 60.0: # <--- FILTRO DE ORO
                     _, ev, veredicto, stake, riesgo = evaluar_mercado_avanzado(prob, cuota)
                     
                     if ev > 0:
