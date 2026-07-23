@@ -28,9 +28,10 @@ def aplicar_dixon_coles(lambda_l, lambda_v, prob_matriz, rho=-0.05):
 
     return prob_matriz
 
-def calcular_lambdas_ewma_y_fuerza(df, equipo_local, equipo_visita, alpha=0.8):
+def calcular_lambdas_estables(df, equipo_local, equipo_visita):
     """
-    Calcula las Lambdas combinando Fuerza del Oponente y Ponderación Temporal (EWMA).
+    Calcula expectativas de goles (Lambdas) realistas y estables 
+    basadas en los últimos 6 partidos de cada equipo.
     """
     if 'Fecha' in df.columns:
         df = df.sort_values(by='Fecha', ascending=True)
@@ -38,78 +39,42 @@ def calcular_lambdas_ewma_y_fuerza(df, equipo_local, equipo_visita, alpha=0.8):
     col_l = 'Goles_L' if 'Goles_L' in df.columns else 'Puntos_L'
     col_v = 'Goles_V' if 'Goles_V' in df.columns else 'Puntos_V'
     
-    media_goles_local_liga = df[col_l].mean() if not df.empty else 1.3
-    media_goles_visita_liga = df[col_v].mean() if not df.empty else 1.0
+    # Filtrar historial de los equipos
+    df_l_loc = df[df['Local'] == equipo_local].tail(6)
+    df_l_vis = df[df['Visitante'] == equipo_local].tail(6)
     
-    media_goles_local_liga = max(media_goles_local_liga, 0.01)
-    media_goles_visita_liga = max(media_goles_visita_liga, 0.01)
+    df_v_loc = df[df['Local'] == equipo_visita].tail(6)
+    df_v_vis = df[df['Visitante'] == equipo_visita].tail(6)
 
-    df_l_loc = df[df['Local'] == equipo_local]
-    df_l_vis = df[df['Visitante'] == equipo_local]
-    df_v_loc = df[df['Local'] == equipo_visita]
-    df_v_vis = df[df['Visitante'] == equipo_visita]
-
-    def ewma_ser(serie, a=alpha):
-        if serie.empty or len(serie) < 2:
-            return 1.2
-        return float(serie.ewm(alpha=a).mean().iloc[-1])
-
-    goles_fav_local = pd.concat([df_l_loc[col_l], df_l_vis[col_v]]) if not df_l_loc.empty or not df_l_vis.empty else pd.Series([1.2])
-    goles_rec_local = pd.concat([df_l_loc[col_v], df_l_vis[col_l]]) if not df_l_loc.empty or not df_l_vis.empty else pd.Series([1.2])
-    
-    goles_fav_visita = pd.concat([df_v_loc[col_l], df_v_vis[col_v]]) if not df_v_loc.empty or not df_v_vis.empty else pd.Series([1.0])
-    goles_rec_visita = pd.concat([df_v_loc[col_v], df_v_vis[col_l]]) if not df_v_loc.empty or not df_v_vis.empty else pd.Series([1.0])
-
-    att_l = ewma_ser(goles_fav_local) / media_goles_local_liga
-    def_l = ewma_ser(goles_rec_local) / media_goles_visita_liga
-    
-    att_v = ewma_ser(goles_fav_visita) / media_goles_visita_liga
-    def_v = ewma_ser(goles_rec_visita) / media_goles_local_liga
-
-    lambda_local = att_l * def_v * media_goles_local_liga
-    lambda_visita = att_v * def_l * media_goles_visita_liga
-
-    return max(lambda_local, 0.2), max(lambda_visita, 0.2)
-
-def calcular_lambdas_ewma(df, equipo_local, equipo_visita, alpha=0.15):
-    """
-    Calcula las Lambdas utilizando Media Móvil Exponencial (EWMA).
-    Los partidos más recientes tienen mayor peso (alpha) que los antiguos.
-    """
-    # Asegurar que el DataFrame esté ordenado por fecha si existe la columna
-    if 'Fecha' in df.columns:
-        df = df.sort_values(by='Fecha', ascending=True)
-
-    col_l = 'Goles_L' if 'Goles_L' in df.columns else 'Puntos_L'
-    col_v = 'Goles_V' if 'Goles_V' in df.columns else 'Puntos_V'
-    
-    # 1. Filtrar partidos de los equipos
-    df_l_loc = df[df['Local'] == equipo_local]
-    df_l_vis = df[df['Visitante'] == equipo_local]
-    df_v_loc = df[df['Local'] == equipo_visita]
-    df_v_vis = df[df['Visitante'] == equipo_visita]
-
-    # Función interna para calcular promedio ponderado exponencial (EWMA)
-    def ewma_ser(serie, a=alpha):
-        if serie.empty:
-            return 1.2 # Valor predeterminado de respaldo
-        # .ewm(alpha=a).mean() calcula la media ponderada dando más peso al final de la serie
-        return float(serie.ewm(alpha=a).mean().iloc[-1])
-
-    # Unificar goles anotados y recibidos en orden cronológico para aplicar EWMA
-    # (Para simplificar y mantener robustez, aplicamos EWMA a las series históricas de cada equipo)
+    # Consolidar goles anotados y recibidos recientes
     goles_fav_local = pd.concat([df_l_loc[col_l], df_l_vis[col_v]])
     goles_rec_local = pd.concat([df_l_loc[col_v], df_l_vis[col_l]])
     
     goles_fav_visita = pd.concat([df_v_loc[col_l], df_v_vis[col_v]])
     goles_rec_visita = pd.concat([df_v_loc[col_v], df_v_vis[col_l]])
 
-    # Obtener la expectativa ponderada reciente
-    lambda_l_calc = ewma_ser(goles_fav_local) * 0.5 + ewma_ser(goles_rec_visita) * 0.5
-    lambda_v_calc = ewma_ser(goles_fav_visita) * 0.5 + ewma_ser(goles_rec_local) * 0.5
+    # Promedios limpios (últimos partidos) con respaldos lógicos de la Liga MX
+    prom_anota_l = goles_fav_local.mean() if not goles_fav_local.empty else 1.3
+    prom_recibe_v = goles_rec_visita.mean() if not goles_rec_visita.empty else 1.2
+    
+    prom_anota_v = goles_fav_visita.mean() if not goles_fav_visita.empty else 1.1
+    prom_recibe_l = goles_rec_local.mean() if not goles_rec_local.empty else 1.1
 
-    # Acotar para evitar valores absurdos o ceros absolutos
-    return max(lambda_l_calc, 0.2), max(lambda_v_calc, 0.2)
+    # Si por alguna razón da NaN, poner valores estándar
+    if pd.isna(prom_anota_l): prom_anota_l = 1.3
+    if pd.isna(prom_recibe_v): prom_recibe_v = 1.2
+    if pd.isna(prom_anota_v): prom_anota_v = 1.1
+    if pd.isna(prom_recibe_l): prom_recibe_l = 1.1
+
+    # Cálculo final balanceado (promedio entre el ataque propio y lo que cede el rival)
+    lambda_local = (prom_anota_l + prom_recibe_v) / 2.0
+    lambda_visita = (prom_anota_v + prom_recibe_l) / 2.0
+
+    # Topes lógicos para la Liga MX (ningún equipo promedio debe pasar de 2.2 goles esperados)
+    lambda_local = clip(lambda_local, 0.7, 2.2) if 'clip' in globals() else max(min(lambda_local, 2.2), 0.7)
+    lambda_visita = clip(lambda_visita, 0.5, 2.0) if 'clip' in globals() else max(min(lambda_visita, 2.0), 0.5)
+
+    return round(lambda_local, 2), round(lambda_visita, 2)
 
 def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     """
