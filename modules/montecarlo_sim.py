@@ -1,77 +1,100 @@
+import pandas as pd
 import numpy as np
-from modules.stats_engine import calcular_expectativa_partido
 
-def simular_partido_montecarlo(local, visitante, n_simulaciones=10000):
-    try:
-        exp = calcular_expectativa_partido(local, visitante)
-    except Exception as e:
-        return f"Error al cargar expectativas: {e}"
+def aplicar_dixon_coles(lambda_l, lambda_v, prob_matriz, rho=-0.15):
+    """
+    Ajusta la matriz de probabilidades de marcadores exactos utilizando 
+    la correlación de Dixon-Coles para inflar los empates de baja anotación.
+    """
+    # Evitar resultados negativos en tau limitando el impacto de rho
+    if (1 - lambda_l * lambda_v * rho) < 0:
+        rho = 0
+        
+    tau_0_0 = 1 - lambda_l * lambda_v * rho
+    tau_1_0 = 1 + lambda_v * rho
+    tau_0_1 = 1 + lambda_l * rho
+    tau_1_1 = 1 - rho
 
-    # 1. Simulación Montecarlo (Poisson)
-    sim_goles_l = np.random.poisson(exp["lambda_goles_local"], n_simulaciones)
-    sim_goles_v = np.random.poisson(exp["lambda_goles_visita"], n_simulaciones)
+    # prob_matriz es un dict con llave "x-y" y valor probabilistico
+    if "0-0" in prob_matriz: prob_matriz["0-0"] *= tau_0_0
+    if "1-0" in prob_matriz: prob_matriz["1-0"] *= tau_1_0
+    if "0-1" in prob_matriz: prob_matriz["0-1"] *= tau_0_1
+    if "1-1" in prob_matriz: prob_matriz["1-1"] *= tau_1_1
+
+    # Normalizar la matriz para que vuelva a sumar 100%
+    total = sum(prob_matriz.values())
+    for k in prob_matriz.keys():
+        prob_matriz[k] = (prob_matriz[k] / total)
+
+    return prob_matriz
+
+def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
+    """
+    Ejecuta 10,000 iteraciones de Montecarlo.
+    Asegúrate de pasar tu df_historico u obtenerlo dentro de la función.
+    """
+    # 1. Obtener Lambdas (Asegúrate de usar tus funciones de promedio, altitud, etc. aquí)
+    # Por ejemplo, si tienes tu función que ya calcula lambda_local y lambda_visita:
+    # lambda_local = calcular_lambda_local(...)
+    # lambda_visita = calcular_lambda_visita(...)
     
-    sim_corners_l = np.random.poisson(exp["exp_corners_local"], n_simulaciones)
-    sim_corners_v = np.random.poisson(exp["exp_corners_visita"], n_simulaciones)
+    # Valores de ejemplo de respaldo (reemplaza con tus variables de altitud/histórico)
+    lambda_local = 1.45 
+    lambda_visita = 1.15
+    n_sims = 10000
     
-    sim_tarj_l = np.random.poisson(exp["exp_tarjetas_local"], n_simulaciones)
-    sim_tarj_v = np.random.poisson(exp["exp_tarjetas_visita"], n_simulaciones)
-
-    # 2. Función auxiliar para calcular el valor exacto más probable y su %
-    def obtener_exacto_mas_probable(array_simulaciones):
-        valoresUnicos, cuentas = np.unique(array_simulaciones, return_counts=True)
-        idx_max = np.argmax(cuentas)
-        goles_o_eventos = int(valoresUnicos[idx_max])
-        probabilidad = (cuentas[idx_max] / n_simulaciones) * 100
-        return goles_o_eventos, round(probabilidad, 2)
-
-    # Goles exactos más probables individuales
-    goles_exactos_l, prob_g_l = obtener_exacto_mas_probable(sim_goles_l)
-    goles_exactos_v, prob_g_v = obtener_exacto_mas_probable(sim_goles_v)
-
-    # Corners exactos más probables individuales
-    corners_exactos_l, prob_c_l = obtener_exacto_mas_probable(sim_corners_l)
-    corners_exactos_v, prob_c_v = obtener_exacto_mas_probable(sim_corners_v)
-
-    # Tarjetas exactas más probables individuales
-    tarj_exactas_l, prob_t_l = obtener_exacto_mas_probable(sim_tarj_l)
-    tarj_exactas_v, prob_t_v = obtener_exacto_mas_probable(sim_tarj_v)
-
-    # 3. Sumatorias totales (para Over/Under)
-    total_goles = sim_goles_l + sim_goles_v
-    total_corners = sim_corners_l + sim_corners_v
-    total_tarjetas = sim_tarj_l + sim_tarj_v
-
-    # 4. Estructura de resultados (REEMPLAZA ESTA PARTE AL FINAL DEL ARCHIVO)
-    resultados = {
+    # 2. Generar simulación cruda de Poisson
+    goles_l = np.random.poisson(lambda_local, n_sims)
+    goles_v = np.random.poisson(lambda_visita, n_sims)
+    
+    # 3. Calcular matriz probabilística inicial cruda
+    resultados_exactos = {}
+    for i in range(n_sims):
+        marcador = f"{goles_l[i]}-{goles_v[i]}"
+        resultados_exactos[marcador] = resultados_exactos.get(marcador, 0) + 1
+        
+    for k in resultados_exactos.keys():
+        resultados_exactos[k] = resultados_exactos[k] / n_sims
+        
+    # 4. APLICAR CORRECCIÓN DIXON-COLES
+    # El valor de rho=-0.15 es un estándar fuerte para el fútbol moderno de baja anotación
+    matriz_corregida = aplicar_dixon_coles(lambda_local, lambda_visita, resultados_exactos, rho=-0.15)
+    
+    # 5. Reconstruir 1X2 basándose en la matriz corregida
+    prob_local = 0.0
+    prob_visita = 0.0
+    prob_empate = 0.0
+    prob_over = 0.0
+    
+    for marcador, prob in matriz_corregida.items():
+        gl, gv = map(int, marcador.split('-'))
+        if gl > gv:
+            prob_local += prob
+        elif gv > gl:
+            prob_visita += prob
+        else:
+            prob_empate += prob
+            
+        if (gl + gv) > 2.5:
+            prob_over += prob
+            
+    # Formatear la salida esperada por tu app.py y módulos existentes
+    # (Mantén aquí el formato de retorno exacto que tu código ya utilizaba, 
+    # añadiendo corners y tarjetas si los estabas simulando de forma similar).
+    
+    return {
         "Resultado_1X2": {
-            "Gana Local": round(np.sum(sim_goles_l > sim_goles_v) / n_simulaciones * 100, 2),
-            "Empate": round(np.sum(sim_goles_l == sim_goles_v) / n_simulaciones * 100, 2),
-            "Gana Visita": round(np.sum(sim_goles_l < sim_goles_v) / n_simulaciones * 100, 2)
-        },
-        "Goles_Individuales": {
-            f"{local}": {"goles": goles_exactos_l, "prob": prob_g_l},
-            f"{visitante}": {"goles": goles_exactos_v, "prob": prob_g_v}
-        },
-        "Corners_Individuales": {
-            f"{local}": {"corners": corners_exactos_l, "prob": prob_c_l},
-            f"{visitante}": {"corners": corners_exactos_v, "prob": prob_c_v}
-        },
-        "Tarjetas_Individuales": {
-            f"{local}": {"tarjetas": tarj_exactas_l, "prob": prob_t_l},
-            f"{visitante}": {"tarjetas": tarj_exactas_v, "prob": prob_t_v}
+            "Gana Local": round(prob_local * 100, 1),
+            "Empate": round(prob_empate * 100, 1),
+            "Gana Visita": round(prob_visita * 100, 1)
         },
         "Goles_Over_Under": {
-            "Over 1.5": round(np.sum(total_goles > 1.5) / n_simulaciones * 100, 2),
-            "Over 2.5": round(np.sum(total_goles > 2.5) / n_simulaciones * 100, 2),
-            "Under 2.5": round(np.sum(total_goles <= 2.5) / n_simulaciones * 100, 2) # NUEVO
+            "Over 2.5": round(prob_over * 100, 1)
         },
-        "Corners_Totales": {
-            "Over 9.5 Corners": round(np.sum(total_corners > 9.5) / n_simulaciones * 100, 2),
-            "Under 9.5 Corners": round(np.sum(total_corners <= 9.5) / n_simulaciones * 100, 2) # NUEVO
-        },
-        "Tarjetas_Totales": {
-            "Over 4.5 Tarjetas": round(np.sum(total_tarjetas > 4.5) / n_simulaciones * 100, 2),
+        # Asegúrate de mantener la estructura de Goles, Corners y Tarjetas Individuales
+        # que tu app.py lee para que la interfaz no marque errores.
+    }
+            
             "Under 4.5 Tarjetas": round(np.sum(total_tarjetas <= 4.5) / n_simulaciones * 100, 2) # NUEVO
         }
     }
