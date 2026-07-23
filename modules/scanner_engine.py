@@ -24,7 +24,7 @@ def registrar_apuesta_github(partido, mercado, prob_modelo, cuota, kelly_pct, ba
 
     # 1. Configuración de GitHub
     # Usa tu token de los secretos de Streamlit
-    token = st.secrets["GITHUB_TOKEN"]
+    token = st.secrets["MI_GITHUB_TOKEN"]
     g = Github(token)
     
     # REEMPLAZA ESTO con tu usuario y nombre del repositorio (ej. "Misael/ligamx")
