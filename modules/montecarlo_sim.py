@@ -78,24 +78,24 @@ def calcular_lambdas_ajustadas(df, equipo_local, equipo_visita):
     
     return max(lambda_local, 0.1), max(lambda_visita, 0.1)
 
-def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
-    """
-    Ejecuta 10,000 iteraciones de Montecarlo.
-    Asegúrate de pasar tu df_historico u obtenerlo dentro de la función.
-    """
-    # 1. Obtener Lambdas (Asegúrate de usar tus funciones de promedio, altitud, etc. aquí)
-    # Por ejemplo, si tienes tu función que ya calcula lambda_local y lambda_visita:
-    # lambda_local = calcular_lambda_local(...)
-    # lambda_visita = calcular_lambda_visita(...)
+def simular_partido_montecarlo(equipo_local, equipo_visita):
+    # Cargar el histórico directamente o pasarlo como parámetro
+    try:
+        df_historico = pd.read_csv('data/historico_liga_mx.csv')
+    except FileNotFoundError:
+        # Fallback en caso de que la ruta varíe (en local o en nube)
+        df_historico = pd.read_csv('liga_mx_analytics/data/historico_liga_mx.csv')
+
+    # 1. Obtener Lambdas Ajustadas por Fuerza del Oponente
+    lambda_local, lambda_visita = calcular_lambdas_ajustadas(df_historico, equipo_local, equipo_visita)
     
-    # Valores de ejemplo de respaldo (reemplaza con tus variables de altitud/histórico)
-    lambda_local = 1.45 
-    lambda_visita = 1.15
     n_sims = 10000
     
     # 2. Generar simulación cruda de Poisson
     goles_l = np.random.poisson(lambda_local, n_sims)
     goles_v = np.random.poisson(lambda_visita, n_sims)
+
+    # ... [El resto de tu código de Dixon-Coles continúa exactamente igual a partir de aquí] ...
     
     # 3. Calcular matriz probabilística inicial cruda
     resultados_exactos = {}
