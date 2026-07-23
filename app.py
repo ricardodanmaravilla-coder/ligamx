@@ -183,8 +183,8 @@ if deporte == "⚽ Liga MX (Soccer)":
                     st.error(f"Ocurrió un error inesperado durante la simulación: {e}")
 
     st.markdown("---")
-    with st.expander("🚨 Escáner Automático de Oportunidades (Probabilidad > 70% + EV)", expanded=False):
-        st.info("Este escáner analiza todos los partidos de la próxima jornada de la Liga MX de golpe y filtra exclusivamente las jugadas donde el modelo detecta más del 70% de probabilidad de acierto.")
+    with st.expander("🚨 Escáner Automático de Oportunidades (Probabilidad > 60% + EV)", expanded=False):
+        st.info("Este escáner analiza todos los partidos de la próxima jornada de la Liga MX de golpe y filtra exclusivamente las jugadas donde el modelo detecta más del 60% de probabilidad de acierto.")
         
         if st.button("🔍 Ejecutar Escáner de Jornada", key="btn_scanner_mx"):
             with st.spinner("Analizando la jornada completa con Montecarlo... Esto puede tomar unos segundos."):
