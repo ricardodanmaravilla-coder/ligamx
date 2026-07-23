@@ -187,7 +187,7 @@ def escanear_jornada_actual(temporada_actual=2026):
                             "Fixture_ID": fix_id
                         })
         except Exception as e:
-            print("Error al registrar:", e)
+           st.error(f"Error detallado al guardar en GitHub: {e}")
             continue
             
     return oportunidades_oro
