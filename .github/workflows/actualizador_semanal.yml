@@ -2,22 +2,21 @@ name: Actualizar BD Liga MX
 
 on:
   schedule:
-    # Se ejecuta todos los miércoles a las 09:00 UTC (3:00 AM hora de México)
     - cron: '0 9 * * 3'
-  workflow_dispatch: # Este comando te pondrá un botón en GitHub para correrlo manualmente cuando quieras
+  workflow_dispatch:
 
 permissions:
-  contents: write # Permiso vital para que el bot pueda guardar el nuevo CSV
+  contents: write
 
 jobs:
   actualizar:
     runs-on: ubuntu-latest
     steps:
       - name: Descargar el repositorio
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # <-- Actualizado a v4 para quitar el warning de Node
 
       - name: Configurar Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5 # <-- Actualizado a v5
         with:
           python-version: '3.10'
 
@@ -28,16 +27,15 @@ jobs:
 
       - name: Ejecutar Script de Actualización
         env:
-          # Aquí GitHub saca la llave de la bóveda y se la pasa a tu código
           API_SPORTS_KEY: ${{ secrets.API_SPORTS_KEY }}
-        # NOTA: Cambia 'tu_script.py' por el nombre real de tu archivo de descarga
-        run: python modules/actualizar_bd.py
+        # 👇 IMPORTANTE: Cambia "mi_archivo.py" por la ruta exacta en tu repositorio
+        # Ejemplo: Si está dentro de una carpeta, usa "python modules/actualizar.py"
+        run: python modules/actualizar_bd.py 
 
       - name: Guardar el nuevo CSV en el repositorio
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/historico_ligamx_completo.csv
-          # El "|| echo" evita que el bot marque error si un día no hubo partidos nuevos que guardar
           git commit -m "🤖 Actualización automática de la jornada (Miércoles)" || echo "No hay cambios para hacer commit"
           git push
