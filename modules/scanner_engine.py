@@ -1,3 +1,4 @@
+import os
 import requests
 import pandas as pd
 from modules.stats_engine import calcular_expectativa_partido
