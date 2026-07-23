@@ -5,7 +5,7 @@ from modules.montecarlo_sim import simular_partido_montecarlo
 from modules.odds_engine import obtener_cuotas_partido, evaluar_mercado_avanzado
 
 # Configuración API-Sports
-API_KEY = "1abc53997c1b26e3b447796665e36e44" 
+API_KEY = os.environ.get("API_SPORTS_KEY") 
 BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {'x-apisports-key': API_KEY}
 LIGA_MX_ID = 262
