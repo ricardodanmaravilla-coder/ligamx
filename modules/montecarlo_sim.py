@@ -185,7 +185,8 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
             "Gana Visita": round(prob_visita * 100, 1)
         },
         "Goles_Over_Under": {
-            "Over 2.5": round(prob_over * 100, 1)
+            "Over 2.5": round(prob_over * 100, 1),
+            "Under 2.5": round(100.0 - (prob_over * 100), 1)  # <--- Faltaba esto
         },
         "Goles_Individuales": {
             equipo_local: {"goles": round(lambda_local, 1), "prob": round((sum(1 for g in goles_l if g == round(lambda_local)) / n_sims) * 100, 1)},
@@ -199,6 +200,12 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
             equipo_local: {"tarjetas": val_freq_tarj_l, "prob": round(prob_freq_tarj_l, 1)},
             equipo_visita: {"tarjetas": val_freq_tarj_v, "prob": round(prob_freq_tarj_v, 1)}
         },
-        "Corners_Totales": {"Over 9.5 Corners": round(prob_over_9_5_corners, 1)},
-        "Tarjetas_Totales": {"Over 4.5 Tarjetas": round(prob_over_4_5_tarjetas, 1)}
+        "Corners_Totales": {
+            "Over 9.5 Corners": round(prob_over_9_5_corners, 1),
+            "Under 9.5 Corners": round(100.0 - prob_over_9_5_corners, 1) # <--- Prevención de error
+        },
+        "Tarjetas_Totales": {
+            "Over 4.5 Tarjetas": round(prob_over_4_5_tarjetas, 1),
+            "Under 4.5 Tarjetas": round(100.0 - prob_over_4_5_tarjetas, 1) # <--- Prevención de error
+        }
     }
