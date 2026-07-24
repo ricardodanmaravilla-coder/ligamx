@@ -5,8 +5,6 @@ import requests
 import numpy as np
 from modules.nfl_odds_engine import analizar_apuestas_nfl
 from modules.elo_engine import SistemaEloLigaMX
-import pandas as pd
-import streamlit as st
 
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(page_title="Dashboard Deportivo & Analítica de Apuestas", layout="wide")
@@ -28,7 +26,6 @@ if deporte == "⚽ Liga MX (Soccer)":
     def obtener_proximos_partidos():
         """Descarga los próximos partidos de la Liga MX de forma segura"""
         url = f"{BASE_URL}/fixtures"
-        # Probamos primero con el año actual 2026 o el parámetro 'next' directo
         querystring = {"league": str(LIGA_MX_ID), "season": "2026", "next": "10"} 
         
         response = requests.get(url, headers=HEADERS, params=querystring)
@@ -37,7 +34,6 @@ if deporte == "⚽ Liga MX (Soccer)":
             
         datos = response.json().get("response", [])
         
-        # Si la temporada 2026 no arroja partidos directos por calendario actual, intentamos sin el año estricto
         if not datos:
             querystring_fallback = {"league": str(LIGA_MX_ID), "next": "10"}
             response = requests.get(url, headers=HEADERS, params=querystring_fallback)
@@ -66,7 +62,7 @@ if deporte == "⚽ Liga MX (Soccer)":
     partidos_reales = obtener_proximos_partidos()
 
     if not partidos_reales:
-        st.warning("⚠️ No se encontraron partidos próximos en la API para la Liga MX (es posible que sea fecha FIFA, pretemporada o fin de torneo). Puedes usar el respaldo histórico si lo requieres.")
+        st.warning("⚠️ No se encontraron partidos próximos en la API para la Liga MX.")
     else:
         seleccion = st.selectbox("Próximos partidos de Liga MX:", list(partidos_reales.keys()))
         datos_partido = partidos_reales[seleccion]
@@ -95,45 +91,12 @@ if deporte == "⚽ Liga MX (Soccer)":
                         
                         st.markdown("---")
                         
-                        st.markdown("🎯 **Goles, Corners y Tarjetas Más Probables por Equipo**")
-                        g_loc, g_vis = datos_partido['local'], datos_partido['visita']
-                        c_ind1, c_ind2, c_ind3 = st.columns(3)
-                        
-                        with c_ind1:
-                            st.markdown(f"**⚽ Goles Exactos**")
-                            st.write(f"• **{g_loc}:** {resultados['Goles_Individuales'][g_loc]['goles']} goles ({resultados['Goles_Individuales'][g_loc]['prob']}%)")
-                            st.write(f"• **{g_vis}:** {resultados['Goles_Individuales'][g_vis]['goles']} goles ({resultados['Goles_Individuales'][g_vis]['prob']}%)")
-                            
-                        with c_ind2:
-                            st.markdown(f"**⛳ Corners Exactos**")
-                            st.write(f"• **{g_loc}:** ~{resultados['Corners_Individuales'][g_loc]['corners']} corners ({resultados['Corners_Individuales'][g_loc]['prob']}%)")
-                            st.write(f"• **{g_vis}:** ~{resultados['Corners_Individuales'][g_vis]['corners']} corners ({resultados['Corners_Individuales'][g_vis]['prob']}%)")
-                            
-                        with c_ind3:
-                            st.markdown(f"**🟨 Tarjetas Exactas**")
-                            st.write(f"• **{g_loc}:** ~{resultados['Tarjetas_Individuales'][g_loc]['tarjetas']} tarjetas ({resultados['Tarjetas_Individuales'][g_loc]['prob']}%)")
-                            st.write(f"• **{g_vis}:** ~{resultados['Tarjetas_Individuales'][g_vis]['tarjetas']} tarjetas ({resultados['Tarjetas_Individuales'][g_vis]['prob']}%)")
-
-                        st.markdown("---")
-                        
-                        st.markdown("**📈 Mercados Totales del Partido**")
-                        col4, col5, col6 = st.columns(3)
-                        over_goles = resultados['Goles_Over_Under']['Over 2.5']
-                        col4.metric("Más de 2.5 Goles", f"{over_goles}%", f"Under: {round(100-over_goles, 2)}%")
-                        over_corners = resultados['Corners_Totales']['Over 9.5 Corners']
-                        col5.metric("Más de 9.5 Corners", f"{over_corners}%", f"Under: {round(100-over_corners, 2)}%")
-                        over_tarjetas = resultados['Tarjetas_Totales']['Over 4.5 Tarjetas']
-                        col6.metric("Más de 4.5 Tarjetas", f"{over_tarjetas}%", f"Under: {round(100-over_tarjetas, 2)}%")
-
-                        st.markdown("---")
-                        
-                        st.subheader("💰 Análisis de Valor Inteligente (Kelly Criterion)")
+                        # Análisis de Valor y Apuestas
                         from modules.odds_engine import obtener_cuotas_partido, analizar_apuestas
                         cuotas_automaticas = obtener_cuotas_partido(datos_partido["fixture_id"])
                         
                         with st.container():
                             st.markdown("⚙️ **Gestión de Cuotas (Automáticas / Manuales)**")
-                            
                             mercados_keys = {
                                 "Gana Local": "1", 
                                 "Empate": "X",
@@ -176,43 +139,81 @@ if deporte == "⚽ Liga MX (Soccer)":
                                 use_container_width=True,
                                 hide_index=True
                             )
-                            
-                            estrellas = df_apuestas[df_apuestas["Veredicto"] == "🔥 APUESTA ESTRELLA"]
-                            if len(estrellas) > 0:
-                                st.success("¡Hay apuestas Estrella! Usa el Stake recomendado como porcentaje de tu bankroll.")
-                        else:
-                            st.warning("Ingresa las cuotas arriba para calcular el valor esperado.")
-                            
+                        
                 except Exception as e:
                     st.error(f"Ocurrió un error inesperado durante la simulación: {e}")
 
     st.markdown("---")
-    with st.expander("🚨 Escáner Automático de Oportunidades (Probabilidad > 60% + EV)", expanded=False):
-        st.info("Este escáner analiza todos los partidos de la próxima jornada de la Liga MX de golpe y filtra exclusivamente las jugadas donde el modelo detecta más del 60% de probabilidad de acierto.")
-        
-        if st.button("🔍 Ejecutar Escáner de Jornada", key="btn_scanner_mx"):
-            with st.spinner("Analizando la jornada completa con Montecarlo... Esto puede tomar unos segundos."):
-                from modules.scanner_engine import escanear_jornada_actual
-                df_oro = pd.DataFrame(escanear_jornada_actual())
+    
+    # --- MOTOR ELO Y REGLA HÍBRIDA (BLOQUE INTEGRADO) ---
+    st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
+    
+    try:
+        # 1. Cargas tu base de datos histórica limpia
+        df_historico = pd.read_csv("data/historico_ligamx_completo.csv")
+        df_historico['Local'] = df_historico['Local'].str.strip()
+        df_historico['Visitante'] = df_historico['Visitante'].str.strip()
+
+        correccion_equipos = {
+            "Atletico San Luis": "Atlético de San Luis",
+            "Atlético San Luis": "Atlético de San Luis",
+            "San Luis": "Atlético de San Luis",
+            "Mazatlan": "Mazatlán",
+            "Mazatlan FC": "Mazatlán",
+            "Queretaro": "Querétaro",
+            "Leon": "León"
+        }
+
+        df_historico['Local'] = df_historico['Local'].replace(correccion_equipos)
+        df_historico['Visitante'] = df_historico['Visitante'].replace(correccion_equipos)
+
+        # 2. Inicias el motor ELO
+        motor_elo = SistemaEloLigaMX()
+        tabla_posiciones_elo = motor_elo.calcular_historico(df_historico)
+        st.dataframe(tabla_posiciones_elo, use_container_width=True)
+
+        # 3. Validar y mostrar Predicciones Híbridas si la jornada está activa
+        if 'resultados' in locals() and isinstance(resultados, dict):
+            st.subheader("🤖 Predicciones Híbridas (Poisson + ELO)")
+            
+            # Preparamos un DataFrame rápido con el partido seleccionado para validación híbrida
+            df_predicciones = pd.DataFrame([{
+                'Local': datos_partido['local'],
+                'Visitante': datos_partido['visita'],
+                'Probabilidad_Local': resultados['Resultado_1X2']['Gana Local'] / 100.0
+            }])
+
+            df_predicciones = df_predicciones.merge(
+                tabla_posiciones_elo, left_on='Local', right_on='Equipo', how='left'
+            ).rename(columns={'ELO_Rating': 'ELO_Local'}).drop('Equipo', axis=1, errors='ignore')
+
+            df_predicciones = df_predicciones.merge(
+                tabla_posiciones_elo, left_on='Visitante', right_on='Equipo', how='left'
+            ).rename(columns={'ELO_Rating': 'ELO_Visita'}).drop('Equipo', axis=1, errors='ignore')
+
+            def evaluar_apuesta_hibrida(fila):
+                prob_poisson_local = fila['Probabilidad_Local']
+                elo_local = fila.get('ELO_Local', 1500)
+                elo_visita = fila.get('ELO_Visita', 1500)
                 
-                if not df_oro.empty:
-                    st.success(f"¡Se encontraron {len(df_oro)} oportunidades de alta probabilidad con valor!")
-                    def color_veredicto_oro(val):
-                        if '🔥' in str(val): return 'color: #00ff00; font-weight: bold'
-                        elif '✅' in str(val): return 'color: #adff2f'
-                        return ''
-                    st.dataframe(
-                        df_oro.style.map(color_veredicto_oro, subset=['Veredicto']), 
-                        use_container_width=True,
-                        hide_index=True
-                    )
+                if prob_poisson_local > 0.55 and elo_local > elo_visita:
+                    return "✅ Aprobada: Doble Validación"
+                elif prob_poisson_local > 0.55 and elo_visita > elo_local:
+                    return "⚠️ Alerta: El visitante trae mejor racha"
                 else:
-                    st.warning("No hay partidos próximos en la jornada con más del 70% de probabilidad y valor positivo en este momento.")
+                    return "Paso"
+
+            df_predicciones['Veredicto_Hibrido'] = df_predicciones.apply(evaluar_apuesta_hibrida, axis=1)
+            st.dataframe(df_predicciones[['Local', 'Visitante', 'Probabilidad_Local', 'ELO_Local', 'ELO_Visita', 'Veredicto_Hibrido']], use_container_width=True)
+
+    except Exception as e:
+        st.info("ℹ️ Ejecuta la simulación de arriba para ver el cruce híbrido detallado con ELO.")
+
 # ==========================================
 # SECCIÓN 2: NFL (FUTBOL AMERICANO)
 # ==========================================
 else:
-    st.title("🏈 NFL Analytics & Value Betting (Calendario Histórico)")
+    st.title("🏈 NFL Analytics & Value Betting")
     st.info("Simulador Montecarlo de Emparrillado + Criterio de Kelly con datos reales de la liga.")
     
     @st.cache_data
@@ -227,7 +228,6 @@ else:
     if df_nfl is None or df_nfl.empty:
         st.error("No se encontró el archivo 'data/historico_nfl.csv'.")
     else:
-        # Generar lista de partidos recientes reales del archivo CSV para simular un calendario activo
         df_nfl['Fecha'] = pd.to_datetime(df_nfl['Fecha'])
         df_recientes = df_nfl.sort_values(by='Fecha', ascending=False).head(50)
         
@@ -249,7 +249,6 @@ else:
         st.write(f"**Enfrentamiento seleccionado:** {equipo_local_nfl} (Local) vs {equipo_visita_nfl} (Visitante)")
 
         if st.button("Ejecutar Simulación NFL y Analizar Cuotas", type="primary"):
-            # Filtrar estadísticas históricas
             l_loc = df_nfl[df_nfl['Local'] == equipo_local_nfl]
             l_vis = df_nfl[df_nfl['Visitante'] == equipo_local_nfl]
             v_loc = df_nfl[df_nfl['Local'] == equipo_visita_nfl]
@@ -260,7 +259,6 @@ else:
             puntos_favor_visita = pd.concat([v_loc['Puntos_L'], v_vis['Puntos_V']]).mean()
             puntos_contra_visita = pd.concat([v_loc['Puntos_V'], v_vis['Puntos_L']]).mean()
 
-            # Simulación de Montecarlo (10,000 iteraciones)
             lambda_l = max(10.0, (puntos_favor_local + puntos_contra_visita) / 2)
             lambda_v = max(10.0, (puntos_favor_visita + puntos_contra_local) / 2)
             
@@ -275,7 +273,6 @@ else:
             p_l = (wins_l / n_sims) * 100
             p_v = (wins_v / n_sims) * 100
             
-            # Promedio de línea Over/Under estimada basada en simulaciones
             linea_base_ou = 45.5
             p_over = (np.sum(sim_totales > linea_base_ou) / n_sims) * 100
             p_under = 100.0 - p_over
@@ -296,7 +293,6 @@ else:
             st.markdown("---")
             st.subheader("💰 Análisis de Valor Inteligente (Criterio de Kelly - NFL)")
             
-            # Panel de entrada manual de cuotas para la NFL
             c_n1, c_n2, c_n3, c_n4 = st.columns(4)
             with c_n1:
                 cuota_l = st.number_input(f"Cuota {equipo_local_nfl}", min_value=1.0, value=1.90, step=0.05, format="%.2f")
@@ -324,83 +320,3 @@ else:
                 return ''
 
             st.dataframe(df_apuestas_nfl.style.map(color_veredicto_nfl, subset=['Veredicto']), use_container_width=True, hide_index=True)
-
-
-# ... aquí tienes tu código anterior de Streamlit ...
-# 1. Cargas tu base de datos histórica
-df_historico = pd.read_csv("data/historico_ligamx_completo.csv")
-
-# --- INICIO DE LIMPIEZA DE DATOS ---
-# A. Quitamos espacios accidentales al principio o al final de los nombres
-df_historico['Local'] = df_historico['Local'].str.strip()
-df_historico['Visitante'] = df_historico['Visitante'].str.strip()
-
-# B. Diccionario para unificar a los equipos rebeldes
-correccion_equipos = {
-    "Atletico San Luis": "Atlético de San Luis",
-    "Atlético San Luis": "Atlético de San Luis",
-    "San Luis": "Atlético de San Luis",
-    "Mazatlan": "Mazatlán",
-    "Mazatlan FC": "Mazatlán",
-    "Queretaro": "Querétaro",     # Ejemplo por si falta un acento
-    "Leon": "León"                # Ejemplo por si falta un acento
-}
-
-
-#-----ELO-----
-
-# C. Aplicamos la corrección a las columnas
-df_historico['Local'] = df_historico['Local'].replace(correccion_equipos)
-df_historico['Visitante'] = df_historico['Visitante'].replace(correccion_equipos)
-# --- FIN DE LIMPIEZA DE DATOS ---
-
-# 2. Inicias el motor
-motor_elo = SistemaEloLigaMX()
-
-# 3. Le pasas toda la historia (ya limpia) para que calcule el poder de los equipos HOY
-tabla_posiciones_elo = motor_elo.calcular_historico(df_historico)
-
-# 4. Lo muestras en tu Dashboard
-st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
-st.dataframe(tabla_posiciones_elo, use_container_width=True)
-
-# 1. Pegamos el ELO del equipo Local a la tabla de predicciones
-df_predicciones = df_predicciones.merge(
-    tabla_posiciones_elo, 
-    left_on='Local', 
-    right_on='Equipo', 
-    how='left'
-).rename(columns={'ELO_Rating': 'ELO_Local'}).drop('Equipo', axis=1)
-
-# 2. Pegamos el ELO del equipo Visitante
-df_predicciones = df_predicciones.merge(
-    tabla_posiciones_elo, 
-    left_on='Visitante', 
-    right_on='Equipo', 
-    how='left'
-).rename(columns={'ELO_Rating': 'ELO_Visita'}).drop('Equipo', axis=1)
-
-# 3. CREAMOS LA REGLA HÍBRIDA MAESTRA
-# Vamos a crear una función que evalúe ambas condiciones
-def evaluar_apuesta_hibrida(fila):
-    prob_poisson_local = fila['Probabilidad_Local'] # Ajusta al nombre real de tu columna
-    elo_local = fila['ELO_Local']
-    elo_visita = fila['ELO_Visita']
-    
-    # Condición: Poisson le da más del 55% de prob. Y su ELO es mayor al del rival
-    if prob_poisson_local > 0.55 and elo_local > elo_visita:
-        return "✅ Aprobada: Doble Validación"
-    
-    # Si Poisson aprueba pero ELO dice que el visitante viene en racha
-    elif prob_poisson_local > 0.55 and elo_visita > elo_local:
-        return "⚠️ Alerta: El visitante trae mejor racha"
-    
-    else:
-        return "Paso"
-
-# 4. Aplicamos la regla a todos los partidos de la jornada
-df_predicciones['Veredicto_Hibrido'] = df_predicciones.apply(evaluar_apuesta_hibrida, axis=1)
-
-# 5. Mostramos la tabla final en Streamlit
-st.subheader("🤖 Predicciones Híbridas (Poisson + ELO)")
-st.dataframe(df_predicciones[['Local', 'Visitante', 'Probabilidad_Local', 'ELO_Local', 'ELO_Visita', 'Veredicto_Hibrido']], use_container_width=True)
