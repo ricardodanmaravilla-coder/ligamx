@@ -23,24 +23,17 @@ def registrar_apuesta_github(partido, mercado, prob_modelo, cuota, kelly_pct, ba
     if kelly_pct <= 0:
         return
 
-    # 1. Configuración de GitHub
-    # Usa tu token de los secretos de Streamlit
     token = st.secrets["MI_GITHUB_TOKEN"]
     g = Github(token)
-    
-    # REEMPLAZA ESTO con tu usuario y nombre del repositorio (ej. "Misael/ligamx")
     nombre_repo = "ricardodanmaravilla-coder/ligamx" 
     repo = g.get_repo(nombre_repo)
-    
     ruta_archivo_github = 'data/registro_apuestas.csv'
     
-    # 2. Calcular la inversión
     porcentaje_seguro = min(kelly_pct, 10.0) 
     inversion_mxn = round(bankroll_inicial * (porcentaje_seguro / 100), 2)
     ganancia_potencial = round((inversion_mxn * cuota) - inversion_mxn, 2)
     fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M")
     
-    # 3. Crear la nueva fila de datos
     nueva_fila_df = pd.DataFrame([{
         "Fecha_Registro": fecha_actual,
         "Partido": partido,
@@ -54,59 +47,50 @@ def registrar_apuesta_github(partido, mercado, prob_modelo, cuota, kelly_pct, ba
         "Retorno_Real_MXN": 0.0
     }])
 
-    # 4. Leer el archivo existente en GitHub (si existe) o crear uno nuevo
     try:
         archivo_en_repo = repo.get_contents(ruta_archivo_github)
         contenido_actual = archivo_en_repo.decoded_content.decode('utf-8')
-        
-        # Leemos el CSV actual
         df_existente = pd.read_csv(io.StringIO(contenido_actual))
         
-        # Validar duplicados para no registrar la misma apuesta dos veces hoy
         duplicado = df_existente[(df_existente['Partido'] == partido) & (df_existente['Mercado'] == mercado) & (df_existente['Estado'] == 'Pendiente')]
         if not duplicado.empty:
-            print(f"La apuesta {mercado} - {partido} ya estaba registrada.")
             return
 
-        # Unimos lo viejo con lo nuevo
         df_final = pd.concat([df_existente, nueva_fila_df], ignore_index=True)
         nuevo_contenido_csv = df_final.to_csv(index=False)
         
-        # Hacemos el commit (actualización) en GitHub
         repo.update_file(
             path=archivo_en_repo.path,
             message=f"🤖 Registro automático de apuesta: {mercado}",
             content=nuevo_contenido_csv,
             sha=archivo_en_repo.sha
         )
-        print(f"✅ Apuesta actualizada en GitHub: {mercado} - {partido}")
-
     except Exception as e:
-        # Si el archivo no existe en GitHub, lo creamos desde cero
-        print("El archivo de bitácora no existía en GitHub. Creándolo ahora...")
         nuevo_contenido_csv = nueva_fila_df.to_csv(index=False)
-        
         repo.create_file(
             path=ruta_archivo_github,
             message="🤖 Creación de bitácora inicial",
             content=nuevo_contenido_csv
         )
-        print(f"✅ Primera apuesta registrada en GitHub: {mercado} - {partido}")
         
 def escanear_jornada_actual(temporada_actual=2026):
-    """Descarga la jornada actual completa de la Liga MX y detecta valor con >60% de probabilidad."""
+    """
+    Escanea la jornada cruzando Montecarlo y Machine Learning. 
+    Filtra y recomienda únicamente los mercados donde ambos modelos coinciden en alta probabilidad.
+    """
     
-    # Inicializamos y entrenamos el modelo de Machine Learning con el histórico real de fondo
+    # 1. Entrenamos el motor de Machine Learning multimodelo con el histórico real
     ml_escanner = PredictorML()
+    df_historico_ml = None
     try:
         df_historico_ml = pd.read_csv("data/historico_ligamx_completo.csv")
         df_historico_ml['Local'] = df_historico_ml['Local'].str.strip()
         df_historico_ml['Visitante'] = df_historico_ml['Visitante'].str.strip()
         ml_escanner.entrenar(df_historico_ml)
     except Exception:
-        df_historico_ml = None
+        pass
 
-    # 1. Obtenemos la ronda (jornada) activa actual de la Liga MX para garantizar que traiga el 100% de los partidos
+    # 2. Obtenemos la ronda activa actual de la Liga MX
     url_rounds = f"{BASE_URL}/fixtures/rounds"
     res_rounds = requests.get(url_rounds, headers=HEADERS, params={"league": LIGA_MX_ID, "season": temporada_actual, "current": "true"})
     
@@ -114,12 +98,10 @@ def escanear_jornada_actual(temporada_actual=2026):
     if res_rounds.status_code == 200:
         rounds_data = res_rounds.json().get("response", [])
         if rounds_data:
-            jornada_actual = rounds_data[0] # Ej: "Regular Season - 7"
+            jornada_actual = rounds_data[0]
             
-    # 2. Consultamos los partidos filtrando específicamente por esa ronda o por próximos (NS)
     url = f"{BASE_URL}/fixtures"
     params = {"league": LIGA_MX_ID, "season": temporada_actual, "status": "NS"}
-    
     if jornada_actual:
         params["round"] = jornada_actual
     
@@ -128,8 +110,6 @@ def escanear_jornada_actual(temporada_actual=2026):
         return []
         
     fixtures = res.json().get("response", [])
-    
-    # Resguardo por si la API no devuelve la ronda actual exacta: respaldamos trayendo los próximos estándar
     if not fixtures:
         params = {"league": LIGA_MX_ID, "season": temporada_actual, "status": "NS"}
         res = requests.get(url, headers=HEADERS, params=params)
@@ -142,11 +122,7 @@ def escanear_jornada_actual(temporada_actual=2026):
         ("Gana Local", "1"),
         ("Gana Visita", "2"),
         ("Over 2.5 Goles", "Over 2.5"),
-        ("Under 2.5 Goles", "Under 2.5"),
-        ("Over 9.5 Corners", "Over 9.5 Corners"),
-        ("Under 9.5 Corners", "Under 9.5 Corners"),
-        ("Over 4.5 Tarjetas", "Over 4.5 Tarjetas"),
-        ("Under 4.5 Tarjetas", "Under 4.5 Tarjetas")
+        ("Over 9.5 Corners", "Over 9.5 Corners")
     ]
 
     for p in fixtures:
@@ -156,54 +132,84 @@ def escanear_jornada_actual(temporada_actual=2026):
         fecha = p["fixture"]["date"][:16].replace("T", " ")
         
         try:
-            # 3. Corremos nuestro motor híbrido, altitud y Montecarlo para este partido
+            # 3. Corremos Montecarlo
             resultados = simular_partido_montecarlo(local, visita)
             if isinstance(resultados, str): continue
             
-            # 4. Obtenemos cuotas automáticas de la API
+            # 4. Obtenemos cuotas automáticas
             cuotas = obtener_cuotas_partido(fix_id)
             if not cuotas: continue
             
-            # Extraemos probabilidades del diccionario de resultados de Montecarlo
-            prob_dict = {
-                "1": resultados["Resultado_1X2"]["Gana Local"],
-                "2": resultados["Resultado_1X2"]["Gana Visita"],
-                "Over 2.5": resultados["Goles_Over_Under"]["Over 2.5"],
-                "Under 2.5": resultados["Goles_Over_Under"]["Under 2.5"],
-                "Over 9.5 Corners": resultados["Corners_Totales"]["Over 9.5 Corners"],
-                "Under 9.5 Corners": resultados["Corners_Totales"]["Under 9.5 Corners"],
-                "Over 4.5 Tarjetas": resultados["Tarjetas_Totales"]["Over 4.5 Tarjetas"],
-                "Under 4.5 Tarjetas": resultados["Tarjetas_Totales"]["Under 4.5 Tarjetas"]
-            }
+            # Probabilidades de Montecarlo
+            prob_mc_local = resultados["Resultado_1X2"]["Gana Local"]
+            prob_mc_visita = resultados["Resultado_1X2"]["Gana Visita"]
+            prob_mc_goles = resultados["Goles_Over_Under"]["Over 2.5"]
+            prob_mc_corners = resultados["Corners_Totales"]["Over 9.5 Corners"]
 
-            # Validación complementaria de Machine Learning para el mercado 1X2 si está disponible
-            ml_info = "N/D"
+            # Probabilidades de Machine Learning (si está entrenado)
+            prob_ml_local = 0.0
+            prob_ml_visita = 0.0
+            prob_ml_goles = 0.0
+            prob_ml_corners = 0.0
+
             if ml_escanner.is_trained and df_historico_ml is not None:
                 g_l_sim = resultados.get('Goles_Individuales', {}).get(local, {}).get('goles', 1.2)
                 g_v_sim = resultados.get('Goles_Individuales', {}).get(visita, {}).get('goles', 1.0)
-                probs_1x2_ml = ml_escanner.predecir_partido_real_1x2(df_historico_ml, local, visita, g_l_sim, g_v_sim)
-                ml_info = f"L: {probs_1x2_ml['Gana Local']}% | V: {probs_1x2_ml['Gana Visita']}%"
+                
+                preds_ml = ml_escanner.predecir_mercados_completos(df_historico_ml, local, visita, g_l_sim, g_v_sim)
+                prob_ml_local = preds_ml['1X2']['Gana Local']
+                prob_ml_visita = preds_ml['1X2']['Gana Visita']
+                prob_ml_goles = preds_ml['Over_2.5_Goles']
+                prob_ml_corners = preds_ml['Over_9.5_Corners']
 
-            # 5. Evaluamos mercado por mercado buscando el filtro de oro (>=60% y EV > 0)
+            # Diccionarios para evaluar en bucle de consenso
+            prob_mc_dict = {
+                "Gana Local": prob_mc_local,
+                "Gana Visita": prob_mc_visita,
+                "Over 2.5 Goles": prob_mc_goles,
+                "Over 9.5 Corners": prob_mc_corners
+            }
+
+            prob_ml_dict = {
+                "Gana Local": prob_ml_local,
+                "Gana Visita": prob_ml_visita,
+                "Over 2.5 Goles": prob_ml_goles,
+                "Over 9.5 Corners": prob_ml_corners
+            }
+
+            llaves_mercado = {
+                "Gana Local": "1",
+                "Gana Visita": "2",
+                "Over 2.5 Goles": "Over 2.5",
+                "Over 9.5 Corners": "Over 9.5 Corners"
+            }
+
+            # 5. FILTRO DE CONSENSO MAESTRO (MONTECARLO + MACHINE LEARNING)
             for nombre_m, llave in mercados_a_mapear:
-                prob = prob_dict.get(llave, 0)
+                p_mc = prob_mc_dict[nombre_m]
+                p_ml = prob_ml_dict[nombre_m]
                 cuota = cuotas.get(llave)
                 
-                if cuota and cuota > 1.0 and prob >= 60.0: # <--- FILTRO DE ORO
-                    _, ev, veredicto, stake, riesgo = evaluar_mercado_avanzado(prob, cuota)
+                # Criterio de Consenso: AMBOS modelos deben darle una probabilidad sólida (ej. >= 55% cada uno)
+                # y la cuota debe ofrecer valor real (EV > 0)
+                if cuota and cuota > 1.0 and p_mc >= 55.0 and p_ml >= 55.0:
+                    # Promediamos ambas probabilidades para tener una métrica unificada de confianza
+                    prob_combinada = round((p_mc + p_ml) / 2, 1)
+                    _, ev, veredicto, stake, riesgo = evaluar_mercado_avanzado(prob_combinada, cuota)
                     
                     if ev > 0:
                         oportunidades_oro.append({
                             "Fecha": fecha,
                             "Partido": f"{local} vs {visita}",
                             "Mercado": nombre_m,
-                            "Probabilidad": f"{prob}%",
-                            "ML (Ref)": ml_info,
+                            "Prob. Montecarlo": f"{p_mc}%",
+                            "Prob. ML": f"{p_ml}%",
+                            "Prob. Combinada": f"{prob_combinada}%",
                             "Cuota": f"{cuota:.2f}",
                             "EV (Valor)": f"+{ev:.1f}%",
                             "Riesgo": riesgo,
                             "Stake Rec.": f"{stake:.1f}%",
-                            "Veredicto": veredicto,
+                            "Veredicto": f"🔥 CONSENSO TOTAL ({veredicto})",
                             "Fixture_ID": fix_id
                         })
         except Exception as e:
