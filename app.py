@@ -5,6 +5,7 @@ import requests
 import numpy as np
 from modules.nfl_odds_engine import analizar_apuestas_nfl
 from modules.elo_engine import SistemaEloLigaMX
+from modules.ml_engine import PredictorML
 
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(page_title="Dashboard Deportivo & Analítica de Apuestas", layout="wide")
@@ -170,7 +171,7 @@ if deporte == "⚽ Liga MX (Soccer)":
 
     st.markdown("---")
     
-    # --- MOTOR ELO Y REGLA HÍBRIDA ---
+    # --- MOTOR ELO, MACHINE LEARNING Y REGLA HÍBRIDA ---
     st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
     
     try:
@@ -194,6 +195,22 @@ if deporte == "⚽ Liga MX (Soccer)":
         motor_elo = SistemaEloLigaMX()
         tabla_posiciones_elo = motor_elo.calcular_historico(df_historico)
         st.dataframe(tabla_posiciones_elo, use_container_width=True)
+
+        # --- VALIDACIÓN CON MACHINE LEARNING (DATOS REALES) ---
+        ml_predictor = PredictorML()
+        if ml_predictor.entrenar(df_historico):
+            if 'resultados' in locals() and isinstance(resultados, dict):
+                goles_l_sim = resultados['Goles_Individuales'][datos_partido['local']]['goles']
+                goles_v_sim = resultados['Goles_Individuales'][datos_partido['visita']]['goles']
+                
+                prob_ml = ml_predictor.predecir_partido_real(
+                    df_historico, 
+                    datos_partido['local'], 
+                    datos_partido['visita'], 
+                    goles_l_sim, 
+                    goles_v_sim
+                ) * 100
+                st.info(f"🤖 **Validación Machine Learning (Random Forest con Histórico Real):** El modelo estima un **{prob_ml:.1f}%** de probabilidad de victoria local basado en patrones reales.")
 
         if 'resultados' in locals() and isinstance(resultados, dict):
             st.subheader("🤖 Predicciones Híbridas (Poisson + ELO)")
