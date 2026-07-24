@@ -4,6 +4,9 @@ import pandas as pd
 import requests
 import numpy as np
 from modules.nfl_odds_engine import analizar_apuestas_nfl
+from modules.elo_engine import SistemaEloLigaMX
+import pandas as pd
+import streamlit as st
 
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(page_title="Dashboard Deportivo & Analítica de Apuestas", layout="wide")
@@ -321,6 +324,25 @@ else:
                 return ''
 
             st.dataframe(df_apuestas_nfl.style.map(color_veredicto_nfl, subset=['Veredicto']), use_container_width=True, hide_index=True)
+
+
+# ... aquí tienes tu código anterior de Streamlit ...
+
+st.header("Análisis Avanzado de la Liga MX")
+
+# 1. Cargas tu base de datos histórica
+# (Asegúrate de que la ruta 'data/historico_ligamx_completo.csv' sea la correcta)
+df_historico = pd.read_csv("data/historico_ligamx_completo.csv")
+
+# 2. Inicias el motor
+motor_elo = SistemaEloLigaMX()
+
+# 3. Le pasas toda la historia para que calcule el poder de los equipos HOY
+tabla_posiciones_elo = motor_elo.calcular_historico(df_historico)
+
+# 4. Lo muestras en tu Dashboard
+st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
+st.dataframe(tabla_posiciones_elo, use_container_width=True) # use_container_width hace que la tabla se vea más ancha y profesional
             
             estrellas_nfl = df_apuestas_nfl[df_apuestas_nfl["Veredicto"] == "🔥 APUESTA ESTRELLA"]
             if len(estrellas_nfl) > 0:
