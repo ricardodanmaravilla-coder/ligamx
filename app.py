@@ -230,22 +230,27 @@ if deporte == "⚽ Liga MX (Soccer)":
         tabla_posiciones_elo = motor_elo.calcular_historico(df_historico)
         st.dataframe(tabla_posiciones_elo, use_container_width=True)
 
-        # --- VALIDACIÓN CON MACHINE LEARNING (DATOS REALES) ---
-        ml_predictor = PredictorML()
-        if ml_predictor.entrenar(df_historico):
-            if 'resultados' in locals() and isinstance(resultados, dict):
-                goles_l_sim = resultados['Goles_Individuales'][datos_partido['local']]['goles']
-                goles_v_sim = resultados['Goles_Individuales'][datos_partido['visita']]['goles']
-                
-                prob_ml = ml_predictor.predecir_partido_real(
-                    df_historico, 
-                    datos_partido['local'], 
-                    datos_partido['visita'], 
-                    goles_l_sim, 
-                    goles_v_sim
-                ) * 100
-                st.info(f"🤖 **Validación Machine Learning (Random Forest con Histórico Real):** El modelo estima un **{prob_ml:.1f}%** de probabilidad de victoria local basado en patrones reales.")
-
+        # --- VALIDACIÓN CON MACHINE LEARNING (1X2 COMPLETO) ---
+                ml_predictor = PredictorML()
+                if ml_predictor.entrenar(df_historico):
+                    if 'resultados' in locals() and isinstance(resultados, dict):
+                        goles_l_sim = resultados['Goles_Individuales'][datos_partido['local']]['goles']
+                        goles_v_sim = resultados['Goles_Individuales'][datos_partido['visita']]['goles']
+                        
+                        probs_ml = ml_predictor.predecir_partido_real_1x2(
+                            df_historico, 
+                            datos_partido['local'], 
+                            datos_partido['visita'], 
+                            goles_l_sim, 
+                            goles_v_sim
+                        )
+                        
+                        st.markdown("🤖 **Validación Machine Learning (Random Forest - 1X2)**")
+                        ml_c1, ml_c2, ml_c3 = st.columns(3)
+                        ml_c1.metric(f"ML Local", f"{probs_ml['Gana Local']}%")
+                        ml_c2.metric(f"ML Empate", f"{probs_ml['Empate']}%")
+                        ml_c3.metric(f"ML Visita", f"{probs_ml['Gana Visita']}%")
+                        
         if 'resultados' in locals() and isinstance(resultados, dict):
             st.subheader("🤖 Predicciones Híbridas (Poisson + ELO)")
             
