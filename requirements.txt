@@ -1,1 +1,6 @@
 PyGithub
+streamlit
+pandas
+requests
+numpy
+scikit-learn
