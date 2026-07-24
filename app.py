@@ -245,11 +245,11 @@ if deporte == "⚽ Liga MX (Soccer)":
                     goles_v_sim
                 )
                         
-                        st.markdown("🤖 **Validación Machine Learning (Random Forest - 1X2)**")
-                        ml_c1, ml_c2, ml_c3 = st.columns(3)
-                        ml_c1.metric(f"ML Local", f"{probs_ml['Gana Local']}%")
-                        ml_c2.metric(f"ML Empate", f"{probs_ml['Empate']}%")
-                        ml_c3.metric(f"ML Visita", f"{probs_ml['Gana Visita']}%")     
+                st.markdown("🤖 **Validación Machine Learning (Random Forest - 1X2)**")
+                ml_c1, ml_c2, ml_c3 = st.columns(3)
+                ml_c1.metric(f"ML Local", f"{probs_ml['Gana Local']}%")
+                ml_c2.metric(f"ML Empate", f"{probs_ml['Empate']}%")
+                ml_c3.metric(f"ML Visita", f"{probs_ml['Gana Visita']}%")     
                         
         if 'resultados' in locals() and isinstance(resultados, dict):
             st.subheader("🤖 Predicciones Híbridas (Poisson + ELO)")
