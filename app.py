@@ -92,6 +92,40 @@ if deporte == "⚽ Liga MX (Soccer)":
                         
                         st.markdown("---")
                         
+                        # --- MERCADOS DETALLADOS RESTAURADOS ---
+                        st.markdown("🎯 **Goles, Corners y Tarjetas Más Probables por Equipo**")
+                        g_loc, g_vis = datos_partido['local'], datos_partido['visita']
+                        c_ind1, c_ind2, c_ind3 = st.columns(3)
+                        
+                        with c_ind1:
+                            st.markdown(f"**⚽ Goles Exactos**")
+                            st.write(f"• **{g_loc}:** {resultados['Goles_Individuales'][g_loc]['goles']} goles ({resultados['Goles_Individuales'][g_loc]['prob']}%)")
+                            st.write(f"• **{g_vis}:** {resultados['Goles_Individuales'][g_vis]['goles']} goles ({resultados['Goles_Individuales'][g_vis]['prob']}%)")
+                            
+                        with c_ind2:
+                            st.markdown(f"**⛳ Corners Exactos**")
+                            st.write(f"• **{g_loc}:** ~{resultados['Corners_Individuales'][g_loc]['corners']} corners ({resultados['Corners_Individuales'][g_loc]['prob']}%)")
+                            st.write(f"• **{g_vis}:** ~{resultados['Corners_Individuales'][g_vis]['corners']} corners ({resultados['Corners_Individuales'][g_vis]['prob']}%)")
+                            
+                        with c_ind3:
+                            st.markdown(f"**🟨 Tarjetas Exactas**")
+                            st.write(f"• **{g_loc}:** ~{resultados['Tarjetas_Individuales'][g_loc]['tarjetas']} tarjetas ({resultados['Tarjetas_Individuales'][g_loc]['prob']}%)")
+                            st.write(f"• **{g_vis}:** ~{resultados['Tarjetas_Individuales'][g_vis]['tarjetas']} tarjetas ({resultados['Tarjetas_Individuales'][g_vis]['prob']}%)")
+
+                        st.markdown("---")
+                        
+                        st.markdown("**📈 Mercados Totales del Partido**")
+                        col4, col5, col6 = st.columns(3)
+                        over_goles = resultados['Goles_Over_Under']['Over 2.5']
+                        col4.metric("Más de 2.5 Goles", f"{over_goles}%", f"Under: {round(100-over_goles, 2)}%")
+                        over_corners = resultados['Corners_Totales']['Over 9.5 Corners']
+                        col5.metric("Más de 9.5 Corners", f"{over_corners}%", f"Under: {round(100-over_corners, 2)}%")
+                        over_tarjetas = resultados['Tarjetas_Totales']['Over 4.5 Tarjetas']
+                        col6.metric("Más de 4.5 Tarjetas", f"{over_tarjetas}%", f"Under: {round(100-over_tarjetas, 2)}%")
+
+                        st.markdown("---")
+                        # ----------------------------------------
+                        
                         # Análisis de Valor y Apuestas
                         from modules.odds_engine import obtener_cuotas_partido, analizar_apuestas
                         cuotas_automaticas = obtener_cuotas_partido(datos_partido["fixture_id"])
