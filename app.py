@@ -145,11 +145,35 @@ if deporte == "⚽ Liga MX (Soccer)":
 
     st.markdown("---")
     
-    # --- MOTOR ELO Y REGLA HÍBRIDA (BLOQUE INTEGRADO) ---
+    # --- ESCÁNER AUTOMÁTICO DE JORNADA COMPLETA ---
+    with st.expander("🚨 Escáner Automático de Oportunidades (Jornada Completa)", expanded=False):
+        st.info("Este escáner analiza todos los partidos de la próxima jornada de la Liga MX de golpe y filtra exclusivamente las jugadas de valor.")
+        
+        if st.button("🔍 Ejecutar Escáner de Jornada", key="btn_scanner_mx"):
+            with st.spinner("Analizando la jornada completa con Montecarlo... Esto puede tomar unos segundos."):
+                from modules.scanner_engine import escanear_jornada_actual
+                df_oro = pd.DataFrame(escanear_jornada_actual())
+                
+                if not df_oro.empty:
+                    st.success(f"¡Se encontraron {len(df_oro)} oportunidades de alta probabilidad con valor!")
+                    def color_veredicto_oro(val):
+                        if '🔥' in str(val): return 'color: #00ff00; font-weight: bold'
+                        elif '✅' in str(val): return 'color: #adff2f'
+                        return ''
+                    st.dataframe(
+                        df_oro.style.map(color_veredicto_oro, subset=['Veredicto']), 
+                        use_container_width=True,
+                        hide_index=True
+                    )
+                else:
+                    st.warning("No hay partidos próximos en la jornada con los criterios requeridos en este momento.")
+
+    st.markdown("---")
+    
+    # --- MOTOR ELO Y REGLA HÍBRIDA ---
     st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
     
     try:
-        # 1. Cargas tu base de datos histórica limpia
         df_historico = pd.read_csv("data/historico_ligamx_completo.csv")
         df_historico['Local'] = df_historico['Local'].str.strip()
         df_historico['Visitante'] = df_historico['Visitante'].str.strip()
@@ -167,16 +191,13 @@ if deporte == "⚽ Liga MX (Soccer)":
         df_historico['Local'] = df_historico['Local'].replace(correccion_equipos)
         df_historico['Visitante'] = df_historico['Visitante'].replace(correccion_equipos)
 
-        # 2. Inicias el motor ELO
         motor_elo = SistemaEloLigaMX()
         tabla_posiciones_elo = motor_elo.calcular_historico(df_historico)
         st.dataframe(tabla_posiciones_elo, use_container_width=True)
 
-        # 3. Validar y mostrar Predicciones Híbridas si la jornada está activa
         if 'resultados' in locals() and isinstance(resultados, dict):
             st.subheader("🤖 Predicciones Híbridas (Poisson + ELO)")
             
-            # Preparamos un DataFrame rápido con el partido seleccionado para validación híbrida
             df_predicciones = pd.DataFrame([{
                 'Local': datos_partido['local'],
                 'Visitante': datos_partido['visita'],
