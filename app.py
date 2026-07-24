@@ -338,9 +338,9 @@ tabla_posiciones_elo = motor_elo.calcular_historico(df_historico)
 # 4. Lo muestras en tu Dashboard
 st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
 st.dataframe(tabla_posiciones_elo, use_container_width=True) # use_container_width hace que la tabla se vea más ancha y profesional estrellas_nfl = df_apuestas_nfl[df_apuestas_nfl["Veredicto"] == "🔥 APUESTA ESTRELLA"]
-# 1. Primero filtramos el archivo original para crear la variable 'estrellas_nfl'
+
+df_apuestas_nfl = pd.read_csv("data/historico_nfl.csv")
 estrellas_nfl = df_apuestas_nfl[df_apuestas_nfl["Veredicto"] == "🔥 APUESTA ESTRELLA"]
-# 2. AHORA SÍ, como la variable ya existe, podemos preguntarle si encontró alguna
 if len(estrellas_nfl) > 0:
     st.dataframe(estrellas_nfl)
 st.success("🔥 ¡Apuesta Estrella detectada en la NFL con más del 70% de probabilidad y valor positivo!")
