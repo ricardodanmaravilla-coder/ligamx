@@ -339,8 +339,8 @@ tabla_posiciones_elo = motor_elo.calcular_historico(df_historico)
 st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
 st.dataframe(tabla_posiciones_elo, use_container_width=True) # use_container_width hace que la tabla se vea más ancha y profesional estrellas_nfl = df_apuestas_nfl[df_apuestas_nfl["Veredicto"] == "🔥 APUESTA ESTRELLA"]
 
-df_apuestas_nfl = pd.read_csv("data/historico_nfl.csv")
-estrellas_nfl = df_apuestas_nfl[df_apuestas_nfl["Veredicto"] == "🔥 APUESTA ESTRELLA"]
-if len(estrellas_nfl) > 0:
-    st.dataframe(estrellas_nfl)
-st.success("🔥 ¡Apuesta Estrella detectada en la NFL con más del 70% de probabilidad y valor positivo!")
+#df_apuestas_nfl = pd.read_csv("data/historico_nfl.csv")
+#estrellas_nfl = df_apuestas_nfl[df_apuestas_nfl["Veredicto"] == "🔥 APUESTA ESTRELLA"]
+#if len(estrellas_nfl) > 0:
+#   st.dataframe(estrellas_nfl)
+#st.success("🔥 ¡Apuesta Estrella detectada en la NFL con más del 70% de probabilidad y valor positivo!")
