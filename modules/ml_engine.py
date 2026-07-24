@@ -4,46 +4,57 @@ from sklearn.model_selection import train_test_split
 
 class PredictorML:
     def __init__(self):
-        # Usamos multi_class implícito en RandomForest para clasificar 0 (Empate), 1 (Gana Local) y 2 (Gana Visita)
-        self.model = RandomForestClassifier(n_estimators=100, random_state=42)
+        # Creamos tres modelos independientes: 1 para el 1X2, 1 para Goles y 1 para Corners
+        self.model_1x2 = RandomForestClassifier(n_estimators=100, random_state=42)
+        self.model_goles = RandomForestClassifier(n_estimators=100, random_state=42)
+        self.model_corners = RandomForestClassifier(n_estimators=100, random_state=42)
         self.is_trained = False
 
-    def preparar_datos(self, df_historico):
-        """Prepara las variables y etiquetas 1X2 utilizando exclusivamente datos reales del histórico."""
-        df = df_historico.copy()
-        
-        # Definimos el resultado real (Target):
-        # 1 = Gana Local, 2 = Gana Visitante, 0 = Empate
-        def obtener_resultado_1x2(row):
-            if row['Goles_L'] > row['Goles_V']:
-                return 1 # Gana Local
-            elif row['Goles_L'] < row['Goles_V']:
-                return 2 # Gana Visitante
-            else:
-                return 0 # Empate
-
-        df['Target_1X2'] = df.apply(obtener_resultado_1x2, axis=1)
-        
-        features = ['Goles_L', 'Goles_V', 'xG_L', 'xG_V', 'Corners_L', 'Corners_V', 'Amarillas_L', 'Amarillas_V']
-        df = df.dropna(subset=features + ['Target_1X2'])
-        
-        X = df[features]
-        y = df['Target_1X2']
-        return X, y
-
     def entrenar(self, df_historico):
-        """Entrena el modelo de Machine Learning con el historial real."""
+        """Entrena los modelos de Machine Learning utilizando el historial real."""
         try:
-            X, y = self.preparar_datos(df_historico)
-            if len(X) < 10:
-                return False
+            df = df_historico.copy()
             
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-            self.model.fit(X_train, y_train)
+            # --- 1. PREPARAR DATOS PARA 1X2 ---
+            def obtener_resultado_1x2(row):
+                if row['Goles_L'] > row['Goles_V']: return 1 # Gana Local
+                elif row['Goles_L'] < row['Goles_V']: return 2 # Gana Visitante
+                else: return 0 # Empate
+
+            df['Target_1X2'] = df.apply(obtener_resultado_1x2, axis=1)
+            
+            # --- 2. PREPARAR DATOS PARA GOLES (Over 2.5 = 1, Under = 0) ---
+            df['Total_Goles'] = df['Goles_L'] + df['Goles_V']
+            df['Target_Over_Goles'] = (df['Total_Goles'] > 2.5).astype(int)
+
+            # --- 3. PREPARAR DATOS PARA CORNERS (Over 9.5 = 1, Under = 0) ---
+            if 'Corners_L' in df.columns and 'Corners_V' in df.columns:
+                df['Total_Corners'] = df['Corners_L'] + df['Corners_V']
+                df['Target_Over_Corners'] = (df['Total_Corners'] > 9.5).astype(int)
+            else:
+                df['Target_Over_Corners'] = 0
+
+            features = ['Goles_L', 'Goles_V', 'xG_L', 'xG_V', 'Corners_L', 'Corners_V', 'Amarillas_L', 'Amarillas_V']
+            df = df.dropna(subset=features + ['Target_1X2', 'Target_Over_Goles'])
+
+            X = df[features]
+            
+            # Entrenamos Modelo 1X2
+            X_train, X_test, y_train, y_test = train_test_split(X, df['Target_1X2'], test_size=0.2, random_state=42)
+            self.model_1x2.fit(X_train, y_train)
+
+            # Entrenamos Modelo Goles Over/Under 2.5
+            X_g_train, _, y_g_train, _ = train_test_split(X, df['Target_Over_Goles'], test_size=0.2, random_state=42)
+            self.model_goles.fit(X_g_train, y_g_train)
+
+            # Entrenamos Modelo Corners Over/Under 9.5
+            X_c_train, _, y_c_train, _ = train_test_split(X, df['Target_Over_Corners'], test_size=0.2, random_state=42)
+            self.model_corners.fit(X_c_train, y_c_train)
+
             self.is_trained = True
             return True
         except Exception as e:
-            print(f"Error entrenando ML: {e}")
+            print(f"Error entrenando modelos ML multiclase: {e}")
             return False
 
     def obtener_promedios_reales(self, df_historico, equipo_local, equipo_visita):
@@ -60,16 +71,16 @@ class PredictorML:
             'Amarillas_V': float(vis_data['Amarillas_V'].mean() if not vis_data.empty and 'Amarillas_V' in vis_data else 2.0)
         }
 
-    def predecir_partido_real_1x2(self, df_historico, equipo_local, equipo_visita, goles_estimados_l, goles_estimados_v):
-        """Devuelve un diccionario con las probabilidades porcentuales para Gana Local, Empate y Gana Visita."""
+    def predecir_mercados_completos(self, df_historico, equipo_local, equipo_visita, goles_sim_l, goles_sim_v):
+        """Predice de forma independiente 1X2, Goles (Over 2.5) y Corners (Over 9.5) mediante Machine Learning."""
         if not self.is_trained:
-            return {"Gana Local": 33.3, "Empate": 33.3, "Gana Visita": 33.3}
+            return {"1X2": {"Gana Local": 33.3, "Empate": 33.3, "Gana Visita": 33.3}, "Over_2.5_Goles": 50.0, "Over_9.5_Corners": 50.0}
         
         promedios = self.obtener_promedios_reales(df_historico, equipo_local, equipo_visita)
         
         stats_reales = {
-            'Goles_L': goles_estimados_l,
-            'Goles_V': goles_estimados_v,
+            'Goles_L': goles_sim_l,
+            'Goles_V': goles_sim_v,
             'xG_L': promedios['xG_L'],
             'xG_V': promedios['xG_V'],
             'Corners_L': promedios['Corners_L'],
@@ -81,15 +92,34 @@ class PredictorML:
         features = ['Goles_L', 'Goles_V', 'xG_L', 'xG_V', 'Corners_L', 'Corners_V', 'Amarillas_L', 'Amarillas_V']
         df_input = pd.DataFrame([stats_reales])[features]
         
-        # predict_proba devuelve el orden de las clases ordenadas: [0 (Empate), 1 (Local), 2 (Visita)] dependiendo de cómo las encuadre sklearn
-        # Mapeamos las clases de forma segura:
-        clases = list(self.model.classes_)
-        probabilidades = self.model.predict_proba(df_input)[0]
+        # 1. Probabilidades 1X2
+        clases_1x2 = list(self.model_1x2.classes_)
+        probs_1x2 = self.model_1x2.predict_proba(df_input)[0]
+        dict_1x2 = {c: p * 100 for c, p in zip(clases_1x2, probs_1x2)}
         
-        prob_dict = {clase: prob * 100 for clase, prob in zip(clases, probabilidades)}
-        
+        resultado_1x2 = {
+            "Gana Local": round(dict_1x2.get(1, 0.0), 1),
+            "Empate": round(dict_1x2.get(0, 0.0), 1),
+            "Gana Visita": round(dict_1x2.get(2, 0.0), 1)
+        }
+
+        # 2. Probabilidad Over 2.5 Goles
+        probs_goles = self.model_goles.predict_proba(df_input)[0]
+        # Si la clase 1 representa el Over
+        clases_goles = list(self.model_goles.classes_)
+        over_goles_prob = 0.0
+        for c, p in zip(clases_goles, probs_goles):
+            if c == 1: over_goles_prob = p * 100
+
+        # 3. Probabilidad Over 9.5 Corners
+        probs_corners = self.model_corners.predict_proba(df_input)[0]
+        clases_corners = list(self.model_corners.classes_)
+        over_corners_prob = 0.0
+        for c, p in zip(clases_corners, probs_corners):
+            if c == 1: over_corners_prob = p * 100
+
         return {
-            "Gana Local": round(prob_dict.get(1, 0.0), 1),
-            "Empate": round(prob_dict.get(0, 0.0), 1),
-            "Gana Visita": round(prob_dict.get(2, 0.0), 1)
+            "1X2": resultado_1x2,
+            "Over_2.5_Goles": round(over_goles_prob, 1),
+            "Over_9.5_Corners": round(over_corners_prob, 1)
         }
