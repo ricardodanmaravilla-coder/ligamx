@@ -95,7 +95,7 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     # 1. SIMULACIÓN DE GOLES (Fuerza Relativa y Dixon-Coles)
     # ==========================================
     lambda_local, lambda_visita = calcular_lambdas_estables(df_historico, equipo_local, equipo_visita)
-    n_sims = 10000
+    n_sims = 100000
     
     goles_l = np.random.poisson(lambda_local, n_sims)
     goles_v = np.random.poisson(lambda_visita, n_sims)
