@@ -232,18 +232,18 @@ if deporte == "⚽ Liga MX (Soccer)":
 
         # --- VALIDACIÓN CON MACHINE LEARNING (1X2 COMPLETO) ---
         ml_predictor = PredictorML()
-                if ml_predictor.entrenar(df_historico):
-                    if 'resultados' in locals() and isinstance(resultados, dict):
-                        goles_l_sim = resultados['Goles_Individuales'][datos_partido['local']]['goles']
-                        goles_v_sim = resultados['Goles_Individuales'][datos_partido['visita']]['goles']
+            if ml_predictor.entrenar(df_historico):
+                if 'resultados' in locals() and isinstance(resultados, dict):
+                    goles_l_sim = resultados['Goles_Individuales'][datos_partido['local']]['goles']
+                    goles_v_sim = resultados['Goles_Individuales'][datos_partido['visita']]['goles']
                         
-                        probs_ml = ml_predictor.predecir_partido_real_1x2(
-                            df_historico, 
-                            datos_partido['local'], 
-                            datos_partido['visita'], 
-                            goles_l_sim, 
-                            goles_v_sim
-                        )
+                    probs_ml = ml_predictor.predecir_partido_real_1x2(
+                        df_historico, 
+                        datos_partido['local'], 
+                        datos_partido['visita'], 
+                        goles_l_sim, 
+                        goles_v_sim
+                    )
                         
                         st.markdown("🤖 **Validación Machine Learning (Random Forest - 1X2)**")
                         ml_c1, ml_c2, ml_c3 = st.columns(3)
