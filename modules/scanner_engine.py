@@ -4,6 +4,7 @@ import pandas as pd
 from modules.stats_engine import calcular_expectativa_partido
 from modules.montecarlo_sim import simular_partido_montecarlo
 from modules.odds_engine import obtener_cuotas_partido, evaluar_mercado_avanzado
+from modules.ml_engine import PredictorML
 from datetime import datetime
 from github import Github
 import streamlit as st
@@ -93,8 +94,18 @@ def registrar_apuesta_github(partido, mercado, prob_modelo, cuota, kelly_pct, ba
         print(f"✅ Primera apuesta registrada en GitHub: {mercado} - {partido}")
         
 def escanear_jornada_actual(temporada_actual=2026):
-    """Descarga la jornada actual completa de la Liga MX y detecta valor con >70% de probabilidad."""
+    """Descarga la jornada actual completa de la Liga MX y detecta valor con >60% de probabilidad."""
     
+    # Inicializamos y entrenamos el modelo de Machine Learning con el histórico real de fondo
+    ml_escanner = PredictorML()
+    try:
+        df_historico_ml = pd.read_csv("data/historico_ligamx_completo.csv")
+        df_historico_ml['Local'] = df_historico_ml['Local'].str.strip()
+        df_historico_ml['Visitante'] = df_historico_ml['Visitante'].str.strip()
+        ml_escanner.entrenar(df_historico_ml)
+    except Exception:
+        df_historico_ml = None
+
     # 1. Obtenemos la ronda (jornada) activa actual de la Liga MX para garantizar que traiga el 100% de los partidos
     url_rounds = f"{BASE_URL}/fixtures/rounds"
     res_rounds = requests.get(url_rounds, headers=HEADERS, params={"league": LIGA_MX_ID, "season": temporada_actual, "current": "true"})
@@ -165,7 +176,15 @@ def escanear_jornada_actual(temporada_actual=2026):
                 "Under 4.5 Tarjetas": resultados["Tarjetas_Totales"]["Under 4.5 Tarjetas"]
             }
 
-            # 5. Evaluamos mercado por mercado buscando el filtro de oro (>70% y EV > 0)
+            # Validación complementaria de Machine Learning para el mercado 1X2 si está disponible
+            ml_info = "N/D"
+            if ml_escanner.is_trained and df_historico_ml is not None:
+                g_l_sim = resultados.get('Goles_Individuales', {}).get(local, {}).get('goles', 1.2)
+                g_v_sim = resultados.get('Goles_Individuales', {}).get(visita, {}).get('goles', 1.0)
+                probs_1x2_ml = ml_escanner.predecir_partido_real_1x2(df_historico_ml, local, visita, g_l_sim, g_v_sim)
+                ml_info = f"L: {probs_1x2_ml['Gana Local']}% | V: {probs_1x2_ml['Gana Visita']}%"
+
+            # 5. Evaluamos mercado por mercado buscando el filtro de oro (>=60% y EV > 0)
             for nombre_m, llave in mercados_a_mapear:
                 prob = prob_dict.get(llave, 0)
                 cuota = cuotas.get(llave)
@@ -179,6 +198,7 @@ def escanear_jornada_actual(temporada_actual=2026):
                             "Partido": f"{local} vs {visita}",
                             "Mercado": nombre_m,
                             "Probabilidad": f"{prob}%",
+                            "ML (Ref)": ml_info,
                             "Cuota": f"{cuota:.2f}",
                             "EV (Valor)": f"+{ev:.1f}%",
                             "Riesgo": riesgo,
