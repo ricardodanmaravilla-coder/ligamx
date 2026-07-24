@@ -327,20 +327,39 @@ else:
 
 
 # ... aquí tienes tu código anterior de Streamlit ...
-st.header("Análisis Avanzado de la Liga MX")
 # 1. Cargas tu base de datos histórica
-# (Asegúrate de que la ruta 'data/historico_ligamx_completo.csv' sea la correcta)
 df_historico = pd.read_csv("data/historico_ligamx_completo.csv")
+
+# --- INICIO DE LIMPIEZA DE DATOS ---
+# A. Quitamos espacios accidentales al principio o al final de los nombres
+df_historico['Local'] = df_historico['Local'].str.strip()
+df_historico['Visitante'] = df_historico['Visitante'].str.strip()
+
+# B. Diccionario para unificar a los equipos rebeldes
+correccion_equipos = {
+    "Atletico San Luis": "Atlético de San Luis",
+    "Atlético San Luis": "Atlético de San Luis",
+    "San Luis": "Atlético de San Luis",
+    "Mazatlan": "Mazatlán",
+    "Mazatlan FC": "Mazatlán",
+    "Queretaro": "Querétaro",     # Ejemplo por si falta un acento
+    "Leon": "León"                # Ejemplo por si falta un acento
+}
+
+
+#-----ELO-----
+
+# C. Aplicamos la corrección a las columnas
+df_historico['Local'] = df_historico['Local'].replace(correccion_equipos)
+df_historico['Visitante'] = df_historico['Visitante'].replace(correccion_equipos)
+# --- FIN DE LIMPIEZA DE DATOS ---
+
 # 2. Inicias el motor
 motor_elo = SistemaEloLigaMX()
-# 3. Le pasas toda la historia para que calcule el poder de los equipos HOY
+
+# 3. Le pasas toda la historia (ya limpia) para que calcule el poder de los equipos HOY
 tabla_posiciones_elo = motor_elo.calcular_historico(df_historico)
+
 # 4. Lo muestras en tu Dashboard
 st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
-st.dataframe(tabla_posiciones_elo, use_container_width=True) # use_container_width hace que la tabla se vea más ancha y profesional estrellas_nfl = df_apuestas_nfl[df_apuestas_nfl["Veredicto"] == "🔥 APUESTA ESTRELLA"]
-
-#df_apuestas_nfl = pd.read_csv("data/historico_nfl.csv")
-#estrellas_nfl = df_apuestas_nfl[df_apuestas_nfl["Veredicto"] == "🔥 APUESTA ESTRELLA"]
-#if len(estrellas_nfl) > 0:
-#   st.dataframe(estrellas_nfl)
-#st.success("🔥 ¡Apuesta Estrella detectada en la NFL con más del 70% de probabilidad y valor positivo!")
+st.dataframe(tabla_posiciones_elo, use_container_width=True)
