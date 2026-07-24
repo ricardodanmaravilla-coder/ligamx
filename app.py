@@ -343,4 +343,4 @@ estrellas_nfl = df_apuestas_nfl[df_apuestas_nfl["Veredicto"] == "🔥 APUESTA ES
 # 2. AHORA SÍ, como la variable ya existe, podemos preguntarle si encontró alguna
 if len(estrellas_nfl) > 0:
     st.dataframe(estrellas_nfl)
-                st.success("🔥 ¡Apuesta Estrella detectada en la NFL con más del 70% de probabilidad y valor positivo!")
+st.success("🔥 ¡Apuesta Estrella detectada en la NFL con más del 70% de probabilidad y valor positivo!")
