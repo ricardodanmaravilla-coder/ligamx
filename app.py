@@ -343,5 +343,5 @@ tabla_posiciones_elo = motor_elo.calcular_historico(df_historico)
 # 4. Lo muestras en tu Dashboard
 st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
 st.dataframe(tabla_posiciones_elo, use_container_width=True) # use_container_width hace que la tabla se vea más ancha y profesional estrellas_nfl = df_apuestas_nfl[df_apuestas_nfl["Veredicto"] == "🔥 APUESTA ESTRELLA"]
-            if len(estrellas_nfl) > 0:
+if len(estrellas_nfl) > 0:
                 st.success("🔥 ¡Apuesta Estrella detectada en la NFL con más del 70% de probabilidad y valor positivo!")
