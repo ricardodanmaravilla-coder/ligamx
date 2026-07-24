@@ -327,21 +327,20 @@ else:
 
 
 # ... aquí tienes tu código anterior de Streamlit ...
-
 st.header("Análisis Avanzado de la Liga MX")
-
 # 1. Cargas tu base de datos histórica
 # (Asegúrate de que la ruta 'data/historico_ligamx_completo.csv' sea la correcta)
 df_historico = pd.read_csv("data/historico_ligamx_completo.csv")
-
 # 2. Inicias el motor
 motor_elo = SistemaEloLigaMX()
-
 # 3. Le pasas toda la historia para que calcule el poder de los equipos HOY
 tabla_posiciones_elo = motor_elo.calcular_historico(df_historico)
-
 # 4. Lo muestras en tu Dashboard
 st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
 st.dataframe(tabla_posiciones_elo, use_container_width=True) # use_container_width hace que la tabla se vea más ancha y profesional estrellas_nfl = df_apuestas_nfl[df_apuestas_nfl["Veredicto"] == "🔥 APUESTA ESTRELLA"]
+# 1. Primero filtramos el archivo original para crear la variable 'estrellas_nfl'
+estrellas_nfl = df_apuestas_nfl[df_apuestas_nfl["Veredicto"] == "🔥 APUESTA ESTRELLA"]
+# 2. AHORA SÍ, como la variable ya existe, podemos preguntarle si encontró alguna
 if len(estrellas_nfl) > 0:
+    st.dataframe(estrellas_nfl)
                 st.success("🔥 ¡Apuesta Estrella detectada en la NFL con más del 70% de probabilidad y valor positivo!")
