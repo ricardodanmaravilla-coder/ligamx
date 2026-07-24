@@ -363,3 +363,44 @@ tabla_posiciones_elo = motor_elo.calcular_historico(df_historico)
 # 4. Lo muestras en tu Dashboard
 st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
 st.dataframe(tabla_posiciones_elo, use_container_width=True)
+
+# 1. Pegamos el ELO del equipo Local a la tabla de predicciones
+df_predicciones = df_predicciones.merge(
+    tabla_posiciones_elo, 
+    left_on='Local', 
+    right_on='Equipo', 
+    how='left'
+).rename(columns={'ELO_Rating': 'ELO_Local'}).drop('Equipo', axis=1)
+
+# 2. Pegamos el ELO del equipo Visitante
+df_predicciones = df_predicciones.merge(
+    tabla_posiciones_elo, 
+    left_on='Visitante', 
+    right_on='Equipo', 
+    how='left'
+).rename(columns={'ELO_Rating': 'ELO_Visita'}).drop('Equipo', axis=1)
+
+# 3. CREAMOS LA REGLA HÍBRIDA MAESTRA
+# Vamos a crear una función que evalúe ambas condiciones
+def evaluar_apuesta_hibrida(fila):
+    prob_poisson_local = fila['Probabilidad_Local'] # Ajusta al nombre real de tu columna
+    elo_local = fila['ELO_Local']
+    elo_visita = fila['ELO_Visita']
+    
+    # Condición: Poisson le da más del 55% de prob. Y su ELO es mayor al del rival
+    if prob_poisson_local > 0.55 and elo_local > elo_visita:
+        return "✅ Aprobada: Doble Validación"
+    
+    # Si Poisson aprueba pero ELO dice que el visitante viene en racha
+    elif prob_poisson_local > 0.55 and elo_visita > elo_local:
+        return "⚠️ Alerta: El visitante trae mejor racha"
+    
+    else:
+        return "Paso"
+
+# 4. Aplicamos la regla a todos los partidos de la jornada
+df_predicciones['Veredicto_Hibrido'] = df_predicciones.apply(evaluar_apuesta_hibrida, axis=1)
+
+# 5. Mostramos la tabla final en Streamlit
+st.subheader("🤖 Predicciones Híbridas (Poisson + ELO)")
+st.dataframe(df_predicciones[['Local', 'Visitante', 'Probabilidad_Local', 'ELO_Local', 'ELO_Visita', 'Veredicto_Hibrido']], use_container_width=True)
