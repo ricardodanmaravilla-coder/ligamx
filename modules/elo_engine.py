@@ -47,10 +47,10 @@ class SistemaEloLigaMX:
 
         for index, row in df_partidos.iterrows():
             self.procesar_partido(
-                row['Local'], 
-                row['Visita'], 
-                row['Goles_Local'], 
-                row['Goles_Visita']
+                row['Local'],         
+                row['Visitante'],        
+                row['Goles_L'],   
+                row['Goles_V']   
             )
         
         # Devuelve una tabla limpia con el ranking actual
