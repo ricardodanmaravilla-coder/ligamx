@@ -231,7 +231,7 @@ if deporte == "⚽ Liga MX (Soccer)":
         st.dataframe(tabla_posiciones_elo, use_container_width=True)
 
         # --- VALIDACIÓN CON MACHINE LEARNING (1X2 COMPLETO) ---
-                ml_predictor = PredictorML()
+        ml_predictor = PredictorML()
                 if ml_predictor.entrenar(df_historico):
                     if 'resultados' in locals() and isinstance(resultados, dict):
                         goles_l_sim = resultados['Goles_Individuales'][datos_partido['local']]['goles']
@@ -249,7 +249,7 @@ if deporte == "⚽ Liga MX (Soccer)":
                         ml_c1, ml_c2, ml_c3 = st.columns(3)
                         ml_c1.metric(f"ML Local", f"{probs_ml['Gana Local']}%")
                         ml_c2.metric(f"ML Empate", f"{probs_ml['Empate']}%")
-                        ml_c3.metric(f"ML Visita", f"{probs_ml['Gana Visita']}%")
+                        ml_c3.metric(f"ML Visita", f"{probs_ml['Gana Visita']}%")     
                         
         if 'resultados' in locals() and isinstance(resultados, dict):
             st.subheader("🤖 Predicciones Híbridas (Poisson + ELO)")
