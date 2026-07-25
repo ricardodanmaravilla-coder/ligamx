@@ -21,7 +21,7 @@ def obtener_valor_estadistica(estadisticas, nombre_stat, tipo="int"):
     return 0.0 if tipo == "float" else 0
 
 def actualizar_base_datos():
-    print("⚽ Iniciando actualización completa de Base de Datos (xG, Corners, Tarjetas y Árbitros)...")
+    print("⚽ Iniciando actualización completa de Base de Datos (xG, Corners, Tarjetas, Árbitros y Porteros)...")
     
     # 1. Cargar base existente para no repetir partidos
     if os.path.exists(ARCHIVO_CSV):
@@ -65,12 +65,14 @@ def actualizar_base_datos():
                 
             print(f"Descargando estadísticas de: {local} vs {visita} ({fecha})")
             
-            # 3. Descargar estadísticas detalladas de este partido (Corners, Tarjetas, xG)
+            # 3. Descargar estadísticas detalladas de este partido (Corners, Tarjetas, xG y Porteros)
             res_stats = requests.get(f"{BASE_URL}/fixtures/statistics", headers=HEADERS, params={"fixture": fix_id})
             stats_data = res_stats.json().get("response", [])
             
             c_l = c_v = a_l = a_v = r_l = r_v = 0
             xg_l = xg_v = 0.0
+            # Variables nuevas para porteros
+            atajadas_l = atajadas_v = tiros_arco_l = tiros_arco_v = 0
             
             if len(stats_data) == 2:
                 # Local
@@ -80,12 +82,20 @@ def actualizar_base_datos():
                 r_l = obtener_valor_estadistica(stats_l, "Red Cards")
                 xg_l = obtener_valor_estadistica(stats_l, "expected_goals", "float")
                 
+                # Extracción de Stats del Portero Local
+                atajadas_l = obtener_valor_estadistica(stats_l, "Goalkeeper Saves")
+                tiros_arco_l = obtener_valor_estadistica(stats_l, "Shots on Goal")
+                
                 # Visitante
                 stats_v = stats_data[1]["statistics"]
                 c_v = obtener_valor_estadistica(stats_v, "Corner Kicks")
                 a_v = obtener_valor_estadistica(stats_v, "Yellow Cards")
                 r_v = obtener_valor_estadistica(stats_v, "Red Cards")
                 xg_v = obtener_valor_estadistica(stats_v, "expected_goals", "float")
+                
+                # Extracción de Stats del Portero Visitante
+                atajadas_v = obtener_valor_estadistica(stats_v, "Goalkeeper Saves")
+                tiros_arco_v = obtener_valor_estadistica(stats_v, "Shots on Goal")
             
             # 4. Guardar la fila estructurada
             nuevos_partidos.append({
@@ -102,6 +112,10 @@ def actualizar_base_datos():
                 "Rojas_V": r_v,
                 "xG_L": xg_l if xg_l > 0 else goles_l, # Seguro de vida: si no hay xG, usa goles reales
                 "xG_V": xg_v if xg_v > 0 else goles_v,
+                "Atajadas_L": atajadas_l,
+                "Atajadas_V": atajadas_v,
+                "Tiros_Al_Arco_L": tiros_arco_l,
+                "Tiros_Al_Arco_V": tiros_arco_v,
                 "Arbitro": arbitro
             })
             
@@ -113,7 +127,7 @@ def actualizar_base_datos():
         df_nuevos = pd.DataFrame(nuevos_partidos)
         df_final = pd.concat([df_existente, df_nuevos], ignore_index=True)
         df_final.to_csv(ARCHIVO_CSV, index=False)
-        print(f"✅ ¡Actualización completada! Se añadieron {len(nuevos_partidos)} partidos nuevos con xG, Estadísticas y Árbitros.")
+        print(f"✅ ¡Actualización completada! Se añadieron {len(nuevos_partidos)} partidos nuevos con xG, Estadísticas, Árbitros y Porteros.")
     else:
         print("✅ Tu base de datos ya está al día. No hubo partidos nuevos que añadir.")
 
