@@ -237,12 +237,26 @@ if deporte == "⚽ Liga MX (Soccer)":
                 g_l_sim = resultados['Goles_Individuales'][datos_partido['local']]['goles']
                 g_v_sim = resultados['Goles_Individuales'][datos_partido['visita']]['goles']
                 
+                # --- NUEVO: Extraemos el ELO de la tabla para inyectarlo al Machine Learning ---
+                try:
+                    puntos_local = float(tabla_posiciones_elo.loc[tabla_posiciones_elo['Equipo'] == datos_partido['local'], 'ELO_Rating'].values[0])
+                except (IndexError, KeyError):
+                    puntos_local = 1500.0
+                    
+                try:
+                    puntos_visita = float(tabla_posiciones_elo.loc[tabla_posiciones_elo['Equipo'] == datos_partido['visita'], 'ELO_Rating'].values[0])
+                except (IndexError, KeyError):
+                    puntos_visita = 1500.0
+                # -------------------------------------------------------------------------------
+                
                 preds_ml = ml_predictor.predecir_mercados_completos(
                     df_historico, 
                     datos_partido['local'], 
                     datos_partido['visita'], 
                     g_l_sim, 
-                    g_v_sim
+                    g_v_sim,
+                    puntos_local,  # <-- Se envían los puntos del local
+                    puntos_visita  # <-- Se envían los puntos de la visita
                 )
                 
                 st.markdown("---")
