@@ -34,8 +34,8 @@ def aplicar_dixon_coles(lambda_l, lambda_v, prob_matriz, rho=-0.05):
 
 def calcular_lambdas_estables(df, equipo_local, equipo_visita):
     """
-    Calcula expectativas de goles (Lambdas) realistas y estables 
-    basadas en los últimos 6 partidos de cada equipo.
+    Calcula expectativas de goles (Lambdas) realistas. 
+    Si faltan datos, usa promedios globales dinámicos de la liga.
     """
     if 'Fecha' in df.columns:
         df = df.sort_values(by='Fecha', ascending=True)
@@ -43,6 +43,10 @@ def calcular_lambdas_estables(df, equipo_local, equipo_visita):
     col_l = 'Goles_L' if 'Goles_L' in df.columns else 'Puntos_L'
     col_v = 'Goles_V' if 'Goles_V' in df.columns else 'Puntos_V'
     
+    # 1. Calcular promedios GLOBALES de la Liga MX en tiempo real
+    promedio_global_goles_local = df[col_l].mean() if not df[col_l].empty else 1.3
+    promedio_global_goles_visita = df[col_v].mean() if not df[col_v].empty else 1.1
+
     # Filtrar historial de los equipos
     df_l_loc = df[df['Local'] == equipo_local].tail(6)
     df_l_vis = df[df['Visitante'] == equipo_local].tail(6)
@@ -57,27 +61,26 @@ def calcular_lambdas_estables(df, equipo_local, equipo_visita):
     goles_fav_visita = pd.concat([df_v_loc[col_l], df_v_vis[col_v]])
     goles_rec_visita = pd.concat([df_v_loc[col_v], df_v_vis[col_l]])
 
-    # Promedios limpios (últimos partidos) con respaldos lógicos de la Liga MX
-    prom_anota_l = goles_fav_local.mean() if not goles_fav_local.empty else 1.3
-    prom_recibe_v = goles_rec_visita.mean() if not goles_rec_visita.empty else 1.2
+    # 2. Asignar promedios reales del equipo (o el promedio global real de la liga si es NaN)
+    prom_anota_l = goles_fav_local.mean() if not goles_fav_local.empty else promedio_global_goles_local
+    prom_recibe_v = goles_rec_visita.mean() if not goles_rec_visita.empty else promedio_global_goles_local
     
-    prom_anota_v = goles_fav_visita.mean() if not goles_fav_visita.empty else 1.1
-    prom_recibe_l = goles_rec_local.mean() if not goles_rec_local.empty else 1.1
+    prom_anota_v = goles_fav_visita.mean() if not goles_fav_visita.empty else promedio_global_goles_visita
+    prom_recibe_l = goles_rec_local.mean() if not goles_rec_local.empty else promedio_global_goles_visita
 
-    # Si por alguna razón da NaN, poner valores estándar
-    if pd.isna(prom_anota_l): prom_anota_l = 1.3
-    if pd.isna(prom_recibe_v): prom_recibe_v = 1.2
-    if pd.isna(prom_anota_v): prom_anota_v = 1.1
-    if pd.isna(prom_recibe_l): prom_recibe_l = 1.1
+    # Limpieza final de NaNs 
+    prom_anota_l = promedio_global_goles_local if pd.isna(prom_anota_l) else prom_anota_l
+    prom_recibe_v = promedio_global_goles_local if pd.isna(prom_recibe_v) else prom_recibe_v
+    prom_anota_v = promedio_global_goles_visita if pd.isna(prom_anota_v) else prom_anota_v
+    prom_recibe_l = promedio_global_goles_visita if pd.isna(prom_recibe_l) else prom_recibe_l
 
-    # Cálculo final balanceado (promedio entre el ataque propio y lo que cede el rival)
+    # Cálculo final balanceado
     lambda_local = (prom_anota_l + prom_recibe_v) / 2.0
     lambda_visita = (prom_anota_v + prom_recibe_l) / 2.0
 
     return lambda_local, lambda_visita
 
 # Diccionario simple de IDs de equipos de Liga MX para consultar la API
-# Puedes completarlo con los que falten según tu base
 IDS_EQUIPOS_LIGAMX = {
     "America": 228, "Guadalajara": 229, "Cruz Azul": 214, "UNAM": 215, 
     "Monterrey": 211, "Tigres": 227, "Toluca": 222, "Pachuca": 216, 
@@ -153,17 +156,21 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     col_corn_l = 'Corners_L' if 'Corners_L' in df_historico.columns else 'Corners_Local'
     col_corn_v = 'Corners_V' if 'Corners_V' in df_historico.columns else 'Corners_Visita'
 
+    # Promedios Globales Dinámicos de la Liga para Corners
+    prom_global_corn_l = df_historico[col_corn_l].mean() if col_corn_l in df_historico.columns else 5.2
+    prom_global_corn_v = df_historico[col_corn_v].mean() if col_corn_v in df_historico.columns else 4.3
+
     if col_corn_l in df_historico.columns and col_corn_v in df_historico.columns:
         df_l_loc = df_historico[df_historico['Local'] == equipo_local]
         df_v_vis = df_historico[df_historico['Visitante'] == equipo_visita]
         
-        lambda_corn_l = df_l_loc[col_corn_l].mean() if not df_l_loc.empty else 5.0
-        lambda_corn_v = df_v_vis[col_corn_v].mean() if not df_v_vis.empty else 4.5
+        lambda_corn_l = df_l_loc[col_corn_l].mean() if not df_l_loc.empty else prom_global_corn_l
+        lambda_corn_v = df_v_vis[col_corn_v].mean() if not df_v_vis.empty else prom_global_corn_v
         
-        if pd.isna(lambda_corn_l): lambda_corn_l = 5.0
-        if pd.isna(lambda_corn_v): lambda_corn_v = 4.5
+        if pd.isna(lambda_corn_l): lambda_corn_l = prom_global_corn_l
+        if pd.isna(lambda_corn_v): lambda_corn_v = prom_global_corn_v
     else:
-        lambda_corn_l, lambda_corn_v = 5.2, 4.3
+        lambda_corn_l, lambda_corn_v = prom_global_corn_l, prom_global_corn_v
 
     corners_l_sim = np.random.poisson(lambda_corn_l, n_sims)
     corners_v_sim = np.random.poisson(lambda_corn_v, n_sims)
@@ -181,14 +188,18 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     col_tarj_l = 'Tarjetas_L' if 'Tarjetas_L' in df_historico.columns else 'Amarillas_L'
     col_tarj_v = 'Tarjetas_V' if 'Tarjetas_V' in df_historico.columns else 'Amarillas_V'
 
+    # Promedios Globales Dinámicos de la Liga para Tarjetas
+    prom_global_tarj_l = df_historico[col_tarj_l].mean() if col_tarj_l in df_historico.columns else 2.5
+    prom_global_tarj_v = df_historico[col_tarj_v].mean() if col_tarj_v in df_historico.columns else 2.7
+
     if col_tarj_l in df_historico.columns and col_tarj_v in df_historico.columns:
-        lambda_tarj_l = df_l_loc[col_tarj_l].mean() if not df_l_loc.empty else 2.5
-        lambda_tarj_v = df_v_vis[col_tarj_v].mean() if not df_v_vis.empty else 2.5
+        lambda_tarj_l = df_l_loc[col_tarj_l].mean() if not df_l_loc.empty else prom_global_tarj_l
+        lambda_tarj_v = df_v_vis[col_tarj_v].mean() if not df_v_vis.empty else prom_global_tarj_v
         
-        if pd.isna(lambda_tarj_l): lambda_tarj_l = 2.5
-        if pd.isna(lambda_tarj_v): lambda_tarj_v = 2.5
+        if pd.isna(lambda_tarj_l): lambda_tarj_l = prom_global_tarj_l
+        if pd.isna(lambda_tarj_v): lambda_tarj_v = prom_global_tarj_v
     else:
-        lambda_tarj_l, lambda_tarj_v = 2.5, 2.7
+        lambda_tarj_l, lambda_tarj_v = prom_global_tarj_l, prom_global_tarj_v
 
     tarjetas_l_sim = np.random.poisson(lambda_tarj_l, n_sims)
     tarjetas_v_sim = np.random.poisson(lambda_tarj_v, n_sims)
