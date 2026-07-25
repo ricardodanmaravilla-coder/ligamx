@@ -184,20 +184,21 @@ def escanear_jornada_actual(temporada_actual=2026):
                 "Over 9.5 Corners": "Over 9.5 Corners"
             }
 
-            # 5. FILTRO DE CONSENSO MAESTRO (MONTECARLO + MACHINE LEARNING) - VERSIÓN ESTRICTA
+           # 5. FILTRO DE CONSENSO MAESTRO (MONTECARLO + MACHINE LEARNING) - EL PUNTO DULCE
             for nombre_m, llave in mercados_a_mapear:
                 p_mc = prob_mc_dict[nombre_m]
                 p_ml = prob_ml_dict[nombre_m]
                 cuota = cuotas.get(llave)
                 
-                # UMBRAL SNIPER: Ambos deben estar seguros (>= 65%)
-                if cuota and cuota > 1.30 and p_mc >= 65.0 and p_ml >= 65.0:
+                # UMBRAL BALANCEADO: Ambos modelos deben marcar al menos 58% (Consenso sólido)
+                # Y la cuota no debe ser basura (mayor a 1.40)
+                if cuota and cuota > 1.40 and p_mc >= 58.0 and p_ml >= 58.0:
                     
                     prob_combinada = round((p_mc + p_ml) / 2, 1)
                     _, ev, veredicto, stake, riesgo = evaluar_mercado_avanzado(prob_combinada, cuota)
                     
-                    # FILTRO DE VALOR SEGURO: Solo EV mayor al 5%
-                    if ev > 5.0:
+                    # FILTRO DE VALOR REALISTA: Solo EV mayor a 2% (Ventaja estadística limpia)
+                    if ev >= 2.0:
                         oportunidades_oro.append({
                             "Fecha": fecha,
                             "Partido": f"{local} vs {visita}",
@@ -208,7 +209,7 @@ def escanear_jornada_actual(temporada_actual=2026):
                             "EV (Valor)": f"+{ev:.1f}%",
                             "Riesgo": riesgo,
                             "Stake Rec.": f"{stake:.1f}%",
-                            "Veredicto": f"💎 FRANCOTIRADOR ({veredicto})",
+                            "Veredicto": f"✅ CONSENSO DE VALOR ({veredicto})",
                             "Fixture_ID": fix_id
                         })
         except Exception as e:
