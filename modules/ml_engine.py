@@ -34,7 +34,15 @@ class PredictorML:
             else:
                 df['Target_Over_Corners'] = 0
 
-            features = ['Goles_L', 'Goles_V', 'xG_L', 'xG_V', 'Corners_L', 'Corners_V', 'Amarillas_L', 'Amarillas_V']
+            # --- 4. PREPARAR DATOS DE FUERZA RELATIVA (ELO) ---
+            # Si el histórico tiene puntuación ELO pre-calculada, el modelo la usará
+            if 'ELO_Local' in df.columns and 'ELO_Visita' in df.columns:
+                df['Diff_ELO'] = df['ELO_Local'] - df['ELO_Visita']
+            else:
+                df['Diff_ELO'] = 0.0 # Respaldo seguro si no existen las columnas
+
+            # Integramos Diff_ELO a las características (features) que el modelo va a aprender
+            features = ['Goles_L', 'Goles_V', 'xG_L', 'xG_V', 'Corners_L', 'Corners_V', 'Amarillas_L', 'Amarillas_V', 'Diff_ELO']
             df = df.dropna(subset=features + ['Target_1X2', 'Target_Over_Goles'])
 
             X = df[features]
@@ -71,7 +79,8 @@ class PredictorML:
             'Amarillas_V': float(vis_data['Amarillas_V'].mean() if not vis_data.empty and 'Amarillas_V' in vis_data else 2.0)
         }
 
-    def predecir_mercados_completos(self, df_historico, equipo_local, equipo_visita, goles_sim_l, goles_sim_v):
+    # SE AÑADEN elo_local Y elo_visita COMO PARÁMETROS OPCIONALES
+    def predecir_mercados_completos(self, df_historico, equipo_local, equipo_visita, goles_sim_l, goles_sim_v, elo_local=1500, elo_visita=1500):
         """Predice de forma independiente 1X2, Goles (Over 2.5) y Corners (Over 9.5) mediante Machine Learning."""
         if not self.is_trained:
             return {"1X2": {"Gana Local": 33.3, "Empate": 33.3, "Gana Visita": 33.3}, "Over_2.5_Goles": 50.0, "Over_9.5_Corners": 50.0}
@@ -86,10 +95,11 @@ class PredictorML:
             'Corners_L': promedios['Corners_L'],
             'Corners_V': promedios['Corners_V'],
             'Amarillas_L': promedios['Amarillas_L'],
-            'Amarillas_V': promedios['Amarillas_V']
+            'Amarillas_V': promedios['Amarillas_V'],
+            'Diff_ELO': elo_local - elo_visita # Inyectamos la fuerza actual al modelo
         }
         
-        features = ['Goles_L', 'Goles_V', 'xG_L', 'xG_V', 'Corners_L', 'Corners_V', 'Amarillas_L', 'Amarillas_V']
+        features = ['Goles_L', 'Goles_V', 'xG_L', 'xG_V', 'Corners_L', 'Corners_V', 'Amarillas_L', 'Amarillas_V', 'Diff_ELO']
         df_input = pd.DataFrame([stats_reales])[features]
         
         # 1. Probabilidades 1X2
