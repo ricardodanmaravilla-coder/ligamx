@@ -184,32 +184,31 @@ def escanear_jornada_actual(temporada_actual=2026):
                 "Over 9.5 Corners": "Over 9.5 Corners"
             }
 
-            # 5. FILTRO DE CONSENSO MAESTRO (MONTECARLO + MACHINE LEARNING)
+            # 5. FILTRO DE CONSENSO MAESTRO (MONTECARLO + MACHINE LEARNING) - VERSIÓN ESTRICTA
             for nombre_m, llave in mercados_a_mapear:
                 p_mc = prob_mc_dict[nombre_m]
                 p_ml = prob_ml_dict[nombre_m]
                 cuota = cuotas.get(llave)
                 
-                # Criterio de Consenso: AMBOS modelos deben darle una probabilidad sólida (ej. >= 55% cada uno)
-                # y la cuota debe ofrecer valor real (EV > 0)
-                if cuota and cuota > 1.0 and p_mc >= 55.0 and p_ml >= 55.0:
-                    # Promediamos ambas probabilidades para tener una métrica unificada de confianza
+                # UMBRAL SNIPER: Ambos deben estar seguros (>= 65%)
+                if cuota and cuota > 1.30 and p_mc >= 65.0 and p_ml >= 65.0:
+                    
                     prob_combinada = round((p_mc + p_ml) / 2, 1)
                     _, ev, veredicto, stake, riesgo = evaluar_mercado_avanzado(prob_combinada, cuota)
                     
-                    if ev > 0:
+                    # FILTRO DE VALOR SEGURO: Solo EV mayor al 5%
+                    if ev > 5.0:
                         oportunidades_oro.append({
                             "Fecha": fecha,
                             "Partido": f"{local} vs {visita}",
                             "Mercado": nombre_m,
-                            "Prob. Montecarlo": f"{p_mc}%",
-                            "Prob. ML": f"{p_ml}%",
-                            "Prob. Combinada": f"{prob_combinada}%",
+                            "P. Montecarlo": f"{p_mc}%",
+                            "P. ML": f"{p_ml}%",
                             "Cuota": f"{cuota:.2f}",
                             "EV (Valor)": f"+{ev:.1f}%",
                             "Riesgo": riesgo,
                             "Stake Rec.": f"{stake:.1f}%",
-                            "Veredicto": f"🔥 CONSENSO TOTAL ({veredicto})",
+                            "Veredicto": f"💎 FRANCOTIRADOR ({veredicto})",
                             "Fixture_ID": fix_id
                         })
         except Exception as e:
