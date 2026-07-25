@@ -2,6 +2,9 @@ import os
 import pandas as pd
 import numpy as np
 
+# Importamos la función de eficiencia del portero (Asegúrate de tener el archivo goalkeeper_engine.py)
+from modules.goalkeeper_engine import calcular_eficiencia_portero_api
+
 def aplicar_dixon_coles(lambda_l, lambda_v, prob_matriz, rho=-0.05):
     """
     Ajusta la matriz de probabilidades de marcadores exactos utilizando 
@@ -71,11 +74,17 @@ def calcular_lambdas_estables(df, equipo_local, equipo_visita):
     lambda_local = (prom_anota_l + prom_recibe_v) / 2.0
     lambda_visita = (prom_anota_v + prom_recibe_l) / 2.0
 
-    # Topes lógicos para la Liga MX (ningún equipo promedio debe pasar de 2.2 goles esperados)
-    lambda_local = clip(lambda_local, 0.7, 2.2) if 'clip' in globals() else max(min(lambda_local, 2.2), 0.7)
-    lambda_visita = clip(lambda_visita, 0.5, 2.0) if 'clip' in globals() else max(min(lambda_visita, 2.0), 0.5)
+    return lambda_local, lambda_visita
 
-    return round(lambda_local, 2), round(lambda_visita, 2)
+# Diccionario simple de IDs de equipos de Liga MX para consultar la API
+# Puedes completarlo con los que falten según tu base
+IDS_EQUIPOS_LIGAMX = {
+    "America": 228, "Guadalajara": 229, "Cruz Azul": 214, "UNAM": 215, 
+    "Monterrey": 211, "Tigres": 227, "Toluca": 222, "Pachuca": 216, 
+    "Leon": 218, "Santos": 212, "Atlas": 213, "Necaxa": 217, 
+    "Tijuana": 224, "Puebla": 220, "Queretaro": 221, "Mazatlan": 3288, 
+    "Juarez": 3217, "Atletico de San Luis": 3287
+}
 
 def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     """
@@ -83,7 +92,6 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     """
     if df_historico is None:
         try:
-            # Aquí está la corrección: ponemos el nombre exacto de tu archivo
             df_historico = pd.read_csv('data/historico_ligamx_completo.csv')
         except FileNotFoundError:
             try:
@@ -92,9 +100,30 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
                 return "Error: No se encontró el archivo historico_ligamx_completo.csv"
 
     # ==========================================
-    # 1. SIMULACIÓN DE GOLES (Fuerza Relativa y Dixon-Coles)
+    # 1. CÁLCULO DE LAMBDAS Y EFECTO PORTEROS
     # ==========================================
-    lambda_local, lambda_visita = calcular_lambdas_estables(df_historico, equipo_local, equipo_visita)
+    lambda_local_base, lambda_visita_base = calcular_lambdas_estables(df_historico, equipo_local, equipo_visita)
+    
+    # Intentamos obtener los IDs de los equipos. Si no los encuentra, el factor será neutral (1.0)
+    id_local = IDS_EQUIPOS_LIGAMX.get(equipo_local, None)
+    id_visita = IDS_EQUIPOS_LIGAMX.get(equipo_visita, None)
+    
+    factor_portero_local = calcular_eficiencia_portero_api(id_local, equipo_local) if id_local else 1.0
+    factor_portero_visita = calcular_eficiencia_portero_api(id_visita, equipo_visita) if id_visita else 1.0
+    
+    # El portero VISITANTE intenta frenar los goles del LOCAL
+    lambda_local = lambda_local_base * factor_portero_visita
+    
+    # El portero LOCAL intenta frenar los goles del VISITANTE
+    lambda_visita = lambda_visita_base * factor_portero_local
+    
+    # Topes lógicos para la Liga MX (después del factor portero)
+    lambda_local = max(min(lambda_local, 2.2), 0.5)
+    lambda_visita = max(min(lambda_visita, 2.0), 0.4)
+
+    # ==========================================
+    # 2. SIMULACIÓN DE GOLES (Montecarlo + Dixon-Coles)
+    # ==========================================
     n_sims = 100000
     
     goles_l = np.random.poisson(lambda_local, n_sims)
@@ -119,9 +148,8 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
         if (gl + gv) > 2.5: prob_over += prob
 
     # ==========================================
-    # 2. SIMULACIÓN REAL DE CORNERS (Poisson)
+    # 3. SIMULACIÓN REAL DE CORNERS (Poisson)
     # ==========================================
-    # Definir nombres de columnas (Ajusta si en tu CSV se llaman diferente)
     col_corn_l = 'Corners_L' if 'Corners_L' in df_historico.columns else 'Corners_Local'
     col_corn_v = 'Corners_V' if 'Corners_V' in df_historico.columns else 'Corners_Visita'
 
@@ -135,7 +163,6 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
         if pd.isna(lambda_corn_l): lambda_corn_l = 5.0
         if pd.isna(lambda_corn_v): lambda_corn_v = 4.5
     else:
-        # Valores promedio de la Liga MX si no existen las columnas
         lambda_corn_l, lambda_corn_v = 5.2, 4.3
 
     corners_l_sim = np.random.poisson(lambda_corn_l, n_sims)
@@ -143,14 +170,13 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     corners_totales_sim = corners_l_sim + corners_v_sim
     prob_over_9_5_corners = (np.sum(corners_totales_sim > 9.5) / n_sims) * 100
 
-    # Probabilidad del valor más frecuente de corners
     val_freq_corn_l = int(lambda_corn_l)
     prob_freq_corn_l = (np.sum(corners_l_sim == val_freq_corn_l) / n_sims) * 100
     val_freq_corn_v = int(lambda_corn_v)
     prob_freq_corn_v = (np.sum(corners_v_sim == val_freq_corn_v) / n_sims) * 100
 
     # ==========================================
-    # 3. SIMULACIÓN REAL DE TARJETAS (Poisson)
+    # 4. SIMULACIÓN REAL DE TARJETAS (Poisson)
     # ==========================================
     col_tarj_l = 'Tarjetas_L' if 'Tarjetas_L' in df_historico.columns else 'Amarillas_L'
     col_tarj_v = 'Tarjetas_V' if 'Tarjetas_V' in df_historico.columns else 'Amarillas_V'
@@ -175,7 +201,7 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     prob_freq_tarj_v = (np.sum(tarjetas_v_sim == val_freq_tarj_v) / n_sims) * 100
 
     # ==========================================
-    # 4. CONSOLIDACIÓN DE RESULTADOS
+    # 5. CONSOLIDACIÓN DE RESULTADOS
     # ==========================================
     return {
         "Resultado_1X2": {
@@ -185,15 +211,15 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
         },
         "Goles_Over_Under": {
             "Over 2.5": round(prob_over * 100, 1),
-            "Under 2.5": round(100.0 - (prob_over * 100), 1)  # <--- Faltaba esto
+            "Under 2.5": round(100.0 - (prob_over * 100), 1)  
         },
        "Goles_Individuales": {
             equipo_local: {
-                "goles": int(round(lambda_local)), # Número entero realista (ej. 1 o 2)
-                "prob": round((np.sum(goles_l == int(round(lambda_local))) / n_sims) * 100, 1) # Probabilidad real de anotar exactamente esos goles
+                "goles": int(round(lambda_local)), 
+                "prob": round((np.sum(goles_l == int(round(lambda_local))) / n_sims) * 100, 1) 
             },
             equipo_visita: {
-                "goles": int(round(lambda_visita)), # Número entero realista (ej. 0 o 1)
+                "goles": int(round(lambda_visita)), 
                 "prob": round((np.sum(goles_v == int(round(lambda_visita))) / n_sims) * 100, 1)
             }
         },
@@ -207,10 +233,10 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
         },
         "Corners_Totales": {
             "Over 9.5 Corners": round(prob_over_9_5_corners, 1),
-            "Under 9.5 Corners": round(100.0 - prob_over_9_5_corners, 1) # <--- Prevención de error
+            "Under 9.5 Corners": round(100.0 - prob_over_9_5_corners, 1) 
         },
         "Tarjetas_Totales": {
             "Over 4.5 Tarjetas": round(prob_over_4_5_tarjetas, 1),
-            "Under 4.5 Tarjetas": round(100.0 - prob_over_4_5_tarjetas, 1) # <--- Prevención de error
+            "Under 4.5 Tarjetas": round(100.0 - prob_over_4_5_tarjetas, 1) 
         }
     }
