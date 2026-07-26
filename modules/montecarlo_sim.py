@@ -2,7 +2,6 @@ import os
 import pandas as pd
 import numpy as np
 
-# Importamos la función de eficiencia del portero (Asegúrate de tener el archivo goalkeeper_engine.py)
 from modules.goalkeeper_engine import calcular_eficiencia_portero_api
 
 def aplicar_dixon_coles(lambda_l, lambda_v, prob_matriz, rho=-0.05):
@@ -10,7 +9,6 @@ def aplicar_dixon_coles(lambda_l, lambda_v, prob_matriz, rho=-0.05):
     Ajusta la matriz de probabilidades de marcadores exactos utilizando 
     la correlación de Dixon-Coles para inflar los empates de baja anotación.
     """
-    # Evitar resultados negativos en tau limitando el impacto de rho
     if (1 - lambda_l * lambda_v * rho) < 0:
         rho = 0
         
@@ -19,13 +17,11 @@ def aplicar_dixon_coles(lambda_l, lambda_v, prob_matriz, rho=-0.05):
     tau_0_1 = 1 + lambda_l * rho
     tau_1_1 = 1 - rho
 
-    # prob_matriz es un dict con llave "x-y" y valor probabilistico
     if "0-0" in prob_matriz: prob_matriz["0-0"] *= tau_0_0
     if "1-0" in prob_matriz: prob_matriz["1-0"] *= tau_1_0
     if "0-1" in prob_matriz: prob_matriz["0-1"] *= tau_0_1
     if "1-1" in prob_matriz: prob_matriz["1-1"] *= tau_1_1
 
-    # Normalizar la matriz para que vuelva a sumar 100%
     total = sum(prob_matriz.values())
     for k in prob_matriz.keys():
         prob_matriz[k] = (prob_matriz[k] / total)
@@ -43,44 +39,37 @@ def calcular_lambdas_estables(df, equipo_local, equipo_visita):
     col_l = 'Goles_L' if 'Goles_L' in df.columns else 'Puntos_L'
     col_v = 'Goles_V' if 'Goles_V' in df.columns else 'Puntos_V'
     
-    # 1. Calcular promedios GLOBALES de la Liga MX en tiempo real
     promedio_global_goles_local = df[col_l].mean() if not df[col_l].empty else 1.3
     promedio_global_goles_visita = df[col_v].mean() if not df[col_v].empty else 1.1
 
-    # Filtrar historial de los equipos
     df_l_loc = df[df['Local'] == equipo_local].tail(6)
     df_l_vis = df[df['Visitante'] == equipo_local].tail(6)
     
     df_v_loc = df[df['Local'] == equipo_visita].tail(6)
     df_v_vis = df[df['Visitante'] == equipo_visita].tail(6)
 
-    # Consolidar goles anotados y recibidos recientes
     goles_fav_local = pd.concat([df_l_loc[col_l], df_l_vis[col_v]])
     goles_rec_local = pd.concat([df_l_loc[col_v], df_l_vis[col_l]])
     
     goles_fav_visita = pd.concat([df_v_loc[col_l], df_v_vis[col_v]])
     goles_rec_visita = pd.concat([df_v_loc[col_v], df_v_vis[col_l]])
 
-    # 2. Asignar promedios reales del equipo (o el promedio global real de la liga si es NaN)
     prom_anota_l = goles_fav_local.mean() if not goles_fav_local.empty else promedio_global_goles_local
     prom_recibe_v = goles_rec_visita.mean() if not goles_rec_visita.empty else promedio_global_goles_local
     
     prom_anota_v = goles_fav_visita.mean() if not goles_fav_visita.empty else promedio_global_goles_visita
     prom_recibe_l = goles_rec_local.mean() if not goles_rec_local.empty else promedio_global_goles_visita
 
-    # Limpieza final de NaNs 
     prom_anota_l = promedio_global_goles_local if pd.isna(prom_anota_l) else prom_anota_l
     prom_recibe_v = promedio_global_goles_local if pd.isna(prom_recibe_v) else prom_recibe_v
     prom_anota_v = promedio_global_goles_visita if pd.isna(prom_anota_v) else prom_anota_v
     prom_recibe_l = promedio_global_goles_visita if pd.isna(prom_recibe_l) else prom_recibe_l
 
-    # Cálculo final balanceado
     lambda_local = (prom_anota_l + prom_recibe_v) / 2.0
     lambda_visita = (prom_anota_v + prom_recibe_l) / 2.0
 
     return lambda_local, lambda_visita
 
-# Diccionario simple de IDs de equipos de Liga MX para consultar la API
 IDS_EQUIPOS_LIGAMX = {
     "America": 228, "Guadalajara": 229, "Cruz Azul": 214, "UNAM": 215, 
     "Monterrey": 211, "Tigres": 227, "Toluca": 222, "Pachuca": 216, 
@@ -89,9 +78,10 @@ IDS_EQUIPOS_LIGAMX = {
     "Juarez": 3217, "Atletico de San Luis": 3287
 }
 
-def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
+def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None, elo_local=1500, elo_visita=1500):
     """
-    Ejecuta 10,000 iteraciones de Montecarlo reales para Goles, Corners y Tarjetas.
+    Ejecuta 100,000 iteraciones de Montecarlo reales para Goles, Corners y Tarjetas.
+    Ahora acepta opcionalmente el rating ELO para calibrar la balanza de goles.
     """
     if df_historico is None:
         try:
@@ -107,20 +97,27 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     # ==========================================
     lambda_local_base, lambda_visita_base = calcular_lambdas_estables(df_historico, equipo_local, equipo_visita)
     
-    # Intentamos obtener los IDs de los equipos. Si no los encuentra, el factor será neutral (1.0)
     id_local = IDS_EQUIPOS_LIGAMX.get(equipo_local, None)
     id_visita = IDS_EQUIPOS_LIGAMX.get(equipo_visita, None)
     
     factor_portero_local = calcular_eficiencia_portero_api(id_local, equipo_local) if id_local else 1.0
     factor_portero_visita = calcular_eficiencia_portero_api(id_visita, equipo_visita) if id_visita else 1.0
     
-    # El portero VISITANTE intenta frenar los goles del LOCAL
     lambda_local = lambda_local_base * factor_portero_visita
-    
-    # El portero LOCAL intenta frenar los goles del VISITANTE
     lambda_visita = lambda_visita_base * factor_portero_local
     
-    # Topes lógicos para la Liga MX (después del factor portero)
+    # ==========================================
+    # 1.1 AJUSTE POR DIFERENCIA DE ELO
+    # ==========================================
+    # Si hay una diferencia de ELO, ajustamos sutilmente los goles esperados
+    diff_elo = elo_local - elo_visita
+    factor_elo_local = 1.0 + (diff_elo / 2000.0) # Ajuste conservador
+    factor_elo_visita = 1.0 - (diff_elo / 2000.0)
+    
+    lambda_local *= max(0.8, min(factor_elo_local, 1.2))
+    lambda_visita *= max(0.8, min(factor_elo_visita, 1.2))
+
+    # Topes lógicos para la Liga MX
     lambda_local = max(min(lambda_local, 2.2), 0.5)
     lambda_visita = max(min(lambda_visita, 2.0), 0.4)
 
@@ -156,7 +153,6 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     col_corn_l = 'Corners_L' if 'Corners_L' in df_historico.columns else 'Corners_Local'
     col_corn_v = 'Corners_V' if 'Corners_V' in df_historico.columns else 'Corners_Visita'
 
-    # Promedios Globales Dinámicos de la Liga para Corners
     prom_global_corn_l = df_historico[col_corn_l].mean() if col_corn_l in df_historico.columns else 5.2
     prom_global_corn_v = df_historico[col_corn_v].mean() if col_corn_v in df_historico.columns else 4.3
 
@@ -188,7 +184,6 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
     col_tarj_l = 'Tarjetas_L' if 'Tarjetas_L' in df_historico.columns else 'Amarillas_L'
     col_tarj_v = 'Tarjetas_V' if 'Tarjetas_V' in df_historico.columns else 'Amarillas_V'
 
-    # Promedios Globales Dinámicos de la Liga para Tarjetas
     prom_global_tarj_l = df_historico[col_tarj_l].mean() if col_tarj_l in df_historico.columns else 2.5
     prom_global_tarj_v = df_historico[col_tarj_v].mean() if col_tarj_v in df_historico.columns else 2.7
 
@@ -251,3 +246,4 @@ def simular_partido_montecarlo(equipo_local, equipo_visita, df_historico=None):
             "Under 4.5 Tarjetas": round(100.0 - prob_over_4_5_tarjetas, 1) 
         }
     }
+    
