@@ -224,7 +224,8 @@ def escanear_jornada_actual(temporada_actual=2026):
             }
 
                        # =========================================================
-            # MAPEO INTELIGENTE Y COMPLETO (Soporte total para Córners y Tarjetas)
+                        # =========================================================
+            # MAPEO TOTAL Y LIMPIEZA DE TIPOS (A prueba de balas)
             # =========================================================
             mercados_a_mapear = [
                 ("Gana Local", "Home"),
@@ -238,41 +239,53 @@ def escanear_jornada_actual(temporada_actual=2026):
                 ("Under 4.5 Tarjetas", "Under 4.5")
             ]
 
-            # 5. FILTRO DE CONSENSO MAESTRO (CON BUSCADOR FLEXIBLE DE CÓRNERS)
             for nombre_m, llave_api in mercados_a_mapear:
                 
-                p_mc = prob_mc_dict.get(nombre_m, 0.0)
-                p_ml = prob_ml_dict.get(nombre_m, 0.0)
+                # 1. EXTRACCIÓN SEGURA CON CONVERSIÓN FORZADA A FLOAT
+                try:
+                    p_mc = float(prob_mc_dict.get(nombre_m, 0.0))
+                except:
+                    p_mc = 0.0
+                    
+                try:
+                    p_ml = float(prob_ml_dict.get(nombre_m, 0.0))
+                except:
+                    p_ml = 0.0
                 
-                # Búsqueda segura de cuota (Soporta nombres directos o variaciones de API)
-                cuota = cuotas.get(llave_api)
-                if not cuota:
-                    # Búsqueda de respaldo por si la API usa otro formato para córners/tarjetas
+                # Búsqueda flexible de cuota
+                raw_cuota = cuotas.get(llave_api)
+                if not raw_cuota:
                     if "Corners" in nombre_m:
-                        cuota = cuotas.get("Over 9.5") if "Over" in nombre_m else cuotas.get("Under 9.5")
+                        raw_cuota = cuotas.get("Over 9.5") if "Over" in nombre_m else cuotas.get("Under 9.5")
                     elif "Tarjetas" in nombre_m:
-                        cuota = cuotas.get("Over 4.5") if "Over" in nombre_m else cuotas.get("Under 4.5")
+                        raw_cuota = cuotas.get("Over 4.5") if "Over" in nombre_m else cuotas.get("Under 4.5")
                 
-                # UMBRAL BALANCEADO: Ambos modelos deben marcar al menos 58%
-                if cuota and cuota > 1.40 and p_mc >= 58.0 and p_ml >= 58.0:
+                try:
+                    cuota = float(raw_cuota) if raw_cuota is not None else 0.0
+                except:
+                    cuota = 0.0
+
+                # --- 2. FILTRO DE CONSENSO MAESTRO (CONVERGENCIA) ---
+                # Exigimos cuota > 1.40 y que AMBOS modelos tengan >= 58.0%
+                if cuota > 1.40 and p_mc >= 58.0 and p_ml >= 58.0:
                     
-                    prob_combinada = round((p_mc + p_ml) / 2, 1)
+                    prob_combinada = round((p_mc + p_ml) / 2.0, 1)
                     
-                    # --- SANITY CHECK FLEXIBILIZADO (Margen de 40%) ---
-                    prob_implicita_casa = (1 / cuota) * 100
+                    # --- 3. SANITY CHECK (Margen de 40%) ---
+                    prob_implicita_casa = (1.0 / cuota) * 100.0
                     diferencia_anomala = prob_combinada - prob_implicita_casa
                     
                     if diferencia_anomala > 40.0:
-                        continue 
+                        continue # Descartado por anomalía extrema
                     
-                    # --- CÁLCULO DE EXPECTED VALUE (EV) ---
+                    # --- 4. CÁLCULO DE EXPECTED VALUE (EV) ---
                     ev_real = ((prob_combinada / 100.0) * cuota) - 1.0
-                    ev_porcentaje = ev_real * 100
+                    ev_porcentaje = ev_real * 100.0
                     
-                    # FILTRO DE VALOR REALISTA: EV mayor a +2.0%
+                    # --- 5. FILTRO DE VALOR MÍNIMO (+2.0%) ---
                     if ev_porcentaje >= 2.0:
                         
-                        stake_recomendado = (ev_real / (cuota - 1)) * 10 
+                        stake_recomendado = (ev_real / (cuota - 1.0)) * 10.0 
                         stake_recomendado = max(0.5, min(stake_recomendado, 3.0)) 
                         
                         oportunidades_oro.append({
