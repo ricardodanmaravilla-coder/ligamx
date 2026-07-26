@@ -147,43 +147,96 @@ def escanear_jornada_actual(temporada_actual=2026):
             prob_mc_goles = resultados["Goles_Over_Under"]["Over 2.5"]
             prob_mc_corners = resultados["Corners_Totales"]["Over 9.5 Corners"]
 
-            # Probabilidades de Machine Learning (si está entrenado)
-            prob_ml_local = 0.0
-            prob_ml_visita = 0.0
-            prob_ml_goles = 0.0
-            prob_ml_corners = 0.0
+                        # Extraer ELO para pasarlo al ML (usamos el motor ELO)
+            # Asumimos que tienes acceso a tu df_elo o a la instancia del motor. 
+            # Si no está disponible en este scope, usamos un try-except.
+            try:
+                # Si tienes la tabla_posiciones_elo en el escáner:
+                elo_loc = float(tabla_posiciones_elo.loc[tabla_posiciones_elo['Equipo'] == local, 'ELO_Rating'].values[0])
+                elo_vis = float(tabla_posiciones_elo.loc[tabla_posiciones_elo['Equipo'] == visita, 'ELO_Rating'].values[0])
+            except:
+                # Valor por defecto si no está conectada la tabla en este archivo
+                elo_loc, elo_vis = 1500.0, 1500.0
+
+            # Probabilidades de Machine Learning (Nuevo Formato Completo)
+            # Inicializamos en 0.0 todos los escenarios posibles
+            prob_ml_local = prob_ml_empate = prob_ml_visita = 0.0
+            prob_ml_over_g = prob_ml_under_g = 0.0
+            prob_ml_over_c = prob_ml_under_c = 0.0
+            prob_ml_over_t = prob_ml_under_t = 0.0
 
             if ml_escanner.is_trained and df_historico_ml is not None:
+                # Extraemos goles simulados de Montecarlo (aunque ahora el ML ya no los usa para la predicción final)
                 g_l_sim = resultados.get('Goles_Individuales', {}).get(local, {}).get('goles', 1.2)
                 g_v_sim = resultados.get('Goles_Individuales', {}).get(visita, {}).get('goles', 1.0)
                 
-                preds_ml = ml_escanner.predecir_mercados_completos(df_historico_ml, local, visita, g_l_sim, g_v_sim)
-                prob_ml_local = preds_ml['1X2']['Gana Local']
-                prob_ml_visita = preds_ml['1X2']['Gana Visita']
-                prob_ml_goles = preds_ml['Over_2.5_Goles']
-                prob_ml_corners = preds_ml['Over_9.5_Corners']
+                # Invocamos al ML con el nuevo formato (incluyendo ELO)
+                preds_ml = ml_escanner.predecir_mercados_completos(
+                    df_historico_ml, local, visita, g_l_sim, g_v_sim, elo_loc, elo_vis
+                )
+                
+                # Desglosamos el nuevo diccionario seguro
+                if "Resultado_1X2" in preds_ml:
+                    prob_ml_local = preds_ml['Resultado_1X2']['Gana Local']
+                    prob_ml_empate = preds_ml['Resultado_1X2']['Empate']
+                    prob_ml_visita = preds_ml['Resultado_1X2']['Gana Visita']
+                    
+                    prob_ml_over_g = preds_ml['Goles_Over_Under']['Over 2.5']
+                    prob_ml_under_g = preds_ml['Goles_Over_Under']['Under 2.5']
+                    
+                    prob_ml_over_c = preds_ml['Corners_Totales']['Over 9.5 Corners']
+                    prob_ml_under_c = preds_ml['Corners_Totales']['Under 9.5 Corners']
+                    
+                    prob_ml_over_t = preds_ml['Tarjetas_Totales']['Over 4.5 Tarjetas']
+                    prob_ml_under_t = preds_ml['Tarjetas_Totales']['Under 4.5 Tarjetas']
 
-            # Diccionarios para evaluar en bucle de consenso
+            # =================================================================
+            # NUEVO MAPEO DE CONSENSO (Incluyendo Unders y Empate)
+            # =================================================================
+            
+            # Aquí extraemos las variables de Montecarlo (Asegúrate de que tus variables de MC tengan estos nombres)
+            # Si alguna variable no existe en tu código actual, ponle 0.0 por ahora.
             prob_mc_dict = {
-                "Gana Local": prob_mc_local,
-                "Gana Visita": prob_mc_visita,
-                "Over 2.5 Goles": prob_mc_goles,
-                "Over 9.5 Corners": prob_mc_corners
+                "Gana Local": resultados.get('Resultado_1X2', {}).get('Gana Local', 0.0),
+                "Empate": resultados.get('Resultado_1X2', {}).get('Empate', 0.0),
+                "Gana Visita": resultados.get('Resultado_1X2', {}).get('Gana Visita', 0.0),
+                
+                "Over 2.5 Goles": resultados.get('Goles_Over_Under', {}).get('Over 2.5', 0.0),
+                "Under 2.5 Goles": resultados.get('Goles_Over_Under', {}).get('Under 2.5', 0.0),
+                
+                "Over 9.5 Corners": resultados.get('Corners_Totales', {}).get('Over 9.5 Corners', 0.0),
+                "Under 9.5 Corners": resultados.get('Corners_Totales', {}).get('Under 9.5 Corners', 0.0),
+                
+                "Over 4.5 Tarjetas": resultados.get('Tarjetas_Totales', {}).get('Over 4.5 Tarjetas', 0.0),
+                "Under 4.5 Tarjetas": resultados.get('Tarjetas_Totales', {}).get('Under 4.5 Tarjetas', 0.0)
             }
 
             prob_ml_dict = {
                 "Gana Local": prob_ml_local,
+                "Empate": prob_ml_empate,
                 "Gana Visita": prob_ml_visita,
-                "Over 2.5 Goles": prob_ml_goles,
-                "Over 9.5 Corners": prob_ml_corners
+                "Over 2.5 Goles": prob_ml_over_g,
+                "Under 2.5 Goles": prob_ml_under_g,
+                "Over 9.5 Corners": prob_ml_over_c,
+                "Under 9.5 Corners": prob_ml_under_c,
+                "Over 4.5 Tarjetas": prob_ml_over_t,
+                "Under 4.5 Tarjetas": prob_ml_under_t
             }
 
-            llaves_mercado = {
-                "Gana Local": "1",
-                "Gana Visita": "2",
-                "Over 2.5 Goles": "Over 2.5",
-                "Over 9.5 Corners": "Over 9.5 Corners"
-            }
+            # =========================================================
+            # MAPEO BLINDADO PARA API-SPORTS (Evita Cuotas Cruzadas)
+            # Formato: ("Tu Mercado", "Texto Exacto de la API")
+            # =========================================================
+            mercados_a_mapear = [
+                ("Gana Local", "Home"),
+                ("Empate", "Draw"),
+                ("Gana Visita", "Away"),
+                ("Over 2.5 Goles", "Over 2.5"),
+                ("Under 2.5 Goles", "Under 2.5")
+                # NOTA: Corners y Tarjetas usualmente requieren un mapeo especial en la API.
+                # Si tu API te manda "Over 9.5" dentro de una sección específica de corners, lo ajustamos después.
+            ]
+
 
            # 5. FILTRO DE CONSENSO MAESTRO - VERSIÓN ANTI-INVERSIÓN
             for nombre_m, llave_api in mercados_a_mapear:
