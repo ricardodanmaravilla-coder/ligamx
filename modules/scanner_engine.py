@@ -117,7 +117,7 @@ def escanear_jornada_actual(temporada_actual=2026):
         visita = p["teams"]["away"]["name"]
         fecha = p["fixture"]["date"][:16].replace("T", " ")
         
-        st.write(f"⚽ Partido detectado en API: **{local} vs {visita}**")
+        #st.write(f"⚽ Partido detectado en API: **{local} vs {visita}**")
 
         try:
             resultados = simular_partido_montecarlo(local, visita)
