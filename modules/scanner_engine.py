@@ -239,6 +239,15 @@ def escanear_jornada_actual(temporada_actual=2026):
                 ("Under 4.5 Tarjetas", "Under 4.5")
             ]
 
+            # --- CHIVATO DE DEPURACIÓN (Muestra qué está evaluando el escáner) ---
+            if "América" in local or "Santos" in local:
+                st.write(f"🔍 [DEBUG] Analizando: {local} vs {visita}")
+                st.write(f"📊 prob_mc_dict recibido: {prob_mc_dict}")
+                st.write(f"🤖 prob_ml_dict recibido: {prob_ml_dict}")
+                st.write(f"💰 Cuotas recibidas para Over 9.5: {cuotas.get('Over 9.5') or cuotas.get('Over 9.5 Corners')}")
+            # ------------------------------------------------------------------
+            
+
             for nombre_m, llave_api in mercados_a_mapear:
                 
                 # 1. EXTRACCIÓN SEGURA CON CONVERSIÓN FORZADA A FLOAT
