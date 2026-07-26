@@ -108,13 +108,18 @@ def escanear_jornada_actual(temporada_actual=2026):
 
     oportunidades_oro = []
 
+    # 🚨 CHIVATO GLOBAL: Imprime TODOS los partidos que la API está entregando al escáner
+    st.write(f"📡 Total de partidos descargados de la API para esta jornada: {len(fixtures)}")
+
     for p in fixtures:
+        fix_id = p["fixture"]["id"]
+        local = p["teams"]["home"]["name"]
+        visita = p["teams"]["away"]["name"]
+        fecha = p["fixture"]["date"][:16].replace("T", " ")
+        
+        st.write(f"⚽ Partido detectado en API: **{local} vs {visita}**")
+
         try:
-            fix_id = p["fixture"]["id"]
-            local = p["teams"]["home"]["name"]
-            visita = p["teams"]["away"]["name"]
-            fecha = p["fixture"]["date"][:16].replace("T", " ")
-            
             resultados = simular_partido_montecarlo(local, visita)
             if isinstance(resultados, str): 
                 continue
@@ -187,14 +192,6 @@ def escanear_jornada_actual(temporada_actual=2026):
                 ("Over 4.5 Tarjetas", "Over 4.5"),
                 ("Under 4.5 Tarjetas", "Under 4.5")
             ]
-
-            # --- CHIVATO DE DEPURACIÓN DE CUOTAS ---
-            if "América" in local or "Santos" in local:
-                st.write(f"🔍 [DEBUG] Analizando: {local} vs {visita}")
-                st.write(f"📊 prob_mc_dict recibido: {prob_mc_dict}")
-                st.write(f"🤖 prob_ml_dict recibido: {prob_ml_dict}")
-                st.write(f"💰 Diccionario completo de cuotas: {cuotas}")
-            # ----------------------------------------
 
             for nombre_m, llave_api in mercados_a_mapear:
                 try:
