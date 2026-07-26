@@ -188,6 +188,14 @@ def escanear_jornada_actual(temporada_actual=2026):
                 ("Under 4.5 Tarjetas", "Under 4.5")
             ]
 
+            # --- CHIVATO DE DEPURACIÓN DE CUOTAS ---
+            if "América" in local or "Santos" in local:
+                st.write(f"🔍 [DEBUG] Analizando: {local} vs {visita}")
+                st.write(f"📊 prob_mc_dict recibido: {prob_mc_dict}")
+                st.write(f"🤖 prob_ml_dict recibido: {prob_ml_dict}")
+                st.write(f"💰 Diccionario completo de cuotas: {cuotas}")
+            # ----------------------------------------
+
             for nombre_m, llave_api in mercados_a_mapear:
                 try:
                     p_mc = float(prob_mc_dict.get(nombre_m, 0.0))
