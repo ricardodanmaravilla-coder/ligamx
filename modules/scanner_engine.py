@@ -127,6 +127,8 @@ def escanear_jornada_actual(temporada_actual=2026):
             ]
 
     for p in fixtures:
+        st.write(f"⚠️ [ESCáNER BARRIENDO] Procesando partido: {local} vs {visita}")
+        
         fix_id = p["fixture"]["id"]
         local = p["teams"]["home"]["name"]
         visita = p["teams"]["away"]["name"]
