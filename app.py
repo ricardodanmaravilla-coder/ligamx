@@ -249,23 +249,47 @@ if deporte == "⚽ Liga MX (Soccer)":
                     puntos_visita = 1500.0
                 # -------------------------------------------------------------------------------
                 
-                preds_ml = ml_predictor.predecir_mercados_completos(
+                                preds_ml = ml_predictor.predecir_mercados_completos(
                     df_historico, 
                     datos_partido['local'], 
                     datos_partido['visita'], 
                     g_l_sim, 
                     g_v_sim,
-                    puntos_local,  # <-- Se envían los puntos del local
-                    puntos_visita  # <-- Se envían los puntos de la visita
+                    puntos_local,  
+                    puntos_visita  
                 )
                 
                 st.markdown("---")
                 st.subheader("🤖 Predicciones Independientes de Machine Learning (Random Forest)")
                 
-                ml_col1, ml_col2, ml_col3 = st.columns(3)
-                ml_col1.metric("ML - Gana Local", f"{preds_ml['1X2']['Gana Local']}%")
-                ml_col2.metric("ML - Over 2.5 Goles", f"{preds_ml['Over_2.5_Goles']}%")
-                ml_col3.metric("ML - Over 9.5 Corners", f"{preds_ml['Over_9.5_Corners']}%")    
+                if "Resultado_1X2" in preds_ml:
+                    # --- FILA 1: MERCADO 1X2 ---
+                    st.markdown("##### 🏆 Mercado 1X2 (Ganador del Partido)")
+                    ml_col1, ml_col2, ml_col3 = st.columns(3)
+                    ml_col1.metric("Local", f"{preds_ml['Resultado_1X2']['Gana Local']}%")
+                    ml_col2.metric("Empate", f"{preds_ml['Resultado_1X2']['Empate']}%")
+                    ml_col3.metric("Visita", f"{preds_ml['Resultado_1X2']['Gana Visita']}%")
+                    
+                    st.write("") # Espacio visual
+                    
+                    # --- FILA 2: OVERS Y UNDERS (Goles, Córners y Tarjetas) ---
+                    st.markdown("##### 📊 Mercados de Goles, Córners y Tarjetas")
+                    ml_col4, ml_col5, ml_col6 = st.columns(3)
+                    
+                    with ml_col4:
+                        st.metric("Over 2.5 Goles", f"{preds_ml['Goles_Over_Under']['Over 2.5']}%")
+                        st.metric("Under 2.5 Goles", f"{preds_ml['Goles_Over_Under']['Under 2.5']}%")
+                        
+                    with ml_col5:
+                        st.metric("Over 9.5 Córners", f"{preds_ml['Corners_Totales']['Over 9.5 Corners']}%")
+                        st.metric("Under 9.5 Córners", f"{preds_ml['Corners_Totales']['Under 9.5 Corners']}%")
+                        
+                    with ml_col6:
+                        st.metric("Over 4.5 Tarjetas", f"{preds_ml['Tarjetas_Totales']['Over 4.5 Tarjetas']}%")
+                        st.metric("Under 4.5 Tarjetas", f"{preds_ml['Tarjetas_Totales']['Under 4.5 Tarjetas']}%")
+                else:
+                    st.warning("⚠️ El modelo ML no pudo generar predicciones. Revisa los datos históricos.")
+    
                         
         if 'resultados' in locals() and isinstance(resultados, dict):
             st.subheader("🤖 Predicciones Híbridas (Poisson + ELO)")
