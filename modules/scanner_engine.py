@@ -109,7 +109,7 @@ def escanear_jornada_actual(temporada_actual=2026):
     oportunidades_oro = []
 
     # 🚨 CHIVATO GLOBAL: Imprime TODOS los partidos que la API está entregando al escáner
-    st.write(f"📡 Total de partidos descargados de la API para esta jornada: {len(fixtures)}")
+    #st.write(f"📡 Total de partidos descargados de la API para esta jornada: {len(fixtures)}")
 
     for p in fixtures:
         fix_id = p["fixture"]["id"]
