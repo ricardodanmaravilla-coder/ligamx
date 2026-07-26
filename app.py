@@ -249,7 +249,7 @@ if deporte == "⚽ Liga MX (Soccer)":
                     puntos_visita = 1500.0
                 # -------------------------------------------------------------------------------
                 
-                                preds_ml = ml_predictor.predecir_mercados_completos(
+                preds_ml = ml_predictor.predecir_mercados_completos(
                     df_historico, 
                     datos_partido['local'], 
                     datos_partido['visita'], 
