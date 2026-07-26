@@ -119,11 +119,12 @@ def escanear_jornada_actual(temporada_actual=2026):
     oportunidades_oro = []
     
     mercados_a_mapear = [
-        ("Gana Local", "1"),
-        ("Gana Visita", "2"),
-        ("Over 2.5 Goles", "Over 2.5"),
-        ("Over 9.5 Corners", "Over 9.5 Corners")
-    ]
+                ("Gana Local", "Home"),
+                ("Empate", "Draw"),
+                ("Gana Visita", "Away"),
+                ("Over 2.5", "Over 2.5"),
+                ("Under 2.5", "Under 2.5")
+            ]
 
     for p in fixtures:
         fix_id = p["fixture"]["id"]
@@ -184,21 +185,42 @@ def escanear_jornada_actual(temporada_actual=2026):
                 "Over 9.5 Corners": "Over 9.5 Corners"
             }
 
-           # 5. FILTRO DE CONSENSO MAESTRO (MONTECARLO + MACHINE LEARNING) - EL PUNTO DULCE
-            for nombre_m, llave in mercados_a_mapear:
-                p_mc = prob_mc_dict[nombre_m]
-                p_ml = prob_ml_dict[nombre_m]
-                cuota = cuotas.get(llave)
+           # 5. FILTRO DE CONSENSO MAESTRO - VERSIÓN ANTI-INVERSIÓN
+            for nombre_m, llave_api in mercados_a_mapear:
                 
-                # UMBRAL BALANCEADO: Ambos modelos deben marcar al menos 58% (Consenso sólido)
-                # Y la cuota no debe ser basura (mayor a 1.40)
+                # Extraer probabilidades de forma segura
+                p_mc = prob_mc_dict.get(nombre_m, 0.0)
+                p_ml = prob_ml_dict.get(nombre_m, 0.0)
+                cuota = cuotas.get(llave_api) # Búsqueda exacta por texto, no por posición
+                
+                # UMBRAL BALANCEADO: Ambos modelos deben estar de acuerdo (>= 58%)
                 if cuota and cuota > 1.40 and p_mc >= 58.0 and p_ml >= 58.0:
                     
                     prob_combinada = round((p_mc + p_ml) / 2, 1)
-                    _, ev, veredicto, stake, riesgo = evaluar_mercado_avanzado(prob_combinada, cuota)
                     
-                    # FILTRO DE VALOR REALISTA: Solo EV mayor a 2% (Ventaja estadística limpia)
-                    if ev >= 2.0:
+                    # --- SANITY CHECK (Filtro Anti-Cruces) ---
+                    # Probabilidad Implícita de la casa de apuestas
+                    prob_implicita_casa = (1 / cuota) * 100
+                    
+                    # Si nuestra probabilidad es absurdamente más alta que la de la casa 
+                    # (ej. decimos 70% pero la casa paga cuota de 4.00), ALGO ESTÁ CRUZADO.
+                    diferencia_anomala = prob_combinada - prob_implicita_casa
+                    if diferencia_anomala > 25.0:
+                        # Descartamos la apuesta automáticamente porque los datos están corruptos
+                        continue 
+                    
+                    # --- CÁLCULO ESTRICTO DE EXPECTED VALUE (EV) ---
+                    # Fórmula universal: (Probabilidad / 100) * Cuota - 1
+                    ev_real = ((prob_combinada / 100.0) * cuota) - 1.0
+                    ev_porcentaje = ev_real * 100
+                    
+                    # FILTRO DE VALOR REALISTA: Solo EV real mayor a +2.0%
+                    if ev_porcentaje >= 2.0:
+                        
+                        # Cálculo de Stake (Kelly Criterion simplificado y conservador al 10%)
+                        stake_recomendado = (ev_real / (cuota - 1)) * 10 
+                        stake_recomendado = max(0.5, min(stake_recomendado, 3.0)) # Nunca apostar más del 3%
+                        
                         oportunidades_oro.append({
                             "Fecha": fecha,
                             "Partido": f"{local} vs {visita}",
@@ -206,10 +228,9 @@ def escanear_jornada_actual(temporada_actual=2026):
                             "P. Montecarlo": f"{p_mc}%",
                             "P. ML": f"{p_ml}%",
                             "Cuota": f"{cuota:.2f}",
-                            "EV (Valor)": f"+{ev:.1f}%",
-                            "Riesgo": riesgo,
-                            "Stake Rec.": f"{stake:.1f}%",
-                            "Veredicto": f"✅ CONSENSO DE VALOR ({veredicto})",
+                            "EV (Valor)": f"+{ev_porcentaje:.1f}%",
+                            "Stake Rec.": f"{stake_recomendado:.1f}%",
+                            "Veredicto": "✅ CONSENSO BLINDADO",
                             "Fixture_ID": fix_id
                         })
         except Exception as e:
