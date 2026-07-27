@@ -107,21 +107,14 @@ def escanear_jornada_actual(temporada_actual=2026):
     except Exception:
         pass
 
-    # 1. Obtenemos estrictamente la ronda actual de la liga
-    url_rounds = f"{BASE_URL}/fixtures/rounds"
-    res_rounds = requests.get(url_rounds, headers=HEADERS, params={"league": LIGA_MX_ID, "season": temporada_actual, "current": "true"})
-    
-    jornada_actual = None
-    if res_rounds.status_code == 200:
-        rounds_data = res_rounds.json().get("response", [])
-        if rounds_data:
-            jornada_actual = rounds_data[0]
-            
-    # 2. Consultamos los fixtures exigiendo la ronda exacta en curso
+    # Forzamos la consulta estricta de los próximos partidos oficiales pendientes (Status NS)
     url = f"{BASE_URL}/fixtures"
-    params = {"league": LIGA_MX_ID, "season": temporada_actual, "status": "NS"}
-    if jornada_actual:
-        params["round"] = jornada_actual
+    params = {
+        "league": LIGA_MX_ID, 
+        "season": temporada_actual, 
+        "status": "NS",
+        "next": 10 # Trae estrictamente los siguientes 10 partidos oficiales de la liga
+    }
     
     res = requests.get(url, headers=HEADERS, params=params)
     if res.status_code != 200:
@@ -129,14 +122,10 @@ def escanear_jornada_actual(temporada_actual=2026):
         
     fixtures = res.json().get("response", [])
     
-    # 3. FILTRO DE SEGURIDAD ESTRICTO: Descartar cualquier partido que no pertenezca a la jornada actual
-    if jornada_actual and fixtures:
-        fixtures = [f for f in fixtures if f.get("league", {}).get("round") == jornada_actual]
-
     oportunidades_oro = []
 
     st.write("---")
-    st.write(f"🔎 **Analizando partidos de la {jornada_actual}** *(Modo estricto por jornada)*")
+    st.write("🔎 **Analizando la siguiente jornada oficial de la Liga MX...**")
 
     for p in fixtures:
         try:
@@ -273,7 +262,7 @@ def escanear_jornada_actual(temporada_actual=2026):
                             "Mercado": nombre_m,
                             "P. Montecarlo": f"{p_mc}%",
                             "P. ML": f"{p_ml}%",
-                            "Cuota": f"{cuota:.2f}",
+                    "Cuota": f"{cuota:.2f}",
                             "EV (Valor)": f"+{ev_porcentaje:.1f}%",
                             "Stake Rec.": f"{stake_recomendado:.1f}%",
                             "Veredicto": "✅ CONSENSO BLINDADO",
