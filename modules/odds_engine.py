@@ -2,52 +2,95 @@ import os
 import requests
 import pandas as pd
 
-# --- CONFIGURACIÓN ---
 API_KEY = os.environ.get("API_SPORTS_KEY")
 BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {'x-apisports-key': API_KEY}
 
 def obtener_cuotas_partido(fixture_id, bookmaker_id=8):
-    """Descarga las cuotas de Playdoit (Proxy Bet365) para un partido."""
+    """
+    Descarga cuotas de la API. Si la casa principal no tiene datos, 
+    busca en cualquier otra casa disponible para evitar ceros.
+    """
     url = f"{BASE_URL}/odds"
+    
+    # 1. Intentamos con la casa solicitada (ej. Playdoit/Bet365 ID 8)
     response = requests.get(url, headers=HEADERS, params={"fixture": fixture_id, "bookmaker": bookmaker_id})
-    if response.status_code != 200: return None
-    
-    datos = response.json().get("response", [])
-    if not datos: return None
-        
-    mercados = datos[0]["bookmakers"][0]["bets"]
-    cuotas_limpias = {}
-    
-    for mercado in mercados:
-        nombre = mercado["name"]
-        
-        # --- 1. GANADOR DEL PARTIDO (1X2) ---
-        if nombre == "Match Winner":
-            for val in mercado["values"]:
-                if val["value"] == "Home": cuotas_limpias["1"] = float(val["odd"])
-                if val["value"] == "Draw": cuotas_limpias["X"] = float(val["odd"])
-                if val["value"] == "Away": cuotas_limpias["2"] = float(val["odd"])
+    if response.status_code == 200:
+        datos = response.json().get("response", [])
+        if not datos:
+            # Si no hay datos con el bookmaker 8, intentamos sin filtrar casa para agarrar la que esté disponible
+            response = requests.get(url, headers=HEADERS, params={"fixture": fixture_id})
+            if response.status_code == 200:
+                datos = response.json().get("response", [])
                 
-        # --- 2. GOLES (Over/Under) ---
-        elif nombre == "Goals Over/Under":
-            for val in mercado["values"]:
-                if val["value"] == "Over 2.5": cuotas_limpias["Over 2.5"] = float(val["odd"])
-                if val["value"] == "Under 2.5": cuotas_limpias["Under 2.5"] = float(val["odd"])
-                
-        # --- 3. CORNERS ---
-        elif nombre in ["Corners Over Under", "Corners"]:
-            for val in mercado["values"]:
-                if val["value"] == "Over 9.5": cuotas_limpias["Over 9.5 Corners"] = float(val["odd"])
-                if val["value"] == "Under 9.5": cuotas_limpias["Under 9.5 Corners"] = float(val["odd"])
+    if not datos: 
+        return None
         
-        # --- 4. TARJETAS ---
-        elif nombre in ["Cards Over/Under", "Cards"]:
-            for val in mercado["values"]:
-                if val["value"] == "Over 4.5": cuotas_limpias["Over 4.5 Tarjetas"] = float(val["odd"])
-                if val["value"] == "Under 4.5": cuotas_limpias["Under 4.5 Tarjetas"] = float(val["odd"])
+    try:
+        bookmakers = datos[0].get("bookmakers", [])
+        if not bookmakers:
+            return None
+            
+        # Buscamos el primer bookmaker que tenga apuestas registradas
+        mercados = []
+        for bm in bookmakers:
+            if "bets" in bm and len(bm["bets"]) > 0:
+                mercados = bm["bets"]
+                break
+                
+        if not mercados:
+            return None
+
+        cuotas_limpias = {}
+        
+        for mercado in mercados:
+            nombre = mercado.get("name", "")
+            valores = mercado.get("values", [])
+            
+            # --- 1. GANADOR DEL PARTIDO (1X2) ---
+            if "Winner" in nombre or "1X2" in nombre:
+                for val in valores:
+                    v = val.get("value", "")
+                    odd = val.get("odd")
+                    if odd:
+                        if v in ["Home", "1"]: cuotas_limpias["1"] = float(odd)
+                        elif v in ["Draw", "X"]: cuotas_limpias["X"] = float(odd)
+                        elif v in ["Away", "2"]: cuotas_limpias["2"] = float(odd)
                     
-    return cuotas_limpias
+            # --- 2. GOLES (Over/Under) ---
+            elif "Goals" in nombre or "Over/Under" in nombre:
+                for val in valores:
+                    v = val.get("value", "")
+                    odd = val.get("odd")
+                    if odd:
+                        if "Over 2.5" in v: cuotas_limpias["Over 2.5"] = float(odd)
+                        elif "Under 2.5" in v: cuotas_limpias["Under 2.5"] = float(odd)
+                    
+            # --- 3. CORNERS ---
+            elif "Corner" in nombre:
+                for val in valores:
+                    v = val.get("value", "")
+                    odd = val.get("odd")
+                    if odd:
+                        if "Over 9.5" in v: cuotas_limpias["Over 9.5 Corners"] = float(odd)
+                        elif "Under 9.5" in v: cuotas_limpias["Under 9.5 Corners"] = float(odd)
+                        # Por si el escáner del scanner_engine busca la llave corta "Over 9.5"
+                        elif "Over 9.5" in v: cuotas_limpias["Over 9.5"] = float(odd)
+            
+            # --- 4. TARJETAS ---
+            elif "Card" in nombre:
+                for val in valores:
+                    v = val.get("value", "")
+                    odd = val.get("odd")
+                    if odd:
+                        if "Over 4.5" in v: cuotas_limpias["Over 4.5 Tarjetas"] = float(odd)
+                        elif "Under 4.5" in v: cuotas_limpias["Under 4.5 Tarjetas"] = float(odd)
+                        elif "Over 4.5" in v: cuotas_limpias["Over 4.5"] = float(odd)
+                        
+        return cuotas_limpias if cuotas_limpias else None
+
+    except Exception as e:
+        return None
 
 def evaluar_mercado_avanzado(probabilidad_modelo_pct, cuota_casa):
     """Evalúa usando EV, Criterio de Kelly Fraccional y Umbrales de Seguridad."""
@@ -57,15 +100,12 @@ def evaluar_mercado_avanzado(probabilidad_modelo_pct, cuota_casa):
     prob_real = probabilidad_modelo_pct / 100
     ev_pct = ((prob_real * cuota_casa) - 1) * 100
     
-    # 1. Criterio de Kelly Clásico: f* = (bp - q) / b
     b = cuota_casa - 1.0 
     q = 1.0 - prob_real  
     kelly_pct = ((b * prob_real) - q) / b if b > 0 else 0
     
-    # 2. Kelly Fraccional (1/4 de Kelly) para mayor seguridad
     stake_recomendado = max(0, (kelly_pct * 100) / 4)
     
-    # 3. Veredicto
     if ev_pct <= 0:
         veredicto = "❌ DESCARTAR (EV Negativo)"
         riesgo = "Alto"
@@ -111,7 +151,6 @@ def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=N
     for nombre_m, prob, llave_cuota in mercados_a_evaluar:
         cuota = cuotas.get(llave_cuota)
         
-        # Si sigue siendo 0 o None tras el input manual
         if cuota is None or cuota == 0.0:
             analisis.append([nombre_m, f"{prob}%", "Sin Cuota", "N/A", "N/A", "0%", "🕒 Ingresa Cuota"])
             continue
