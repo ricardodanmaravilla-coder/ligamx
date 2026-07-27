@@ -7,6 +7,8 @@ class PredictorML:
     def __init__(self):
         self.model_1x2 = RandomForestClassifier(n_estimators=100, random_state=42)
         self.model_goles = RandomForestRegressor(n_estimators=100, random_state=42)
+        self.model_corners = RandomForestRegressor(n_estimators=100, random_state=42)
+        self.model_tarjetas = RandomForestRegressor(n_estimators=100, random_state=42)
         self.encoder_equipos = LabelEncoder()
         self.is_trained = False
 
@@ -36,6 +38,16 @@ class PredictorML:
             df['Target_1X2'] = df.apply(resultado_partido, axis=1)
             df['Total_Goles'] = df.get('Goles_L', df.get('Goles_Local', 0)) + df.get('Goles_V', df.get('Goles_Visita', 0))
             
+            c_l = df.get('Corners_L', 5.0)
+            c_v = df.get('Corners_V', 4.5)
+            df['Total_Corners'] = c_l.fillna(5.0) + c_v.fillna(4.5)
+
+            am_l = df.get('Amarillas_L', 2.0).fillna(2.0)
+            rj_l = df.get('Rojas_L', 0.0).fillna(0.0)
+            am_v = df.get('Amarillas_V', 2.2).fillna(2.2)
+            rj_v = df.get('Rojas_V', 0.0).fillna(0.0)
+            df['Total_Tarjetas'] = (am_l + rj_l * 2) + (am_v + rj_v * 2)
+
             features = ['Local_Encoded', 'Visita_Encoded']
             if 'ELO_Local' in df.columns and 'ELO_Visita' in df.columns:
                 df['Diff_ELO'] = df['ELO_Local'] - df['ELO_Visita']
@@ -45,11 +57,12 @@ class PredictorML:
                 features.append('Diff_ELO')
 
             X = df[features].fillna(0)
-            y_1x2 = df['Target_1X2']
-            y_goles = df['Total_Goles']
             
-            self.model_1x2.fit(X, y_1x2)
-            self.model_goles.fit(X, y_goles)
+            self.model_1x2.fit(X, df['Target_1X2'])
+            self.model_goles.fit(X, df['Total_Goles'])
+            self.model_corners.fit(X, df['Total_Corners'])
+            self.model_tarjetas.fit(X, df['Total_Tarjetas'])
+            
             self.is_trained = True
             return True
         except Exception as e:
@@ -79,9 +92,17 @@ class PredictorML:
                 elif cls == 2: p_local = round(float(prob) * 100, 1)
 
             goles_totales_ml = float(self.model_goles.predict(X_pred)[0])
+            corners_totales_ml = float(self.model_corners.predict(X_pred)[0])
+            tarjetas_totales_ml = float(self.model_tarjetas.predict(X_pred)[0])
             
             over_25 = round(min(95.0, max(5.0, (goles_totales_ml / 2.8) * 55.0)), 1)
             under_25 = round(100.0 - over_25, 1)
+
+            over_corners_95 = round(min(95.0, max(5.0, (corners_totales_ml / 9.5) * 50.0)), 1)
+            under_corners_95 = round(100.0 - over_corners_95, 1)
+
+            over_tarjetas_45 = round(min(95.0, max(5.0, (tarjetas_totales_ml / 4.5) * 50.0)), 1)
+            under_tarjetas_45 = round(100.0 - over_tarjetas_45, 1)
             
             return {
                 "Resultado_1X2": {
@@ -94,12 +115,12 @@ class PredictorML:
                     "Under 2.5": under_25
                 },
                 "Corners_Totales": {
-                    "Over 9.5 Corners": 52.0,
-                    "Under 9.5 Corners": 48.0
+                    "Over 9.5 Corners": over_corners_95,
+                    "Under 9.5 Corners": under_corners_95
                 },
                 "Tarjetas_Totales": {
-                    "Over 4.5 Tarjetas": 50.0,
-                    "Under 4.5 Tarjetas": 50.0
+                    "Over 4.5 Tarjetas": over_tarjetas_45,
+                    "Under 4.5 Tarjetas": under_tarjetas_45
                 }
             }
         except Exception as e:
