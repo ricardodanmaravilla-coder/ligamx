@@ -5,6 +5,7 @@ from datetime import datetime
 from github import Github
 import streamlit as st
 import io
+import time  # <--- IMPORTANTE: La librería que evitará el bloqueo de la API
 
 from modules.stats_engine import calcular_expectativa_partido
 from modules.montecarlo_sim import simular_partido_montecarlo
@@ -71,7 +72,6 @@ def registrar_apuesta_github(partido, mercado, prob_modelo, cuota, kelly_pct, ba
         )
 
 def obtener_ultimo_elo(df, equipo):
-    """Busca el ELO de forma robusta ignorando mayúsculas y espacios invisibles."""
     try:
         if df is not None and not df.empty:
             equipo_norm = str(equipo).strip().lower()
@@ -135,7 +135,7 @@ def escanear_jornada_actual(temporada_actual=2026):
     oportunidades_oro = []
 
     st.write("---")
-    st.write("🔎 **Analizando partidos de la jornada...**")
+    st.write("🔎 **Analizando partidos de la jornada...** *(Esto tomará unos segundos para no saturar la API)*")
 
     for p in fixtures:
         try:
@@ -146,9 +146,12 @@ def escanear_jornada_actual(temporada_actual=2026):
             
             st.write(f"⚙️ Revisando: **{local} vs {visita}**")
             
+            # --- LA PAUSA MÁGICA QUE EVITA QUE LA API NOS BLOQUEE ---
+            time.sleep(1.5) 
+            
             cuotas = obtener_cuotas_partido(fix_id)
             if not cuotas: 
-                st.write(f"⚠️ *Saltado: La casa de apuestas aún no libera momios.*")
+                st.write(f"⚠️ *Saltado: La API bloqueó la petición o no hay momios aún.*")
                 continue
                 
             elo_loc = obtener_ultimo_elo(df_historico_ml, local)
@@ -173,7 +176,7 @@ def escanear_jornada_actual(temporada_actual=2026):
                 g_l_sim = resultados.get('Goles_Individuales', {}).get(local, {}).get('goles', 1.2)
                 g_v_sim = resultados.get('Goles_Individuales', {}).get(visita, {}).get('goles', 1.0)
                 
-                # --- CHIVATO PARA VERIFICAR QUE YA NO DICE 1500 ---
+                # Chivato ELO para asegurarnos de que ya no es 1500
                 if "America" in local or "Santos" in local:
                     st.write(f"🔬 DIAGNÓSTICO ELO: Loc {elo_loc} | Vis {elo_vis}")
                 
