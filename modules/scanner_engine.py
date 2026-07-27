@@ -71,19 +71,28 @@ def registrar_apuesta_github(partido, mercado, prob_modelo, cuota, kelly_pct, ba
         )
 
 def obtener_ultimo_elo(df, equipo):
-    """Busca el ELO más reciente de un equipo."""
+    """Busca el ELO de forma robusta ignorando mayúsculas y espacios invisibles."""
     try:
         if df is not None and not df.empty:
-            df_eq = df[(df['Local'] == equipo) | (df['Visitante'] == equipo)]
+            equipo_norm = str(equipo).strip().lower()
+            
+            mask = (df['Local'].astype(str).str.strip().str.lower() == equipo_norm) | \
+                   (df['Visitante'].astype(str).str.strip().str.lower() == equipo_norm)
+            df_eq = df[mask]
+            
             if not df_eq.empty:
                 ultima_fila = df_eq.iloc[-1]
-                if ultima_fila['Local'] == equipo:
+                local_csv_norm = str(ultima_fila['Local']).strip().lower()
+                
+                if local_csv_norm == equipo_norm:
                     for col in ['ELO_Local', 'ELO_L', 'Elo_Local', 'Elo_L']:
-                        if col in df.columns: return float(ultima_fila[col])
+                        if col in df.columns and not pd.isna(ultima_fila[col]): 
+                            return float(ultima_fila[col])
                 else:
                     for col in ['ELO_Visita', 'ELO_V', 'Elo_Visita', 'Elo_V', 'ELO_Visitante']:
-                        if col in df.columns: return float(ultima_fila[col])
-    except:
+                        if col in df.columns and not pd.isna(ultima_fila[col]): 
+                            return float(ultima_fila[col])
+    except Exception as e:
         pass
     return 1500.0
         
@@ -135,6 +144,13 @@ def escanear_jornada_actual(temporada_actual=2026):
             visita = p["teams"]["away"]["name"]
             fecha = p["fixture"]["date"][:16].replace("T", " ")
             
+            st.write(f"⚙️ Revisando: **{local} vs {visita}**")
+            
+            cuotas = obtener_cuotas_partido(fix_id)
+            if not cuotas: 
+                st.write(f"⚠️ *Saltado: La casa de apuestas aún no libera momios.*")
+                continue
+                
             elo_loc = obtener_ultimo_elo(df_historico_ml, local)
             elo_vis = obtener_ultimo_elo(df_historico_ml, visita)
             
@@ -147,10 +163,6 @@ def escanear_jornada_actual(temporada_actual=2026):
             
             if isinstance(resultados, str): 
                 continue
-            
-            cuotas = obtener_cuotas_partido(fix_id)
-            if not cuotas: 
-                continue
 
             prob_ml_local = prob_ml_empate = prob_ml_visita = 0.0
             prob_ml_over_g = prob_ml_under_g = 0.0
@@ -161,10 +173,9 @@ def escanear_jornada_actual(temporada_actual=2026):
                 g_l_sim = resultados.get('Goles_Individuales', {}).get(local, {}).get('goles', 1.2)
                 g_v_sim = resultados.get('Goles_Individuales', {}).get(visita, {}).get('goles', 1.0)
                 
-                # --- CHIVATO EXACTO DE VARIABLES ANTES DE ENTRAR AL ML ---
+                # --- CHIVATO PARA VERIFICAR QUE YA NO DICE 1500 ---
                 if "America" in local or "Santos" in local:
-                    st.write(f"🔬 **DIAGNÓSTICO ML: [{local} vs {visita}]**")
-                    st.write(f"Entradas -> ELO_Loc: {elo_loc}, ELO_Vis: {elo_vis}, G_L_Sim: {g_l_sim}, G_V_Sim: {g_v_sim}")
+                    st.write(f"🔬 DIAGNÓSTICO ELO: Loc {elo_loc} | Vis {elo_vis}")
                 
                 preds_ml = ml_escanner.predecir_mercados_completos(
                     df_historico_ml, local, visita, g_l_sim, g_v_sim, elo_loc, elo_vis
