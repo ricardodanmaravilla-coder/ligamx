@@ -70,14 +70,39 @@ def registrar_apuesta_github(partido, mercado, prob_modelo, cuota, kelly_pct, ba
             content=nuevo_contenido_csv
         )
 
-def obtener_ultimo_elo(df, equipo):
-    """Busca el ELO más reciente de un equipo en el dataframe histórico"""
+def mapear_nombre_csv(equipo_api):
+    """Traduce los nombres de la API a los nombres cortos que tienes en tu CSV"""
+    equipo = equipo_api.upper()
+    if "AMERICA" in equipo or "AMÉRICA" in equipo: return "America"
+    if "SANTOS" in equipo: return "Santos"
+    if "GUADALAJARA" in equipo or "CHIVAS" in equipo: return "Guadalajara"
+    if "PUMAS" in equipo or "U.N.A.M." in equipo: return "UNAM"
+    if "TIGRES" in equipo: return "Tigres"
+    if "CRUZ AZUL" in equipo: return "Cruz Azul"
+    if "MONTERREY" in equipo or "RAYADOS" in equipo: return "Monterrey"
+    if "PACHUCA" in equipo: return "Pachuca"
+    if "TOLUCA" in equipo: return "Toluca"
+    if "LEON" in equipo or "LEÓN" in equipo: return "Leon"
+    if "TIJUANA" in equipo: return "Tijuana"
+    if "PUEBLA" in equipo: return "Puebla"
+    if "QUERETARO" in equipo or "QUERÉTARO" in equipo: return "Queretaro"
+    if "ATLAS" in equipo: return "Atlas"
+    if "NECAXA" in equipo: return "Necaxa"
+    if "JUAREZ" in equipo or "JUÁREZ" in equipo: return "Juarez"
+    if "SAN LUIS" in equipo: return "Atletico de San Luis"
+    if "MAZATLAN" in equipo or "MAZATLÁN" in equipo: return "Mazatlan"
+    return equipo_api
+
+def obtener_ultimo_elo(df, equipo_api):
+    """Busca el ELO más reciente de un equipo utilizando su nombre traducido"""
+    equipo_csv = mapear_nombre_csv(equipo_api)
+    
     try:
         if df is not None and not df.empty:
-            df_eq = df[(df['Local'] == equipo) | (df['Visitante'] == equipo)]
+            df_eq = df[(df['Local'].str.contains(equipo_csv, case=False, na=False)) | (df['Visitante'].str.contains(equipo_csv, case=False, na=False))]
             if not df_eq.empty:
                 ultima_fila = df_eq.iloc[-1]
-                if ultima_fila['Local'] == equipo:
+                if equipo_csv.lower() in str(ultima_fila['Local']).lower():
                     for col in ['ELO_Local', 'ELO_L', 'Elo_Local']:
                         if col in ultima_fila: return float(ultima_fila[col])
                 else:
@@ -125,6 +150,9 @@ def escanear_jornada_actual(temporada_actual=2026):
 
     oportunidades_oro = []
 
+    st.write("---")
+    st.write("🔎 **Analizando partidos de la jornada...**")
+
     for p in fixtures:
         try:
             fix_id = p["fixture"]["id"]
@@ -132,11 +160,11 @@ def escanear_jornada_actual(temporada_actual=2026):
             visita = p["teams"]["away"]["name"]
             fecha = p["fixture"]["date"][:16].replace("T", " ")
             
-            # --- 1. Extraer el ELO REAL de cada equipo para no engañar al ML ---
+            st.write(f"⚙️ Calculando: {local} vs {visita}")
+            
             elo_loc = obtener_ultimo_elo(df_historico_ml, local)
             elo_vis = obtener_ultimo_elo(df_historico_ml, visita)
             
-            # --- 2. Simular partido con ELO dinámico integrado ---
             resultados = simular_partido_montecarlo(
                 local, visita, 
                 df_historico=df_historico_ml, 
@@ -160,9 +188,8 @@ def escanear_jornada_actual(temporada_actual=2026):
                 g_l_sim = resultados.get('Goles_Individuales', {}).get(local, {}).get('goles', 1.2)
                 g_v_sim = resultados.get('Goles_Individuales', {}).get(visita, {}).get('goles', 1.0)
                 
-                # --- 3. ML recibe el ELO REAL (América vs Santos será evaluado correctamente) ---
                 preds_ml = ml_escanner.predecir_mercados_completos(
-                    df_historico_ml, local, visita, g_l_sim, g_v_sim, elo_loc, elo_vis
+                    df_historico_ml, mapear_nombre_csv(local), mapear_nombre_csv(visita), g_l_sim, g_v_sim, elo_loc, elo_vis
                 )
                 
                 if "Resultado_1X2" in preds_ml:
@@ -270,4 +297,5 @@ def escanear_jornada_actual(temporada_actual=2026):
         except Exception as e:
             continue
             
+    st.write("✅ **Escaneo completado.**")
     return oportunidades_oro
