@@ -69,6 +69,23 @@ def registrar_apuesta_github(partido, mercado, prob_modelo, cuota, kelly_pct, ba
             message="🤖 Creación de bitácora inicial",
             content=nuevo_contenido_csv
         )
+
+def obtener_ultimo_elo(df, equipo):
+    """Busca el ELO más reciente de un equipo en el dataframe histórico"""
+    try:
+        if df is not None and not df.empty:
+            df_eq = df[(df['Local'] == equipo) | (df['Visitante'] == equipo)]
+            if not df_eq.empty:
+                ultima_fila = df_eq.iloc[-1]
+                if ultima_fila['Local'] == equipo:
+                    for col in ['ELO_Local', 'ELO_L', 'Elo_Local']:
+                        if col in ultima_fila: return float(ultima_fila[col])
+                else:
+                    for col in ['ELO_Visita', 'ELO_V', 'Elo_Visita', 'ELO_Visitante']:
+                        if col in ultima_fila: return float(ultima_fila[col])
+    except:
+        pass
+    return 1500.0
         
 def escanear_jornada_actual(temporada_actual=2026):
     ml_escanner = PredictorML()
@@ -115,41 +132,24 @@ def escanear_jornada_actual(temporada_actual=2026):
             visita = p["teams"]["away"]["name"]
             fecha = p["fixture"]["date"][:16].replace("T", " ")
             
-            # LISTA BLANCA OFICIAL DE LA LIGA MX (Evita partidos inventados o filiales)
-            equipos_validos = [
-                "Toluca",
-                "CF Pachuca",
-                "U.N.A.M. - Pumas",
-                "Club America",
-                "Cruz Azul",
-                "Puebla",
-                "Club Tijuana", 
-                "Leon",
-                "Club Queretaro",
-                "Atletico San Luis",
-                "Necaxa",
-                "Atlas",
-                "Guadalajara Chivas",
-                "FC Juarez",
-                "Santos Laguna",
-                "Monterrey",
-                "Tigres UANL",
-                "Mazatlán",
-                "Atlante"
-            ]
+            # --- 1. Extraer el ELO REAL de cada equipo para no engañar al ML ---
+            elo_loc = obtener_ultimo_elo(df_historico_ml, local)
+            elo_vis = obtener_ultimo_elo(df_historico_ml, visita)
             
-            if local not in equipos_validos or visita not in equipos_validos:
-                continue
+            # --- 2. Simular partido con ELO dinámico integrado ---
+            resultados = simular_partido_montecarlo(
+                local, visita, 
+                df_historico=df_historico_ml, 
+                elo_local=elo_loc, 
+                elo_visita=elo_vis
+            )
             
-            resultados = simular_partido_montecarlo(local, visita)
             if isinstance(resultados, str): 
                 continue
             
             cuotas = obtener_cuotas_partido(fix_id)
             if not cuotas: 
                 continue
-            
-            elo_loc, elo_vis = 1500.0, 1500.0
 
             prob_ml_local = prob_ml_empate = prob_ml_visita = 0.0
             prob_ml_over_g = prob_ml_under_g = 0.0
@@ -160,6 +160,7 @@ def escanear_jornada_actual(temporada_actual=2026):
                 g_l_sim = resultados.get('Goles_Individuales', {}).get(local, {}).get('goles', 1.2)
                 g_v_sim = resultados.get('Goles_Individuales', {}).get(visita, {}).get('goles', 1.0)
                 
+                # --- 3. ML recibe el ELO REAL (América vs Santos será evaluado correctamente) ---
                 preds_ml = ml_escanner.predecir_mercados_completos(
                     df_historico_ml, local, visita, g_l_sim, g_v_sim, elo_loc, elo_vis
                 )
@@ -173,10 +174,10 @@ def escanear_jornada_actual(temporada_actual=2026):
                     prob_ml_under_g = preds_ml['Goles_Over_Under']['Under 2.5']
                     
                     prob_ml_over_c = preds_ml['Corners_Totales']['Over 9.5 Corners']
-                    prob_ml_under_c = preds_ml['Corners_Totales']['Over 9.5 Corners']
+                    prob_ml_under_c = preds_ml['Corners_Totales']['Under 9.5 Corners']
                     
                     prob_ml_over_t = preds_ml['Tarjetas_Totales']['Over 4.5 Tarjetas']
-                    prob_ml_under_t = preds_ml['Tarjetas_Totales']['Over 4.5 Tarjetas']
+                    prob_ml_under_t = preds_ml['Tarjetas_Totales']['Under 4.5 Tarjetas']
 
             prob_mc_dict = {
                 "Gana Local": resultados.get('Resultado_1X2', {}).get('Gana Local', 0.0),
@@ -237,14 +238,6 @@ def escanear_jornada_actual(temporada_actual=2026):
                 except:
                     cuota = 0.0
 
-                # --- CHIVATO DE FILTROS PARA EL AMÉRICA VS SANTOS ---
-                if "America" in local or "Santos" in local:
-                    if nombre_m == "Over 9.5 Corners":
-                        st.write(f"🔎 [{local} vs {visita}] Mercado: {nombre_m} | Cuota: {cuota} | P_MC: {p_mc}% | P_ML: {p_ml}%")
-                        if not (cuota > 1.40): st.write("❌ Falló el filtro de Cuota (>1.40)")
-                        if not (p_mc >= 58.0): st.write("❌ Falló el filtro de Montecarlo (>=58%)")
-                        if not (p_ml >= 58.0): st.write("❌ Falló el filtro de Machine Learning (>=58%)")
-
                 if cuota > 1.40 and p_mc >= 58.0 and p_ml >= 58.0:
                     prob_combinada = round((p_mc + p_ml) / 2.0, 1)
                     
@@ -252,16 +245,11 @@ def escanear_jornada_actual(temporada_actual=2026):
                     diferencia_anomala = prob_combinada - prob_implicita_casa
                     
                     if diferencia_anomala > 40.0:
-                        if "America" in local or "Santos" in local and nombre_m == "Over 9.5 Corners":
-                            st.write(f"❌ Matado por Sanity Check (Diferencia: {diferencia_anomala:.1f}%)")
                         continue 
                     
                     ev_real = ((prob_combinada / 100.0) * cuota) - 1.0
                     ev_porcentaje = ev_real * 100.0
                     
-                    if "America" in local or "Santos" in local and nombre_m == "Over 9.5 Corners":
-                        st.write(f"💰 EV Calculado: {ev_porcentaje:.1f}% (Mínimo requerido: 2.0%)")
-
                     if ev_porcentaje >= 2.0:
                         stake_recomendado = (ev_real / (cuota - 1.0)) * 10.0 
                         stake_recomendado = max(0.5, min(stake_recomendado, 3.0)) 
@@ -283,4 +271,3 @@ def escanear_jornada_actual(temporada_actual=2026):
             continue
             
     return oportunidades_oro
-    
