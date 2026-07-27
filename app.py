@@ -140,12 +140,12 @@ else:
                     st.markdown("---")
                     st.markdown("📈 **Pronósticos Detallados por Equipo (Expectativa Matemática)**")
                     
-                    g_l_ind = resultados['Goles_Individuales'][datos_partido['local']]['goles']
-                    g_v_ind = resultados['Goles_Individuales'][datos_partido['visita']]['goles']
-                    c_l_ind = resultados['Corners_Individuales'][datos_partido['local']]['corners']
-                    c_v_ind = resultados['Corners_Individuales'][datos_partido['visita']]['corners']
-                    t_l_ind = resultados['Tarjetas_Individuales'][datos_partido['local']]['tarjetas']
-                    t_v_ind = resultados['Tarjetas_Individuales'][datos_partido['visita']]['tarjetas']
+                    g_l_ind = round(resultados['Goles_Individuales'][datos_partido['local']]['goles'])
+                    g_v_ind = round(resultados['Goles_Individuales'][datos_partido['visita']]['goles'])
+                    c_l_ind = round(resultados['Corners_Individuales'][datos_partido['local']]['corners'])
+                    c_v_ind = round(resultados['Corners_Individuales'][datos_partido['visita']]['corners'])
+                    t_l_ind = round(resultados['Tarjetas_Individuales'][datos_partido['local']]['tarjetas'])
+                    t_v_ind = round(resultados['Tarjetas_Individuales'][datos_partido['visita']]['tarjetas'])
 
                     ind_col1, ind_col2, ind_col3 = st.columns(3)
                     with ind_col1:
