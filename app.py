@@ -202,7 +202,8 @@ st.markdown("---")
 st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
 
 try:
-    df_historico = pd.read_csv("historico_ligamx_completo.csv")
+    ruta_csv = 'data/historico_ligamx_completo.csv' if os.path.exists('data/historico_ligamx_completo.csv') else 'historico_ligamx_completo.csv'
+    df_historico = pd.read_csv(ruta_csv)
     df_historico['Local'] = df_historico['Local'].str.strip()
     df_historico['Visitante'] = df_historico['Visitante'].str.strip()
 
