@@ -108,26 +108,13 @@ def escanear_jornada_actual(temporada_actual=2026):
 
     oportunidades_oro = []
 
-                     # --- CHIVATO DE FILTROS ---
-                if "América" in local or "Santos" in local:
-                    st.write(f"🔎 Evaluando [{nombre_m}] -> Cuota: {cuota}, P_MC: {p_mc}%, P_ML: {p_ml}")
-                    if not (cuota > 1.40): st.write("❌ Falló el filtro de Cuota (>1.40)")
-                    if not (p_mc >= 58.0): st.write("❌ Falló el filtro de Montecarlo (>=58%)")
-                    if not (p_ml >= 58.0): st.write("❌ Falló el filtro de Machine Learning (>=58%)")
-                    
-                    if cuota > 1.40 and p_mc >= 58.0 and p_ml >= 58.0:
-                        pc = round((p_mc + p_ml) / 2.0, 1)
-                        pi = (1.0 / cuota) * 100.0
-                        dif = pc - pi
-                        st.write(f"📊 Prob. Combinada: {pc}% | Implícita Casa: {pi:.1f}% | Diferencia (Sanity): {dif:.1f}%")
-                        if dif > 40.0: st.write("❌ Matado por Sanity Check (>40%)")
-                        
-                        ev = (((pc / 100.0) * cuota) - 1.0) * 100.0
-                        st.write(f"💰 EV calculado: {ev:.1f}%")
-                        if ev < 2.0: st.write("❌ Falló el EV (Menor al +2.0%)")
-                # -------------------------
-
+    for p in fixtures:
         try:
+            fix_id = p["fixture"]["id"]
+            local = p["teams"]["home"]["name"]
+            visita = p["teams"]["away"]["name"]
+            fecha = p["fixture"]["date"][:16].replace("T", " ")
+            
             resultados = simular_partido_montecarlo(local, visita)
             if isinstance(resultados, str): 
                 continue
@@ -224,6 +211,14 @@ def escanear_jornada_actual(temporada_actual=2026):
                 except:
                     cuota = 0.0
 
+                # --- CHIVATO DE FILTROS PARA EL AMÉRICA VS SANTOS ---
+                if "América" in local or "Santos" in local:
+                    if nombre_m == "Over 9.5 Corners":
+                        st.write(f"🔎 [{local} vs {visita}] Mercado: {nombre_m} | Cuota: {cuota} | P_MC: {p_mc}% | P_ML: {p_ml}%")
+                        if not (cuota > 1.40): st.write("❌ Falló el filtro de Cuota (>1.40)")
+                        if not (p_mc >= 58.0): st.write("❌ Falló el filtro de Montecarlo (>=58%)")
+                        if not (p_ml >= 58.0): st.write("❌ Falló el filtro de Machine Learning (>=58%)")
+
                 if cuota > 1.40 and p_mc >= 58.0 and p_ml >= 58.0:
                     prob_combinada = round((p_mc + p_ml) / 2.0, 1)
                     
@@ -231,11 +226,16 @@ def escanear_jornada_actual(temporada_actual=2026):
                     diferencia_anomala = prob_combinada - prob_implicita_casa
                     
                     if diferencia_anomala > 40.0:
+                        if "América" in local or "Santos" in local and nombre_m == "Over 9.5 Corners":
+                            st.write(f"❌ Matado por Sanity Check (Diferencia: {diferencia_anomala:.1f}%)")
                         continue 
                     
                     ev_real = ((prob_combinada / 100.0) * cuota) - 1.0
                     ev_porcentaje = ev_real * 100.0
                     
+                    if "América" in local or "Santos" in local and nombre_m == "Over 9.5 Corners":
+                        st.write(f"💰 EV Calculado: {ev_porcentaje:.1f}% (Mínimo requerido: 2.0%)")
+
                     if ev_porcentaje >= 2.0:
                         stake_recomendado = (ev_real / (cuota - 1.0)) * 10.0 
                         stake_recomendado = max(0.5, min(stake_recomendado, 3.0)) 
