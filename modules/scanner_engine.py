@@ -5,7 +5,7 @@ from datetime import datetime
 from github import Github
 import streamlit as st
 import io
-import time  # <--- IMPORTANTE: La librería que evitará el bloqueo de la API
+import time  # <--- Librería para frenar el escáner
 
 from modules.stats_engine import calcular_expectativa_partido
 from modules.montecarlo_sim import simular_partido_montecarlo
@@ -135,7 +135,7 @@ def escanear_jornada_actual(temporada_actual=2026):
     oportunidades_oro = []
 
     st.write("---")
-    st.write("🔎 **Analizando partidos de la jornada...** *(Esto tomará unos segundos para no saturar la API)*")
+    st.write("🔎 **Analizando partidos de la jornada...** *(Tardará 1 minuto aprox. para no saturar la API)*")
 
     for p in fixtures:
         try:
@@ -146,12 +146,12 @@ def escanear_jornada_actual(temporada_actual=2026):
             
             st.write(f"⚙️ Revisando: **{local} vs {visita}**")
             
-            # --- LA PAUSA MÁGICA QUE EVITA QUE LA API NOS BLOQUEE ---
-            time.sleep(1.5) 
+            # --- FRENO REAL: 7 SEGUNDOS. Evita el límite de 10 peticiones/minuto ---
+            time.sleep(7) 
             
             cuotas = obtener_cuotas_partido(fix_id)
             if not cuotas: 
-                st.write(f"⚠️ *Saltado: La API bloqueó la petición o no hay momios aún.*")
+                st.write(f"⚠️ *Saltado: Sin momios.*")
                 continue
                 
             elo_loc = obtener_ultimo_elo(df_historico_ml, local)
