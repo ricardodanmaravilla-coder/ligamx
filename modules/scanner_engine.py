@@ -108,16 +108,24 @@ def escanear_jornada_actual(temporada_actual=2026):
 
     oportunidades_oro = []
 
-     #🚨 CHIVATO GLOBAL: Imprime TODOS los partidos que la API está entregando al escáner
-    st.write(f"📡 Total de partidos descargados de la API para esta jornada: {len(fixtures)}")
-
-    for p in fixtures:
-        fix_id = p["fixture"]["id"]
-        local = p["teams"]["home"]["name"]
-        visita = p["teams"]["away"]["name"]
-        fecha = p["fixture"]["date"][:16].replace("T", " ")
-        
-        st.write(f"⚽ Partido detectado en API: **{local} vs {visita}**")
+                     # --- CHIVATO DE FILTROS ---
+                if "América" in local or "Santos" in local:
+                    st.write(f"🔎 Evaluando [{nombre_m}] -> Cuota: {cuota}, P_MC: {p_mc}%, P_ML: {p_ml}")
+                    if not (cuota > 1.40): st.write("❌ Falló el filtro de Cuota (>1.40)")
+                    if not (p_mc >= 58.0): st.write("❌ Falló el filtro de Montecarlo (>=58%)")
+                    if not (p_ml >= 58.0): st.write("❌ Falló el filtro de Machine Learning (>=58%)")
+                    
+                    if cuota > 1.40 and p_mc >= 58.0 and p_ml >= 58.0:
+                        pc = round((p_mc + p_ml) / 2.0, 1)
+                        pi = (1.0 / cuota) * 100.0
+                        dif = pc - pi
+                        st.write(f"📊 Prob. Combinada: {pc}% | Implícita Casa: {pi:.1f}% | Diferencia (Sanity): {dif:.1f}%")
+                        if dif > 40.0: st.write("❌ Matado por Sanity Check (>40%)")
+                        
+                        ev = (((pc / 100.0) * cuota) - 1.0) * 100.0
+                        st.write(f"💰 EV calculado: {ev:.1f}%")
+                        if ev < 2.0: st.write("❌ Falló el EV (Menor al +2.0%)")
+                # -------------------------
 
         try:
             resultados = simular_partido_montecarlo(local, visita)
