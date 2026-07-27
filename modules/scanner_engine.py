@@ -70,44 +70,19 @@ def registrar_apuesta_github(partido, mercado, prob_modelo, cuota, kelly_pct, ba
             content=nuevo_contenido_csv
         )
 
-def mapear_nombre_csv(equipo_api):
-    """Traduce los nombres de la API a los nombres cortos que tienes en tu CSV"""
-    equipo = equipo_api.upper()
-    if "AMERICA" in equipo or "AMÉRICA" in equipo: return "America"
-    if "SANTOS" in equipo: return "Santos"
-    if "GUADALAJARA" in equipo or "CHIVAS" in equipo: return "Guadalajara"
-    if "PUMAS" in equipo or "U.N.A.M." in equipo: return "UNAM"
-    if "TIGRES" in equipo: return "Tigres"
-    if "CRUZ AZUL" in equipo: return "Cruz Azul"
-    if "MONTERREY" in equipo or "RAYADOS" in equipo: return "Monterrey"
-    if "PACHUCA" in equipo: return "Pachuca"
-    if "TOLUCA" in equipo: return "Toluca"
-    if "LEON" in equipo or "LEÓN" in equipo: return "Leon"
-    if "TIJUANA" in equipo: return "Tijuana"
-    if "PUEBLA" in equipo: return "Puebla"
-    if "QUERETARO" in equipo or "QUERÉTARO" in equipo: return "Queretaro"
-    if "ATLAS" in equipo: return "Atlas"
-    if "NECAXA" in equipo: return "Necaxa"
-    if "JUAREZ" in equipo or "JUÁREZ" in equipo: return "Juarez"
-    if "SAN LUIS" in equipo: return "Atletico de San Luis"
-    if "MAZATLAN" in equipo or "MAZATLÁN" in equipo: return "Mazatlan"
-    return equipo_api
-
-def obtener_ultimo_elo(df, equipo_api):
-    """Busca el ELO más reciente de un equipo utilizando su nombre traducido"""
-    equipo_csv = mapear_nombre_csv(equipo_api)
-    
+def obtener_ultimo_elo(df, equipo):
+    """Busca el ELO más reciente de un equipo."""
     try:
         if df is not None and not df.empty:
-            df_eq = df[(df['Local'].str.contains(equipo_csv, case=False, na=False)) | (df['Visitante'].str.contains(equipo_csv, case=False, na=False))]
+            df_eq = df[(df['Local'] == equipo) | (df['Visitante'] == equipo)]
             if not df_eq.empty:
                 ultima_fila = df_eq.iloc[-1]
-                if equipo_csv.lower() in str(ultima_fila['Local']).lower():
-                    for col in ['ELO_Local', 'ELO_L', 'Elo_Local']:
-                        if col in ultima_fila: return float(ultima_fila[col])
+                if ultima_fila['Local'] == equipo:
+                    for col in ['ELO_Local', 'ELO_L', 'Elo_Local', 'Elo_L']:
+                        if col in df.columns: return float(ultima_fila[col])
                 else:
-                    for col in ['ELO_Visita', 'ELO_V', 'Elo_Visita', 'ELO_Visitante']:
-                        if col in ultima_fila: return float(ultima_fila[col])
+                    for col in ['ELO_Visita', 'ELO_V', 'Elo_Visita', 'Elo_V', 'ELO_Visitante']:
+                        if col in df.columns: return float(ultima_fila[col])
     except:
         pass
     return 1500.0
@@ -160,8 +135,6 @@ def escanear_jornada_actual(temporada_actual=2026):
             visita = p["teams"]["away"]["name"]
             fecha = p["fixture"]["date"][:16].replace("T", " ")
             
-            st.write(f"⚙️ Calculando: {local} vs {visita}")
-            
             elo_loc = obtener_ultimo_elo(df_historico_ml, local)
             elo_vis = obtener_ultimo_elo(df_historico_ml, visita)
             
@@ -188,8 +161,13 @@ def escanear_jornada_actual(temporada_actual=2026):
                 g_l_sim = resultados.get('Goles_Individuales', {}).get(local, {}).get('goles', 1.2)
                 g_v_sim = resultados.get('Goles_Individuales', {}).get(visita, {}).get('goles', 1.0)
                 
+                # --- CHIVATO EXACTO DE VARIABLES ANTES DE ENTRAR AL ML ---
+                if "America" in local or "Santos" in local:
+                    st.write(f"🔬 **DIAGNÓSTICO ML: [{local} vs {visita}]**")
+                    st.write(f"Entradas -> ELO_Loc: {elo_loc}, ELO_Vis: {elo_vis}, G_L_Sim: {g_l_sim}, G_V_Sim: {g_v_sim}")
+                
                 preds_ml = ml_escanner.predecir_mercados_completos(
-                    df_historico_ml, mapear_nombre_csv(local), mapear_nombre_csv(visita), g_l_sim, g_v_sim, elo_loc, elo_vis
+                    df_historico_ml, local, visita, g_l_sim, g_v_sim, elo_loc, elo_vis
                 )
                 
                 if "Resultado_1X2" in preds_ml:
