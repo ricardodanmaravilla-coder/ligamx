@@ -28,7 +28,7 @@ def normalizar_nombre_equipo(nombre):
     if "ATLANTE" in n: return "Atlante"
     return nombre
 
-def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_local=None, elo_visita=None, num_simulaciones=10000, arbitro=None):
+def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_local=None, elo_visita=None, num_simulaciones=100000000, arbitro=None):
     local = normalizar_nombre_equipo(local_raw)
     visita = normalizar_nombre_equipo(visita_raw)
     
@@ -43,8 +43,8 @@ def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_loc
             if elo_visita is None:
                 elo_visita = float(tabla_elo.loc[tabla_elo['Equipo'] == visita, 'ELO_Rating'].values[0])
         except Exception:
-            elo_local = elo_local if elo_local is not None else 1500.0
-            elo_visita = elo_visita if elo_visita is not None else 1500.0
+       #     elo_local = elo_local if elo_local is not None else 1500.0
+        #    elo_visita = elo_visita if elo_visita is not None else 1500.0
 
     try:
         expectativas = calcular_expectativa_partido(local, visita, arbitro=arbitro)
