@@ -94,7 +94,9 @@ def escanear_jornada_actual(temporada_actual=2026):
     ml_escanner = PredictorML()
     df_historico_ml = None
     try:
-        df_historico_ml = pd.read_csv("data/historico_ligamx_completo.csv")
+        ruta_csv = 'data/historico_ligamx_completo.csv' if os.path.exists('data/historico_ligamx_completo.csv') else 'historico_ligamx_completo.csv'
+    try:
+        df_historico_ml = pd.read_csv(ruta_csv)
         df_historico_ml['Local'] = df_historico_ml['Local'].str.strip()
         df_historico_ml['Visitante'] = df_historico_ml['Visitante'].str.strip()
         ml_escanner.entrenar(df_historico_ml)
