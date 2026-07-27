@@ -107,6 +107,7 @@ def escanear_jornada_actual(temporada_actual=2026):
     except Exception:
         pass
 
+    # 1. Obtenemos estrictamente la ronda actual de la liga
     url_rounds = f"{BASE_URL}/fixtures/rounds"
     res_rounds = requests.get(url_rounds, headers=HEADERS, params={"league": LIGA_MX_ID, "season": temporada_actual, "current": "true"})
     
@@ -116,6 +117,7 @@ def escanear_jornada_actual(temporada_actual=2026):
         if rounds_data:
             jornada_actual = rounds_data[0]
             
+    # 2. Consultamos los fixtures exigiendo la ronda exacta en curso
     url = f"{BASE_URL}/fixtures"
     params = {"league": LIGA_MX_ID, "season": temporada_actual, "status": "NS"}
     if jornada_actual:
@@ -126,16 +128,15 @@ def escanear_jornada_actual(temporada_actual=2026):
         return []
         
     fixtures = res.json().get("response", [])
-    if not fixtures:
-        params = {"league": LIGA_MX_ID, "season": temporada_actual, "status": "NS"}
-        res = requests.get(url, headers=HEADERS, params=params)
-        if res.status_code == 200:
-            fixtures = res.json().get("response", [])
+    
+    # 3. FILTRO DE SEGURIDAD ESTRICTO: Descartar cualquier partido que no pertenezca a la jornada actual
+    if jornada_actual and fixtures:
+        fixtures = [f for f in fixtures if f.get("league", {}).get("round") == jornada_actual]
 
     oportunidades_oro = []
 
     st.write("---")
-    st.write("🔎 **Analizando partidos de la jornada...** *(Tardará 1 minuto aprox. para no saturar la API)*")
+    st.write(f"🔎 **Analizando partidos de la {jornada_actual}** *(Modo estricto por jornada)*")
 
     for p in fixtures:
         try:
@@ -145,9 +146,6 @@ def escanear_jornada_actual(temporada_actual=2026):
             fecha = p["fixture"]["date"][:16].replace("T", " ")
             
             st.write(f"⚙️ Revisando: **{local} vs {visita}**")
-            
-            # --- FRENO REAL: 7 SEGUNDOS. Evita el límite de 10 peticiones/minuto ---
-            time.sleep(7) 
             
             cuotas = obtener_cuotas_partido(fix_id)
             if not cuotas: 
@@ -175,10 +173,6 @@ def escanear_jornada_actual(temporada_actual=2026):
             if ml_escanner.is_trained and df_historico_ml is not None:
                 g_l_sim = resultados.get('Goles_Individuales', {}).get(local, {}).get('goles', 1.2)
                 g_v_sim = resultados.get('Goles_Individuales', {}).get(visita, {}).get('goles', 1.0)
-                
-                # Chivato ELO para asegurarnos de que ya no es 1500
-                if "America" in local or "Santos" in local:
-                    st.write(f"🔬 DIAGNÓSTICO ELO: Loc {elo_loc} | Vis {elo_vis}")
                 
                 preds_ml = ml_escanner.predecir_mercados_completos(
                     df_historico_ml, local, visita, g_l_sim, g_v_sim, elo_loc, elo_vis
