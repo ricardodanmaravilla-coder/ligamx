@@ -115,6 +115,32 @@ def escanear_jornada_actual(temporada_actual=2026):
             visita = p["teams"]["away"]["name"]
             fecha = p["fixture"]["date"][:16].replace("T", " ")
             
+            # LISTA BLANCA OFICIAL DE LA LIGA MX (Evita partidos inventados o filiales)
+            equipos_validos = [
+                "Toluca",
+                "CF Pachuca",
+                "U.N.A.M. - Pumas",
+                "Club America",
+                "Cruz Azul",
+                "Puebla",
+                "Club Tijuana", 
+                "Leon",
+                "Club Queretaro",
+                "Atletico San Luis",
+                "Necaxa",
+                "Atlas",
+                "Guadalajara Chivas",
+                "FC Juarez",
+                "Santos Laguna",
+                "Monterrey",
+                "Tigres UANL",
+                "Mazatlán",
+                "Atlante"
+            ]
+            
+            if local not in equipos_validos or visita not in equipos_validos:
+                continue
+            
             resultados = simular_partido_montecarlo(local, visita)
             if isinstance(resultados, str): 
                 continue
@@ -147,10 +173,10 @@ def escanear_jornada_actual(temporada_actual=2026):
                     prob_ml_under_g = preds_ml['Goles_Over_Under']['Under 2.5']
                     
                     prob_ml_over_c = preds_ml['Corners_Totales']['Over 9.5 Corners']
-                    prob_ml_under_c = preds_ml['Corners_Totales']['Under 9.5 Corners']
+                    prob_ml_under_c = preds_ml['Corners_Totales']['Over 9.5 Corners']
                     
                     prob_ml_over_t = preds_ml['Tarjetas_Totales']['Over 4.5 Tarjetas']
-                    prob_ml_under_t = preds_ml['Tarjetas_Totales']['Under 4.5 Tarjetas']
+                    prob_ml_under_t = preds_ml['Tarjetas_Totales']['Over 4.5 Tarjetas']
 
             prob_mc_dict = {
                 "Gana Local": resultados.get('Resultado_1X2', {}).get('Gana Local', 0.0),
@@ -212,7 +238,7 @@ def escanear_jornada_actual(temporada_actual=2026):
                     cuota = 0.0
 
                 # --- CHIVATO DE FILTROS PARA EL AMÉRICA VS SANTOS ---
-                if "América" in local or "Santos" in local:
+                if "America" in local or "Santos" in local:
                     if nombre_m == "Over 9.5 Corners":
                         st.write(f"🔎 [{local} vs {visita}] Mercado: {nombre_m} | Cuota: {cuota} | P_MC: {p_mc}% | P_ML: {p_ml}%")
                         if not (cuota > 1.40): st.write("❌ Falló el filtro de Cuota (>1.40)")
@@ -226,14 +252,14 @@ def escanear_jornada_actual(temporada_actual=2026):
                     diferencia_anomala = prob_combinada - prob_implicita_casa
                     
                     if diferencia_anomala > 40.0:
-                        if "América" in local or "Santos" in local and nombre_m == "Over 9.5 Corners":
+                        if "America" in local or "Santos" in local and nombre_m == "Over 9.5 Corners":
                             st.write(f"❌ Matado por Sanity Check (Diferencia: {diferencia_anomala:.1f}%)")
                         continue 
                     
                     ev_real = ((prob_combinada / 100.0) * cuota) - 1.0
                     ev_porcentaje = ev_real * 100.0
                     
-                    if "América" in local or "Santos" in local and nombre_m == "Over 9.5 Corners":
+                    if "America" in local or "Santos" in local and nombre_m == "Over 9.5 Corners":
                         st.write(f"💰 EV Calculado: {ev_porcentaje:.1f}% (Mínimo requerido: 2.0%)")
 
                     if ev_porcentaje >= 2.0:
