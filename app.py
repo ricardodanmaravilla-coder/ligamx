@@ -65,9 +65,30 @@ else:
         with st.spinner('Procesando simulación y cuotas...'):
             try:
                 from modules.montecarlo_sim import simular_partido_montecarlo
+                
+                # Cargamos histórico para pasar el ELO y datos reales al simulador
+                df_hist_base = pd.read_csv("historico_ligamx_completo.csv")
+                df_hist_base['Local'] = df_hist_base['Local'].str.strip()
+                df_hist_base['Visitante'] = df_hist_base['Visitante'].str.strip()
+                
+                motor_elo_temp = SistemaEloLigaMX()
+                tabla_elo_temp = motor_elo_temp.calcular_historico(df_hist_base)
+                
+                try:
+                    e_loc = float(tabla_elo_temp.loc[tabla_elo_temp['Equipo'] == datos_partido['local'], 'ELO_Rating'].values[0])
+                except:
+                    e_loc = 1500.0
+                try:
+                    e_vis = float(tabla_elo_temp.loc[tabla_elo_temp['Equipo'] == datos_partido['visita'], 'ELO_Rating'].values[0])
+                except:
+                    e_vis = 1500.0
+
                 resultados = simular_partido_montecarlo(
                     datos_partido["local"], 
-                    datos_partido["visita"]
+                    datos_partido["visita"],
+                    df_historico=df_hist_base,
+                    elo_local=e_loc,
+                    elo_visita=e_vis
                 )
                 
                 if isinstance(resultados, str):
@@ -181,7 +202,7 @@ st.markdown("---")
 st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
 
 try:
-    df_historico = pd.read_csv("data/historico_ligamx_completo.csv")
+    df_historico = pd.read_csv("historico_ligamx_completo.csv")
     df_historico['Local'] = df_historico['Local'].str.strip()
     df_historico['Visitante'] = df_historico['Visitante'].str.strip()
 
