@@ -26,16 +26,13 @@ ALTITUDES_LIGA_MX = {
 }
 
 def cargar_datos():
-    # Enlace RAW directo a tu archivo en GitHub para garantizar la lectura remota en la nube
     url_github_raw = 'https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/data/historico_ligamx_completo.csv'
-    
     rutas_locales = [
         'data/historico_ligamx_completo.csv',
         'historico_ligamx_completo.csv'
     ]
     
     df = None
-    # Intentar primero localmente por si acaso
     for ruta in rutas_locales:
         if os.path.exists(ruta):
             try:
@@ -44,19 +41,17 @@ def cargar_datos():
             except Exception:
                 pass
                 
-    # Si no se encuentra de forma local, se descarga directo del repositorio de GitHub
     if df is None:
         try:
             df = pd.read_csv(url_github_raw)
         except Exception as e:
-            raise FileNotFoundError(f"No se pudo cargar el archivo histórico desde local ni desde GitHub: {e}")
+            raise FileNotFoundError(f"No se pudo cargar el archivo histórico: {e}")
 
     df['Fecha'] = pd.to_datetime(df['Fecha'])
     fecha_referencia = df['Fecha'].max()
     df['Dias_Antiguedad'] = (fecha_referencia - df['Fecha']).dt.days
     df['Peso'] = 0.5 ** (df['Dias_Antiguedad'] / 365.0)
 
-    # Sistema Híbrido: 60% xG + 40% Goles Reales
     if 'xG_L' not in df.columns: df['xG_L'] = df['Goles_L']
     if 'xG_V' not in df.columns: df['xG_V'] = df['Goles_V']
         
