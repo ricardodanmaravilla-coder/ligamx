@@ -14,6 +14,26 @@ BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {'x-apisports-key': API_KEY}
 LIGA_MX_ID = 262
 
+def cargar_historico_seguro():
+    url_github_raw = 'https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/data/historico_ligamx_completo.csv'
+    rutas_locales = ['data/historico_ligamx_completo.csv', 'historico_ligamx_completo.csv']
+    
+    df = None
+    for r in rutas_locales:
+        if os.path.exists(r):
+            try:
+                df = pd.read_csv(r)
+                break
+            except Exception:
+                pass
+                
+    if df is None:
+        df = pd.read_csv(url_github_raw)
+        
+    df['Local'] = df['Local'].str.strip()
+    df['Visitante'] = df['Visitante'].str.strip()
+    return df
+
 @st.cache_data(ttl=3600)
 def obtener_proximos_partidos():
     """Descarga los próximos partidos de la Liga MX de forma segura"""
@@ -66,10 +86,7 @@ else:
             try:
                 from modules.montecarlo_sim import simular_partido_montecarlo
                 
-                # Cargamos histórico para pasar el ELO y datos reales al simulador
-                df_hist_base = pd.read_csv("historico_ligamx_completo.csv")
-                df_hist_base['Local'] = df_hist_base['Local'].str.strip()
-                df_hist_base['Visitante'] = df_hist_base['Visitante'].str.strip()
+                df_hist_base = cargar_historico_seguro()
                 
                 motor_elo_temp = SistemaEloLigaMX()
                 tabla_elo_temp = motor_elo_temp.calcular_historico(df_hist_base)
@@ -104,7 +121,6 @@ else:
                     
                     st.markdown("---")
                     
-                    # --- MERCADOS DETALLADOS ---
                     st.markdown("🎯 **Goles, Corners y Tarjetas Más Probables del Partido**")
                     col4, col5, col6 = st.columns(3)
                     
@@ -119,7 +135,6 @@ else:
 
                     st.markdown("---")
                     
-                    # Análisis de Valor y Apuestas
                     from modules.odds_engine import obtener_cuotas_partido, analizar_apuestas
                     cuotas_automaticas = obtener_cuotas_partido(datos_partido["fixture_id"])
                     
@@ -173,7 +188,6 @@ else:
 
 st.markdown("---")
 
-# --- ESCÁNER AUTOMÁTICO DE JORNADA COMPLETA ---
 with st.expander("🚨 Escáner Automático de Oportunidades (Jornada Completa)", expanded=False):
     st.info("Este escáner analiza todos los partidos de la próxima jornada de la Liga MX de golpe y filtra exclusivamente las jugadas de valor.")
     
@@ -198,14 +212,10 @@ with st.expander("🚨 Escáner Automático de Oportunidades (Jornada Completa)"
 
 st.markdown("---")
 
-# --- MOTOR ELO Y MACHINE LEARNING ---
 st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
 
 try:
-    ruta_csv = 'data/historico_ligamx_completo.csv' if os.path.exists('data/historico_ligamx_completo.csv') else 'historico_ligamx_completo.csv'
-    df_historico = pd.read_csv(ruta_csv)
-    df_historico['Local'] = df_historico['Local'].str.strip()
-    df_historico['Visitante'] = df_historico['Visitante'].str.strip()
+    df_historico = cargar_historico_seguro()
 
     correccion_equipos = {
         "Atletico San Luis": "Atlético de San Luis",
@@ -224,7 +234,6 @@ try:
     tabla_posiciones_elo = motor_elo.calcular_historico(df_historico)
     st.dataframe(tabla_posiciones_elo, use_container_width=True)
 
-    # --- VALIDACIÓN CON MACHINE LEARNING ---
     ml_predictor = PredictorML()
     if ml_predictor.entrenar(df_historico):
         if 'resultados' in locals() and isinstance(resultados, dict):
