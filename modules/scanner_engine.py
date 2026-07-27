@@ -72,7 +72,6 @@ def registrar_apuesta_github(partido, mercado, prob_modelo, cuota, kelly_pct, ba
         )
 
 def obtener_ultimo_elo(df, equipo):
-    """Busca el ELO exacto igual que en la vista individual"""
     try:
         if df is not None and not df.empty:
             df_eq = df[(df['Local'] == equipo) | (df['Visitante'] == equipo)]
@@ -91,10 +90,12 @@ def obtener_ultimo_elo(df, equipo):
     return 1500.0
 
 def escanear_jornada_actual(temporada_actual=2026):
+    ml_escanner = PredictorML()
+    df_historico_ml = None
+    
     url_github_raw = 'https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/data/historico_ligamx_completo.csv'
     rutas_locales = ['data/historico_ligamx_completo.csv', 'historico_ligamx_completo.csv']
     
-    df_historico_ml = None
     try:
         for r in rutas_locales:
             if os.path.exists(r):
@@ -109,7 +110,6 @@ def escanear_jornada_actual(temporada_actual=2026):
     except Exception:
         pass
 
-    # Solicitamos estrictamente los siguientes partidos pendientes (Status NS)
     url = f"{BASE_URL}/fixtures"
     params = {
         "league": LIGA_MX_ID, 
@@ -137,17 +137,15 @@ def escanear_jornada_actual(temporada_actual=2026):
             
             st.write(f"⚙️ Analizando: **{local} vs {visita}**")
             
-            # Descarga de cuotas usando la función estándar
             cuotas = obtener_cuotas_partido(fix_id)
             if not cuotas: 
                 st.write(f"⚠️ *Sin cuotas disponibles en este momento.*")
                 continue
                 
-            # Extracción limpia de ELO
             elo_loc = obtener_ultimo_elo(df_historico_ml, local)
             elo_vis = obtener_ultimo_elo(df_historico_ml, visita)
             
-            resultados = simular_partido_montecarlo(local, visita)
+            resultados = simular_partido_montecarlo(local, visita, df_historico=df_historico_ml, elo_local=elo_loc, elo_visita=elo_vis)
             if isinstance(resultados, str): 
                 continue
 
