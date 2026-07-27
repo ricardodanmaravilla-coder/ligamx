@@ -8,21 +8,15 @@ HEADERS = {'x-apisports-key': API_KEY}
 
 def obtener_cuotas_partido(fixture_id, bookmaker_id=8):
     """
-    Descarga cuotas de la API. Si la casa principal no tiene datos, 
-    busca en cualquier otra casa disponible para evitar ceros.
+    Descarga las cuotas utilizando exactamente el ID de la casa de apuestas 
+    que funcionaba en la jornada pasada (por defecto ID 8).
     """
     url = f"{BASE_URL}/odds"
-    
-    # 1. Intentamos con la casa solicitada (ej. Playdoit/Bet365 ID 8)
     response = requests.get(url, headers=HEADERS, params={"fixture": fixture_id, "bookmaker": bookmaker_id})
-    if response.status_code == 200:
-        datos = response.json().get("response", [])
-        if not datos:
-            # Si no hay datos con el bookmaker 8, intentamos sin filtrar casa para agarrar la que esté disponible
-            response = requests.get(url, headers=HEADERS, params={"fixture": fixture_id})
-            if response.status_code == 200:
-                datos = response.json().get("response", [])
-                
+    if response.status_code != 200: 
+        return None
+    
+    datos = response.json().get("response", [])
     if not datos: 
         return None
         
@@ -31,13 +25,7 @@ def obtener_cuotas_partido(fixture_id, bookmaker_id=8):
         if not bookmakers:
             return None
             
-        # Buscamos el primer bookmaker que tenga apuestas registradas
-        mercados = []
-        for bm in bookmakers:
-            if "bets" in bm and len(bm["bets"]) > 0:
-                mercados = bm["bets"]
-                break
-                
+        mercados = bookmakers[0].get("bets", [])
         if not mercados:
             return None
 
@@ -48,45 +36,50 @@ def obtener_cuotas_partido(fixture_id, bookmaker_id=8):
             valores = mercado.get("values", [])
             
             # --- 1. GANADOR DEL PARTIDO (1X2) ---
-            if "Winner" in nombre or "1X2" in nombre:
+            if nombre == "Match Winner":
                 for val in valores:
                     v = val.get("value", "")
                     odd = val.get("odd")
                     if odd:
-                        if v in ["Home", "1"]: cuotas_limpias["1"] = float(odd)
-                        elif v in ["Draw", "X"]: cuotas_limpias["X"] = float(odd)
-                        elif v in ["Away", "2"]: cuotas_limpias["2"] = float(odd)
-                    
-            # --- 2. GOLES (Over/Under) ---
-            elif "Goals" in nombre or "Over/Under" in nombre:
-                for val in valores:
-                    v = val.get("value", "")
-                    odd = val.get("odd")
-                    if odd:
-                        if "Over 2.5" in v: cuotas_limpias["Over 2.5"] = float(odd)
-                        elif "Under 2.5" in v: cuotas_limpias["Under 2.5"] = float(odd)
-                    
-            # --- 3. CORNERS ---
-            elif "Corner" in nombre:
-                for val in valores:
-                    v = val.get("value", "")
-                    odd = val.get("odd")
-                    if odd:
-                        if "Over 9.5" in v: cuotas_limpias["Over 9.5 Corners"] = float(odd)
-                        elif "Under 9.5" in v: cuotas_limpias["Under 9.5 Corners"] = float(odd)
-                        # Por si el escáner del scanner_engine busca la llave corta "Over 9.5"
-                        elif "Over 9.5" in v: cuotas_limpias["Over 9.5"] = float(odd)
-            
-            # --- 4. TARJETAS ---
-            elif "Card" in nombre:
-                for val in valores:
-                    v = val.get("value", "")
-                    odd = val.get("odd")
-                    if odd:
-                        if "Over 4.5" in v: cuotas_limpias["Over 4.5 Tarjetas"] = float(odd)
-                        elif "Under 4.5" in v: cuotas_limpias["Under 4.5 Tarjetas"] = float(odd)
-                        elif "Over 4.5" in v: cuotas_limpias["Over 4.5"] = float(odd)
+                        if v == "Home": cuotas_limpias["1"] = float(odd)
+                        elif v == "Draw": cuotas_limpias["X"] = float(odd)
+                        elif v == "Away": cuotas_limpias["2"] = float(odd)
                         
+            # --- 2. GOLES (Over/Under) ---
+            elif nombre == "Goals Over/Under":
+                for val in valores:
+                    v = val.get("value", "")
+                    odd = val.get("odd")
+                    if odd:
+                        if v == "Over 2.5": cuotas_limpias["Over 2.5"] = float(odd)
+                        elif v == "Under 2.5": cuotas_limpias["Under 2.5"] = float(odd)
+                
+            # --- 3. CORNERS ---
+            elif nombre in ["Corners Over Under", "Corners"]:
+                for val in valores:
+                    v = val.get("value", "")
+                    odd = val.get("odd")
+                    if odd:
+                        if v == "Over 9.5": 
+                            cuotas_limpias["Over 9.5 Corners"] = float(odd)
+                            cuotas_limpias["Over 9.5"] = float(odd)
+                        elif v == "Under 9.5": 
+                            cuotas_limpias["Under 9.5 Corners"] = float(odd)
+                            cuotas_limpias["Under 9.5"] = float(odd)
+        
+            # --- 4. TARJETAS ---
+            elif nombre in ["Cards Over/Under", "Cards"]:
+                for val in valores:
+                    v = val.get("value", "")
+                    odd = val.get("odd")
+                    if odd:
+                        if v == "Over 4.5": 
+                            cuotas_limpias["Over 4.5 Tarjetas"] = float(odd)
+                            cuotas_limpias["Over 4.5"] = float(odd)
+                        elif v == "Under 4.5": 
+                            cuotas_limpias["Under 4.5 Tarjetas"] = float(odd)
+                            cuotas_limpias["Under 4.5"] = float(odd)
+                    
         return cuotas_limpias if cuotas_limpias else None
 
     except Exception as e:
