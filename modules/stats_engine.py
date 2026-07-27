@@ -26,13 +26,15 @@ ALTITUDES_LIGA_MX = {
 }
 
 def cargar_datos():
-    df = pd.read_csv('data/historico_ligamx_completo.csv')
+    # Intenta leer de la carpeta data o de la raíz automáticamente
+    ruta = 'data/historico_ligamx_completo.csv' if os.path.exists('data/historico_ligamx_completo.csv') else 'historico_ligamx_completo.csv'
+    
+    df = pd.read_csv(ruta)
     df['Fecha'] = pd.to_datetime(df['Fecha'])
     fecha_referencia = df['Fecha'].max()
     df['Dias_Antiguedad'] = (fecha_referencia - df['Fecha']).dt.days
     df['Peso'] = 0.5 ** (df['Dias_Antiguedad'] / 365.0)
 
-    # Sistema Híbrido: 60% xG + 40% Goles Reales
     if 'xG_L' not in df.columns: df['xG_L'] = df['Goles_L']
     if 'xG_V' not in df.columns: df['xG_V'] = df['Goles_V']
         
