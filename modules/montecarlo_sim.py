@@ -29,14 +29,28 @@ def normalizar_nombre_equipo(nombre):
     if "ATLANTE" in n: return "Atlante"
     return nombre
 
-def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_local=1500.0, elo_visita=1500.0, num_simulaciones=1000000, arbitro=None):
+def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_local=None, elo_visita=None, num_simulaciones=10000, arbitro=None):
     """
-    Simula un partido de la Liga MX usando el modelo híbrido (Poisson + xG + Altitud + ELO + Árbitro)
-    via Montecarlo (1,000,000 iteraciones).
+    Simula un partido de la Liga MX usando el modelo híbrido (Poisson + xG + Altitud + ELO Real + Árbitro)
+    via Montecarlo (10,000 iteraciones).
     """
     local = normalizar_nombre_equipo(local_raw)
     visita = normalizar_nombre_equipo(visita_raw)
     
+    # Si no se pasó un ELO explícito, calcularlo en tiempo real de la tabla ELO histórica
+    if elo_local is None or elo_visita is None:
+        try:
+            from modules.elo_engine import SistemaEloLigaMX
+            motor_elo = SistemaEloLigaMX()
+            tabla_elo = motor_elo.calcular_historico(df_historico)
+            if elo_local is None:
+                elo_local = float(tabla_elo.loc[tabla_elo['Equipo'] == local, 'ELO_Rating'].values[0])
+            if elo_visita is None:
+                elo_visita = float(tabla_elo.loc[tabla_elo['Equipo'] == visita, 'ELO_Rating'].values[0])
+        except Exception:
+            elo_local = elo_local if elo_local is not None else 1500.0
+            elo_visita = elo_visita if elo_visita is not None else 1500.0
+
     try:
         expectativas = calcular_expectativa_partido(local, visita, arbitro=arbitro)
         goles_l_exp = expectativas["lambda_goles_local"]
@@ -53,10 +67,10 @@ def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_loc
         tarjetas_l_exp = 2.4
         tarjetas_v_exp = 2.6
 
-    # Ajuste preciso por ELO
+    # Ajuste dinámico basado en la diferencia real de ELO
     factor_elo = (elo_local - elo_visita) / 400.0
-    goles_l_exp = max(0.2, goles_l_exp + (factor_elo * 0.12))
-    goles_v_exp = max(0.2, goles_v_exp - (factor_elo * 0.12))
+    goles_l_exp = max(0.2, goles_l_exp + (factor_elo * 0.15))
+    goles_v_exp = max(0.2, goles_v_exp - (factor_elo * 0.15))
 
     # Simulaciones de Poisson (Montecarlo)
     goles_loc_sim = np.random.poisson(goles_l_exp, num_simulaciones)
