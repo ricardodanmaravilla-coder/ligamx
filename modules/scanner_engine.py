@@ -91,12 +91,18 @@ def obtener_ultimo_elo(df, equipo):
     return 1500.0
 
 def escanear_jornada_actual(temporada_actual=2026):
-    ml_escanner = PredictorML()
+    url_github_raw = 'https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/data/historico_ligamx_completo.csv'
+    rutas_locales = ['data/historico_ligamx_completo.csv', 'historico_ligamx_completo.csv']
+    
     df_historico_ml = None
     try:
-        ruta_csv = 'data/historico_ligamx_completo.csv' if os.path.exists('data/historico_ligamx_completo.csv') else 'historico_ligamx_completo.csv'
-    try:
-        df_historico_ml = pd.read_csv(ruta_csv)
+        for r in rutas_locales:
+            if os.path.exists(r):
+                df_historico_ml = pd.read_csv(r)
+                break
+        if df_historico_ml is None:
+            df_historico_ml = pd.read_csv(url_github_raw)
+            
         df_historico_ml['Local'] = df_historico_ml['Local'].str.strip()
         df_historico_ml['Visitante'] = df_historico_ml['Visitante'].str.strip()
         ml_escanner.entrenar(df_historico_ml)
