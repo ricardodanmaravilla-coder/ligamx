@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 
-# --- DICCIONARIO DE ALTITUDES LIGA MX (Nombres Oficiales de la API) ---
+# --- DICCIONARIO DE ALTITUDES LIGA MX ---
 ALTITUDES_LIGA_MX = {
     "Toluca": 2660,
     "CF Pachuca": 2432,
@@ -25,34 +25,31 @@ ALTITUDES_LIGA_MX = {
     "Atlante": 2240
 }
 
-import os
-import pandas as pd
-import numpy as np
-
 def cargar_datos():
-    # 1. Intentar leer desde las rutas locales habituales
-    rutas_posibles = [
+    # Enlace RAW directo a tu archivo en GitHub para garantizar la lectura remota en la nube
+    url_github_raw = 'https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/data/historico_ligamx_completo.csv'
+    
+    rutas_locales = [
         'data/historico_ligamx_completo.csv',
         'historico_ligamx_completo.csv'
     ]
     
     df = None
-    for r in rutas_posibles:
-        if os.path.exists(r):
+    # Intentar primero localmente por si acaso
+    for ruta in rutas_locales:
+        if os.path.exists(ruta):
             try:
-                df = pd.read_csv(r)
+                df = pd.read_csv(ruta)
                 break
             except Exception:
                 pass
                 
-    # 2. Si no está en ninguna ruta local, descargarlo directo del repositorio raw de GitHub
+    # Si no se encuentra de forma local, se descarga directo del repositorio de GitHub
     if df is None:
-        url_raw_github = 'https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/data/historico_ligamx_completo.csv'
         try:
-            df = pd.read_csv(url_raw_github)
+            df = pd.read_csv(url_github_raw)
         except Exception as e:
-            # 3. Respaldo extremo por si GitHub falla: buscar en la raíz alternativa o crear un DataFrame mínimo para que la app no colapse
-            raise FileNotFoundError(f"No se pudo cargar el archivo histórico ni localmente ni desde GitHub: {e}")
+            raise FileNotFoundError(f"No se pudo cargar el archivo histórico desde local ni desde GitHub: {e}")
 
     df['Fecha'] = pd.to_datetime(df['Fecha'])
     fecha_referencia = df['Fecha'].max()
@@ -78,8 +75,6 @@ def media_ponderada(valores, pesos):
 
 def calcular_promedios_liga(df):
     pesos = df['Peso']
-    
-    # REGLA CASINO: 1 Amarilla = 1 punto, 1 Roja = 2 puntos
     t_locales = df['Amarillas_L'].fillna(0) + (df['Rojas_L'].fillna(0) * 2)
     t_visitas = df['Amarillas_V'].fillna(0) + (df['Rojas_V'].fillna(0) * 2)
     
@@ -109,7 +104,6 @@ def obtener_ratings_equipo(df, equipo):
     cf_v = media_ponderada(df_visita['Corners_V'], df_visita['Peso'])
     cc_v = media_ponderada(df_visita['Corners_L'], df_visita['Peso'])
 
-    # Aplicando regla de rojas dobles en estadísticas de equipos
     tf_l = media_ponderada(df_local['Amarillas_L'].fillna(0) + (df_local['Rojas_L'].fillna(0) * 2), df_local['Peso'])
     tc_l = media_ponderada(df_local['Amarillas_V'].fillna(0) + (df_local['Rojas_V'].fillna(0) * 2), df_local['Peso'])
     tf_v = media_ponderada(df_visita['Amarillas_V'].fillna(0) + (df_visita['Rojas_V'].fillna(0) * 2), df_visita['Peso'])
@@ -169,7 +163,6 @@ def calcular_expectativa_partido(local, visitante, arbitro=None):
     exp_tarjetas_l = ((stats_l["Tarjetas_Favor_L"] + stats_v["Tarjetas_Contra_V"]) / 2) * h2h["tarjetas"]
     exp_tarjetas_v = ((stats_v["Tarjetas_Favor_V"] + stats_l["Tarjetas_Contra_L"]) / 2) * h2h["tarjetas"]
 
-    # Factor de Altitud (Hipoxia)
     alt_local = ALTITUDES_LIGA_MX.get(local, 1500)
     alt_visita = ALTITUDES_LIGA_MX.get(visitante, 1500)
     delta_altitud = alt_local - alt_visita
@@ -183,7 +176,6 @@ def calcular_expectativa_partido(local, visitante, arbitro=None):
         exp_corners_l *= 1.05
         exp_tarjetas_v *= 1.08
 
-    # Factor Árbitro Real (si fue proporcionado)
     if arbitro:
         from modules.referee_engine import obtener_factor_arbitro
         factor_arb = obtener_factor_arbitro(arbitro)
