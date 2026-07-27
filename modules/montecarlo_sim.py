@@ -66,8 +66,8 @@ def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_loc
         except Exception:
             pass
 
-    # Ajuste por diferencia de ELO
-    factor_elo = (elo_local - elo_vis) / 400.0
+    # Ajuste por diferencia de ELO (usando correctamente elo_visita)
+    factor_elo = (elo_local - elo_visita) / 400.0
     goles_l_exp = max(0.2, goles_l_exp + (factor_elo * 0.15))
     goles_v_exp = max(0.2, goles_v_exp - (factor_elo * 0.15))
 
