@@ -18,7 +18,6 @@ class PredictorML:
                 return False
                 
             df = df_historico.copy()
-            
             df['Local'] = df['Local'].astype(str).str.strip()
             df['Visitante'] = df['Visitante'].astype(str).str.strip()
             
