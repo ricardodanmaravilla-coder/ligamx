@@ -5,6 +5,8 @@ import requests
 import numpy as np
 from modules.elo_engine import SistemaEloLigaMX
 from modules.ml_engine import PredictorML
+from modules.montecarlo_sim import simular_partido_montecarlo
+from modules.odds_engine import obtener_cuotas_partido, analizar_apuestas
 
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(page_title="Dashboard Liga MX & Analítica de Apuestas", layout="wide")
@@ -28,7 +30,11 @@ def cargar_historico_seguro():
                 pass
                 
     if df is None:
-        df = pd.read_csv(url_github_raw)
+        try:
+            df = pd.read_csv(url_github_raw)
+        except Exception as e:
+            st.error(f"Error crítico al cargar el archivo histórico: {e}")
+            return pd.DataFrame()
         
     df['Local'] = df['Local'].str.strip()
     df['Visitante'] = df['Visitante'].str.strip()
@@ -84,8 +90,6 @@ else:
 
         with st.spinner('Procesando simulación y cuotas...'):
             try:
-                from modules.montecarlo_sim import simular_partido_montecarlo
-                
                 df_hist_base = cargar_historico_seguro()
                 
                 motor_elo_temp = SistemaEloLigaMX()
@@ -132,10 +136,33 @@ else:
                     
                     over_tarjetas = resultados['Tarjetas_Totales']['Over 4.5 Tarjetas']
                     col6.metric("Más de 4.5 Tarjetas", f"{over_tarjetas}%", f"Under: {round(100-over_tarjetas, 2)}%")
+                    
+                    st.markdown("---")
+                    st.markdown("📈 **Pronósticos Detallados por Equipo (Expectativa Matemática)**")
+                    
+                    g_l_ind = resultados['Goles_Individuales'][datos_partido['local']]['goles']
+                    g_v_ind = resultados['Goles_Individuales'][datos_partido['visita']]['goles']
+                    c_l_ind = resultados['Corners_Individuales'][datos_partido['local']]['corners']
+                    c_v_ind = resultados['Corners_Individuales'][datos_partido['visita']]['corners']
+                    t_l_ind = resultados['Tarjetas_Individuales'][datos_partido['local']]['tarjetas']
+                    t_v_ind = resultados['Tarjetas_Individuales'][datos_partido['visita']]['tarjetas']
+
+                    ind_col1, ind_col2, ind_col3 = st.columns(3)
+                    with ind_col1:
+                        st.markdown(f"⚽ **Goles Esperados**")
+                        st.write(f"- {datos_partido['local']}: **{g_l_ind}** goles")
+                        st.write(f"- {datos_partido['visita']}: **{g_v_ind}** goles")
+                    with ind_col2:
+                        st.markdown(f"🚩 **Córners Esperados**")
+                        st.write(f"- {datos_partido['local']}: **{c_l_ind}** córners")
+                        st.write(f"- {datos_partido['visita']}: **{c_v_ind}** córners")
+                    with ind_col3:
+                        st.markdown(f"🟨 **Tarjetas Esperadas**")
+                        st.write(f"- {datos_partido['local']}: **{t_l_ind}** puntos")
+                        st.write(f"- {datos_partido['visita']}: **{t_v_ind}** puntos")
 
                     st.markdown("---")
                     
-                    from modules.odds_engine import obtener_cuotas_partido, analizar_apuestas
                     cuotas_automaticas = obtener_cuotas_partido(datos_partido["fixture_id"])
                     
                     with st.container():
