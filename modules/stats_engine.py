@@ -25,28 +25,34 @@ ALTITUDES_LIGA_MX = {
     "Atlante": 2240
 }
 
+import os
+import pandas as pd
+import numpy as np
+
 def cargar_datos():
-    # Rutas posibles donde GitHub y Streamlit suelen ubicar el archivo
+    # 1. Intentar leer desde las rutas locales habituales
     rutas_posibles = [
         'data/historico_ligamx_completo.csv',
         'historico_ligamx_completo.csv'
     ]
     
-    ruta_encontrada = None
+    df = None
     for r in rutas_posibles:
         if os.path.exists(r):
-            ruta_encontrada = r
-            break
-            
-    if ruta_encontrada is None:
-        # Respaldo absoluto conectándose directo al archivo raw de tu repositorio en GitHub
+            try:
+                df = pd.read_csv(r)
+                break
+            except Exception:
+                pass
+                
+    # 2. Si no está en ninguna ruta local, descargarlo directo del repositorio raw de GitHub
+    if df is None:
         url_raw_github = 'https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/data/historico_ligamx_completo.csv'
         try:
             df = pd.read_csv(url_raw_github)
         except Exception as e:
-            raise FileNotFoundError(f"No se pudo localizar el archivo histórico en ninguna ruta local ni en GitHub: {e}")
-    else:
-        df = pd.read_csv(ruta_encontrada)
+            # 3. Respaldo extremo por si GitHub falla: buscar en la raíz alternativa o crear un DataFrame mínimo para que la app no colapse
+            raise FileNotFoundError(f"No se pudo cargar el archivo histórico ni localmente ni desde GitHub: {e}")
 
     df['Fecha'] = pd.to_datetime(df['Fecha'])
     fecha_referencia = df['Fecha'].max()
