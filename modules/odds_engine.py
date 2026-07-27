@@ -7,97 +7,49 @@ BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {'x-apisports-key': API_KEY}
 
 def obtener_cuotas_partido(fixture_id, bookmaker_id=8):
-    """
-    Busca cuotas primero en la casa principal (ID 8).
-    Si no encuentra nada, quita el filtro y busca la primera casa
-    que tenga los momios completos para salvar la operación.
-    """
+    """Descarga las cuotas de Playdoit (Proxy Bet365) para un partido."""
     url = f"{BASE_URL}/odds"
-    
-    # Intento 1: Con la casa por defecto
     response = requests.get(url, headers=HEADERS, params={"fixture": fixture_id, "bookmaker": bookmaker_id})
-    datos = response.json().get("response", []) if response.status_code == 200 else []
+    if response.status_code != 200: return None
     
-    # Intento 2 (El Salvavidas): Si la casa 8 falló, pedimos TODO sin filtro
-    if not datos:
-        response = requests.get(url, headers=HEADERS, params={"fixture": fixture_id})
-        datos = response.json().get("response", []) if response.status_code == 200 else []
+    datos = response.json().get("response", [])
+    if not datos: return None
         
-    if not datos: 
-        return None
+    mercados = datos[0]["bookmakers"][0]["bets"]
+    cuotas_limpias = {}
+    
+    for mercado in mercados:
+        nombre = mercado["name"]
         
-    try:
-        bookmakers = datos[0].get("bookmakers", [])
-        if not bookmakers:
-            return None
-            
-        # Buscamos el primer bookmaker que sí haya devuelto mercados completos
-        mercados = []
-        for bm in bookmakers:
-            if "bets" in bm and len(bm["bets"]) > 0:
-                mercados = bm["bets"]
-                break
+        # --- 1. GANADOR DEL PARTIDO (1X2) ---
+        if nombre == "Match Winner":
+            for val in mercado["values"]:
+                if val["value"] == "Home": cuotas_limpias["1"] = float(val["odd"])
+                if val["value"] == "Draw": cuotas_limpias["X"] = float(val["odd"])
+                if val["value"] == "Away": cuotas_limpias["2"] = float(val["odd"])
                 
-        if not mercados:
-            return None
-
-        cuotas_limpias = {}
-        
-        for mercado in mercados:
-            nombre = mercado.get("name", "")
-            valores = mercado.get("values", [])
-            
-            # --- 1. GANADOR DEL PARTIDO (1X2) ---
-            if "Winner" in nombre or "1X2" in nombre:
-                for val in valores:
-                    v = val.get("value", "")
-                    odd = val.get("odd")
-                    if odd:
-                        if v in ["Home", "1"]: cuotas_limpias["1"] = float(odd)
-                        elif v in ["Draw", "X"]: cuotas_limpias["X"] = float(odd)
-                        elif v in ["Away", "2"]: cuotas_limpias["2"] = float(odd)
-                        
-            # --- 2. GOLES (Over/Under) ---
-            elif "Goals" in nombre or "Over/Under" in nombre:
-                for val in valores:
-                    v = val.get("value", "")
-                    odd = val.get("odd")
-                    if odd:
-                        if "Over 2.5" in v: cuotas_limpias["Over 2.5"] = float(odd)
-                        elif "Under 2.5" in v: cuotas_limpias["Under 2.5"] = float(odd)
+        # --- 2. GOLES (Over/Under) ---
+        elif nombre == "Goals Over/Under":
+            for val in mercado["values"]:
+                if val["value"] == "Over 2.5": cuotas_limpias["Over 2.5"] = float(val["odd"])
+                if val["value"] == "Under 2.5": cuotas_limpias["Under 2.5"] = float(val["odd"])
                 
-            # --- 3. CORNERS ---
-            elif "Corner" in nombre:
-                for val in valores:
-                    v = val.get("value", "")
-                    odd = val.get("odd")
-                    if odd:
-                        if "Over 9.5" in v: 
-                            cuotas_limpias["Over 9.5 Corners"] = float(odd)
-                            cuotas_limpias["Over 9.5"] = float(odd)
-                        elif "Under 9.5" in v: 
-                            cuotas_limpias["Under 9.5 Corners"] = float(odd)
-                            cuotas_limpias["Under 9.5"] = float(odd)
+        # --- 3. CORNERS ---
+        elif nombre in ["Corners Over Under", "Corners"]:
+            for val in mercado["values"]:
+                if val["value"] == "Over 9.5": cuotas_limpias["Over 9.5 Corners"] = float(val["odd"])
+                if val["value"] == "Under 9.5": cuotas_limpias["Under 9.5 Corners"] = float(val["odd"])
         
-            # --- 4. TARJETAS ---
-            elif "Card" in nombre:
-                for val in valores:
-                    v = val.get("value", "")
-                    odd = val.get("odd")
-                    if odd:
-                        if "Over 4.5" in v: 
-                            cuotas_limpias["Over 4.5 Tarjetas"] = float(odd)
-                            cuotas_limpias["Over 4.5"] = float(odd)
-                        elif "Under 4.5" in v: 
-                            cuotas_limpias["Under 4.5 Tarjetas"] = float(odd)
-                            cuotas_limpias["Under 4.5"] = float(odd)
+        # --- 4. TARJETAS ---
+        elif nombre in ["Cards Over/Under", "Cards"]:
+            for val in mercado["values"]:
+                if val["value"] == "Over 4.5": cuotas_limpias["Over 4.5 Tarjetas"] = float(val["odd"])
+                if val["value"] == "Under 4.5": cuotas_limpias["Under 4.5 Tarjetas"] = float(val["odd"])
                     
-        return cuotas_limpias if cuotas_limpias else None
-
-    except Exception as e:
-        return None
+    return cuotas_limpias
 
 def evaluar_mercado_avanzado(probabilidad_modelo_pct, cuota_casa):
+    """Evalúa usando EV, Criterio de Kelly Fraccional y Umbrales de Seguridad."""
     if not cuota_casa or cuota_casa <= 0:
         return "N/A", 0, "SIN CUOTA", 0, "N/A"
         
@@ -131,6 +83,7 @@ def evaluar_mercado_avanzado(probabilidad_modelo_pct, cuota_casa):
     return cuota_casa, ev_pct, veredicto, stake_recomendado, riesgo
 
 def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=None):
+    """Une las predicciones con cuotas automáticas o inyectadas manualmente."""
     if cuotas_personalizadas and len(cuotas_personalizadas) > 0:
         cuotas = cuotas_personalizadas
     else:
