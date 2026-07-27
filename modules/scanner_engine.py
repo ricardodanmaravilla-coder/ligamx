@@ -5,7 +5,7 @@ from datetime import datetime
 from github import Github
 import streamlit as st
 import io
-import time  # <--- Librería para frenar el escáner
+import time
 
 from modules.stats_engine import calcular_expectativa_partido
 from modules.montecarlo_sim import simular_partido_montecarlo
@@ -72,30 +72,24 @@ def registrar_apuesta_github(partido, mercado, prob_modelo, cuota, kelly_pct, ba
         )
 
 def obtener_ultimo_elo(df, equipo):
+    """Busca el ELO exacto igual que en la vista individual"""
     try:
         if df is not None and not df.empty:
-            equipo_norm = str(equipo).strip().lower()
-            
-            mask = (df['Local'].astype(str).str.strip().str.lower() == equipo_norm) | \
-                   (df['Visitante'].astype(str).str.strip().str.lower() == equipo_norm)
-            df_eq = df[mask]
-            
+            df_eq = df[(df['Local'] == equipo) | (df['Visitante'] == equipo)]
             if not df_eq.empty:
                 ultima_fila = df_eq.iloc[-1]
-                local_csv_norm = str(ultima_fila['Local']).strip().lower()
-                
-                if local_csv_norm == equipo_norm:
-                    for col in ['ELO_Local', 'ELO_L', 'Elo_Local', 'Elo_L']:
-                        if col in df.columns and not pd.isna(ultima_fila[col]): 
+                if ultima_fila['Local'] == equipo:
+                    for col in ['ELO_Local', 'ELO_L', 'Elo_Local']:
+                        if col in df.columns and not pd.isna(ultima_fila[col]):
                             return float(ultima_fila[col])
                 else:
-                    for col in ['ELO_Visita', 'ELO_V', 'Elo_Visita', 'Elo_V', 'ELO_Visitante']:
-                        if col in df.columns and not pd.isna(ultima_fila[col]): 
+                    for col in ['ELO_Visita', 'ELO_V', 'Elo_Visita', 'ELO_Visitante']:
+                        if col in df.columns and not pd.isna(ultima_fila[col]):
                             return float(ultima_fila[col])
-    except Exception as e:
+    except:
         pass
     return 1500.0
-        
+
 def escanear_jornada_actual(temporada_actual=2026):
     ml_escanner = PredictorML()
     df_historico_ml = None
@@ -107,13 +101,13 @@ def escanear_jornada_actual(temporada_actual=2026):
     except Exception:
         pass
 
-    # Forzamos la consulta estricta de los próximos partidos oficiales pendientes (Status NS)
+    # Solicitamos estrictamente los siguientes partidos pendientes (Status NS)
     url = f"{BASE_URL}/fixtures"
     params = {
         "league": LIGA_MX_ID, 
         "season": temporada_actual, 
         "status": "NS",
-        "next": 10 # Trae estrictamente los siguientes 10 partidos oficiales de la liga
+        "next": 10
     }
     
     res = requests.get(url, headers=HEADERS, params=params)
@@ -121,11 +115,10 @@ def escanear_jornada_actual(temporada_actual=2026):
         return []
         
     fixtures = res.json().get("response", [])
-    
     oportunidades_oro = []
 
     st.write("---")
-    st.write("🔎 **Analizando la siguiente jornada oficial de la Liga MX...**")
+    st.write("🔎 **Escaneando partidos oficiales y validando modelos...**")
 
     for p in fixtures:
         try:
@@ -134,23 +127,19 @@ def escanear_jornada_actual(temporada_actual=2026):
             visita = p["teams"]["away"]["name"]
             fecha = p["fixture"]["date"][:16].replace("T", " ")
             
-            st.write(f"⚙️ Revisando: **{local} vs {visita}**")
+            st.write(f"⚙️ Analizando: **{local} vs {visita}**")
             
+            # Descarga de cuotas usando la función estándar
             cuotas = obtener_cuotas_partido(fix_id)
             if not cuotas: 
-                st.write(f"⚠️ *Saltado: Sin momios.*")
+                st.write(f"⚠️ *Sin cuotas disponibles en este momento.*")
                 continue
                 
+            # Extracción limpia de ELO
             elo_loc = obtener_ultimo_elo(df_historico_ml, local)
             elo_vis = obtener_ultimo_elo(df_historico_ml, visita)
             
-            resultados = simular_partido_montecarlo(
-                local, visita, 
-                df_historico=df_historico_ml, 
-                elo_local=elo_loc, 
-                elo_visita=elo_vis
-            )
-            
+            resultados = simular_partido_montecarlo(local, visita)
             if isinstance(resultados, str): 
                 continue
 
@@ -206,15 +195,15 @@ def escanear_jornada_actual(temporada_actual=2026):
             }
 
             mercados_a_mapear = [
-                ("Gana Local", "Home"),
-                ("Empate", "Draw"),
-                ("Gana Visita", "Away"),
+                ("Gana Local", "1"),
+                ("Empate", "X"),
+                ("Gana Visita", "2"),
                 ("Over 2.5 Goles", "Over 2.5"),
                 ("Under 2.5 Goles", "Under 2.5"),
-                ("Over 9.5 Corners", "Over 9.5"),
-                ("Under 9.5 Corners", "Under 9.5"),
-                ("Over 4.5 Tarjetas", "Over 4.5"),
-                ("Under 4.5 Tarjetas", "Under 4.5")
+                ("Over 9.5 Corners", "Over 9.5 Corners"),
+                ("Under 9.5 Corners", "Under 9.5 Corners"),
+                ("Over 4.5 Tarjetas", "Over 4.5 Tarjetas"),
+                ("Under 4.5 Tarjetas", "Under 4.5 Tarjetas")
             ]
 
             for nombre_m, llave_api in mercados_a_mapear:
@@ -229,12 +218,6 @@ def escanear_jornada_actual(temporada_actual=2026):
                     p_ml = 0.0
                 
                 raw_cuota = cuotas.get(llave_api)
-                if not raw_cuota:
-                    if "Corners" in nombre_m:
-                        raw_cuota = cuotas.get("Over 9.5") if "Over" in nombre_m else cuotas.get("Under 9.5")
-                    elif "Tarjetas" in nombre_m:
-                        raw_cuota = cuotas.get("Over 4.5") if "Over" in nombre_m else cuotas.get("Under 4.5")
-                
                 try:
                     cuota = float(raw_cuota) if raw_cuota is not None else 0.0
                 except:
@@ -262,7 +245,7 @@ def escanear_jornada_actual(temporada_actual=2026):
                             "Mercado": nombre_m,
                             "P. Montecarlo": f"{p_mc}%",
                             "P. ML": f"{p_ml}%",
-                    "Cuota": f"{cuota:.2f}",
+                            "Cuota": f"{cuota:.2f}",
                             "EV (Valor)": f"+{ev_porcentaje:.1f}%",
                             "Stake Rec.": f"{stake_recomendado:.1f}%",
                             "Veredicto": "✅ CONSENSO BLINDADO",
@@ -272,5 +255,5 @@ def escanear_jornada_actual(temporada_actual=2026):
         except Exception as e:
             continue
             
-    st.write("✅ **Escaneo completado.**")
+    st.write("✅ **Escaneo completado con éxito.**")
     return oportunidades_oro
