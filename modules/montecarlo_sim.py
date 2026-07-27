@@ -29,10 +29,10 @@ def normalizar_nombre_equipo(nombre):
     if "ATLANTE" in n: return "Atlante"
     return nombre
 
-def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_local=None, elo_visita=None, num_simulaciones=10000, arbitro=None):
+def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_local=None, elo_visita=None, num_simulaciones=1000000, arbitro=None):
     """
     Simula un partido de la Liga MX usando el modelo híbrido (Poisson + xG + Altitud + ELO Real + Árbitro)
-    via Montecarlo (10,000 iteraciones).
+    via Montecarlo (1,000,000 iteraciones).
     """
     local = normalizar_nombre_equipo(local_raw)
     visita = normalizar_nombre_equipo(visita_raw)
