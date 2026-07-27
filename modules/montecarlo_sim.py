@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from modules.stats_engine import calcular_expectativa_partido
 
 def normalizar_nombre_equipo(nombre):
     """Mapea y estandariza los nombres usando la lista oficial de la Liga MX."""
@@ -28,48 +29,34 @@ def normalizar_nombre_equipo(nombre):
     if "ATLANTE" in n: return "Atlante"
     return nombre
 
-def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_local=1500.0, elo_visita=1500.0, num_simulaciones=10000):
+def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_local=1500.0, elo_visita=1500.0, num_simulaciones=1000000, arbitro=None):
     """
-    Simula un partido de la Liga MX usando el método de Montecarlo 
-    con los nombres oficiales exactos de los equipos.
+    Simula un partido de la Liga MX usando el modelo híbrido (Poisson + xG + Altitud + ELO + Árbitro)
+    via Montecarlo (1,000,000 iteraciones).
     """
     local = normalizar_nombre_equipo(local_raw)
     visita = normalizar_nombre_equipo(visita_raw)
     
-    goles_l_exp = 1.35
-    goles_v_exp = 1.05
-    corners_l_exp = 5.2
-    corners_v_exp = 4.3
-    tarjetas_l_exp = 2.4
-    tarjetas_v_exp = 2.6
+    try:
+        expectativas = calcular_expectativa_partido(local, visita, arbitro=arbitro)
+        goles_l_exp = expectativas["lambda_goles_local"]
+        goles_v_exp = expectativas["lambda_goles_visita"]
+        corners_l_exp = expectativas["exp_corners_local"]
+        corners_v_exp = expectativas["exp_corners_visita"]
+        tarjetas_l_exp = expectativas["exp_tarjetas_local"]
+        tarjetas_v_exp = expectativas["exp_tarjetas_visita"]
+    except Exception:
+        goles_l_exp = 1.35
+        goles_v_exp = 1.05
+        corners_l_exp = 5.2
+        corners_v_exp = 4.3
+        tarjetas_l_exp = 2.4
+        tarjetas_v_exp = 2.6
 
-    if df_historico is not None and not df_historico.empty:
-        try:
-            df = df_historico.copy()
-            df['Local_Norm'] = df['Local'].apply(normalizar_nombre_equipo)
-            df['Visita_Norm'] = df['Visitante'].apply(normalizar_nombre_equipo)
-            
-            partidos_loc = df[df['Local_Norm'] == local]
-            partidos_vis = df[df['Visita_Norm'] == visita]
-            
-            if not partidos_loc.empty:
-                if 'Goles_Local' in df.columns:
-                    goles_l_exp = partidos_loc['Goles_Local'].mean()
-                elif 'Goles_L' in df.columns:
-                    goles_l_exp = partidos_loc['Goles_L'].mean()
-                    
-            if not partidos_vis.empty:
-                if 'Goles_Visita' in df.columns:
-                    goles_v_exp = partidos_vis['Goles_Visita'].mean()
-                elif 'Goles_V' in df.columns:
-                    goles_v_exp = partidos_vis['Goles_V'].mean()
-        except Exception:
-            pass
-
-    # Ajuste por diferencia de ELO (usando correctamente elo_visita)
+    # Ajuste preciso por ELO
     factor_elo = (elo_local - elo_visita) / 400.0
-    goles_l_exp = max(0.2, goles_l_exp + (factor_elo * 0.15))
-    goles_v_exp = max(0.2, goles_v_exp - (factor_elo * 0.15))
+    goles_l_exp = max(0.2, goles_l_exp + (factor_elo * 0.12))
+    goles_v_exp = max(0.2, goles_v_exp - (factor_elo * 0.12))
 
     # Simulaciones de Poisson (Montecarlo)
     goles_loc_sim = np.random.poisson(goles_l_exp, num_simulaciones)
