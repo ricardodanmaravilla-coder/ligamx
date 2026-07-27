@@ -7,10 +7,6 @@ class SistemaEloLigaMX:
         self.base_rating = base_rating
 
     def calcular_historico(self, df_historico):
-        """
-        Calcula el ELO actual y evolutivo de cada equipo partido a partido 
-        basándose en el archivo histórico real.
-        """
         if df_historico is None or df_historico.empty:
             return pd.DataFrame(columns=['Equipo', 'ELO_Rating', 'Partidos_Jugados'])
 
