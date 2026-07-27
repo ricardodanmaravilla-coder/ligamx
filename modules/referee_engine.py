@@ -1,10 +1,17 @@
 import pandas as pd
 
 def calcular_perfiles_arbitros():
-    """Calcula matemáticamente el factor de tarjetas real de cada árbitro basándose en el historial."""
+    def calcular_perfiles_arbitros():
+    url_github_raw = 'https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/data/historico_ligamx_completo.csv'
+    rutas_locales = ['data/historico_ligamx_completo.csv', 'historico_ligamx_completo.csv']
     try:
-        df = pd.read_csv('data/historico_ligamx_completo.csv')
-        
+        df = None
+        for r in rutas_locales:
+            if os.path.exists(r):
+                df = pd.read_csv(r)
+                break
+        if df is None:
+            df = pd.read_csv(url_github_raw)
         # Verificamos si la columna de árbitro existe en el CSV
         if 'Arbitro' not in df.columns:
             return {}
