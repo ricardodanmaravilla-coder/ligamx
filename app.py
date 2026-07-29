@@ -15,7 +15,7 @@ API_KEY = os.environ.get("API_SPORTS_KEY")
 BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {'x-apisports-key': API_KEY}
 LIGA_MX_ID = 262
-LEAGUES_CUP_ID = 848 # Agregado para Leagues Cup
+LEAGUES_CUP_ID = 772 # Agregado para Leagues Cup
 
 def cargar_historico_seguro():
     url_github_raw = 'https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/data/historico_ligamx_completo.csv'
