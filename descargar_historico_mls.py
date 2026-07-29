@@ -7,7 +7,7 @@ API_KEY = os.environ.get("API_SPORTS_KEY")
 BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {'x-apisports-key': API_KEY}
 
-LIGAS = [253, 772] 
+LIGAS = [772] 
 # Ampliamos el rango de búsqueda de años por si la API los cataloga diferente
 TEMPORADAS = [2023, 2024, 2025, 2026] 
 
