@@ -1,0 +1,37 @@
+name: Descargar CSV Leagues Cup / MLS
+
+on:
+  workflow_dispatch: # Este comando es la clave: crea un botón para ejecutarlo manualmente cuando tú quieras
+
+jobs:
+  generar-csv:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Da permiso para guardar el archivo en tu repositorio
+
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar entorno de Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Instalar librerías necesarias
+        run: |
+          pip install requests pandas numpy
+
+      - name: Ejecutar script de descarga
+        env:
+          # Usa el secreto que ya configuraste anteriormente
+          API_SPORTS_KEY: ${{ secrets.API_SPORTS_KEY }}
+        run: python descargar_historico_mls.py
+
+      - name: Guardar los cambios (Commit y Push)
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "🤖 Automatización: Histórico de MLS/Leagues Cup generado" || echo "Sin cambios nuevos para guardar"
+          git push
