@@ -90,11 +90,16 @@ def obtener_ultimo_elo(df, equipo):
     return 1500.0
 
 def escanear_jornada_actual(temporada_actual=2026):
+    """Mantiene compatibilidad exacta por defecto con Liga MX"""
+    return escanear_jornada_personalizada(league_id=LIGA_MX_ID, ruta_csv='data/historico_ligamx_completo.csv', temporada_actual=temporada_actual)
+
+def escanear_jornada_personalizada(league_id, ruta_csv, temporada_actual=2026):
+    """Escáner flexible adaptado para cualquier liga (Liga MX o Leagues Cup)"""
     ml_escanner = PredictorML()
     df_historico_ml = None
     
-    url_github_raw = 'https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/data/historico_ligamx_completo.csv'
-    rutas_locales = ['data/historico_ligamx_completo.csv', 'historico_ligamx_completo.csv']
+    url_github_raw = f'https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/{ruta_csv}'
+    rutas_locales = [ruta_csv, os.path.basename(ruta_csv)]
     
     try:
         for r in rutas_locales:
@@ -112,7 +117,7 @@ def escanear_jornada_actual(temporada_actual=2026):
 
     url = f"{BASE_URL}/fixtures"
     params = {
-        "league": LIGA_MX_ID, 
+        "league": league_id, 
         "season": temporada_actual, 
         "status": "NS",
         "next": 10
@@ -126,7 +131,7 @@ def escanear_jornada_actual(temporada_actual=2026):
     oportunidades_oro = []
 
     st.write("---")
-    st.write("🔎 **Escaneando partidos oficiales y validando modelos...**")
+    st.write(f"🔎 **Escaneando partidos oficiales (Liga ID: {league_id}) y validando modelos...**")
 
     for p in fixtures:
         try:
