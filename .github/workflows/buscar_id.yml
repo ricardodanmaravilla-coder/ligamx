@@ -31,4 +31,4 @@ jobs:
               pais = liga['country']['name']
               print(f"👉 ID: {id_liga} | Torneo: {nombre} | País: {pais}")
           EOF
-          python buscar.py
+          python ID.py
