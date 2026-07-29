@@ -8,7 +8,7 @@ API_KEY = os.environ.get("API_SPORTS_KEY")
 BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {'x-apisports-key': API_KEY}
 
-LIGAS = [253, 848] 
+LIGAS = [848] 
 TEMPORADAS = [2021, 2022, 2023, 2024, 2025, 2026]
 
 def crear_directorio_data():
