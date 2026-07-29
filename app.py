@@ -15,7 +15,7 @@ API_KEY = os.environ.get("API_SPORTS_KEY")
 BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {'x-apisports-key': API_KEY}
 LIGA_MX_ID = 262
-LEAGUES_CUP_ID = 772 # Agregado para Leagues Cup
+LEAGUES_CUP_ID = 772 # ID oficial actualizado de Leagues Cup
 
 def cargar_historico_seguro():
     url_github_raw = 'https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/data/historico_ligamx_completo.csv'
@@ -74,7 +74,7 @@ def obtener_proximos_partidos():
         }
     return partidos_dict
 
-# --- NUEVAS FUNCIONES PARA LEAGUES CUP (Intactas las de Liga MX) ---
+# --- FUNCIONES PARA LEAGUES CUP ---
 def cargar_historico_lc():
     url_github_raw = 'https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/data/historico_leaguescup.csv'
     rutas_locales = ['data/historico_leaguescup.csv', 'historico_leaguescup.csv']
@@ -117,7 +117,7 @@ def obtener_proximos_partidos_lc():
         llave = f"🏆 {fecha} | {local} vs {visita}"
         partidos_dict[llave] = {"local": local, "visita": visita, "fixture_id": fix_id}
     return partidos_dict
-# -------------------------------------------------------------------
+# -----------------------------------
 
 st.title("⚽ Liga MX Analytics & Value Betting (2026)")
 st.write("Simulador Montecarlo (Goles, Corners, Tarjetas) + Criterio de Kelly")
@@ -126,7 +126,7 @@ st.write("Simulador Montecarlo (Goles, Corners, Tarjetas) + Criterio de Kelly")
 tab1, tab2 = st.tabs(["🇲🇽 Liga MX", "🏆 Leagues Cup"])
 
 # ==========================================
-# PESTAÑA 1: LIGA MX (Tu código exacto)
+# PESTAÑA 1: LIGA MX (Tu código exacto intacto)
 # ==========================================
 with tab1:
     st.markdown("### 1. Selecciona el Encuentro")
@@ -490,3 +490,30 @@ with tab2:
                             
                 except Exception as e:
                     st.error(f"Ocurrió un error inesperado durante la simulación: {e}")
+
+    st.markdown("---")
+
+    # --- ESCÁNER AUTOMÁTICO PARA LEAGUES CUP ---
+    with st.expander("🚨 Escáner Automático de Oportunidades (Jornada Leagues Cup)", expanded=False):
+        st.info("Este escáner analiza todos los partidos próximos de la Leagues Cup de golpe y filtra exclusivamente las jugadas de valor mediante Montecarlo.")
+        
+        if st.button("🔍 Ejecutar Escáner de Leagues Cup", key="btn_scanner_lc"):
+            with st.spinner("Analizando la jornada internacional con Montecarlo... Esto puede tomar unos segundos."):
+                from modules.scanner_engine import escanear_jornada_personalizada
+                
+                # Usamos una función adaptada o el escáner apuntando al histórico y liga de Leagues Cup
+                df_oro_lc = pd.DataFrame(escanear_jornada_personalizada(LEAGUES_CUP_ID, 'data/historico_leaguescup.csv'))
+                
+                if not df_oro_lc.empty:
+                    st.success(f"¡Se encontraron {len(df_oro_lc)} oportunidades de alta probabilidad en Leagues Cup!")
+                    def color_veredicto_oro_lc(val):
+                        if '🔥' in str(val): return 'color: #00ff00; font-weight: bold'
+                        elif '✅' in str(val): return 'color: #adff2f'
+                        return ''
+                    st.dataframe(
+                        df_oro_lc.style.map(color_veredicto_oro_lc, subset=['Veredicto']), 
+                        use_container_width=True,
+                        hide_index=True
+                    )
+                else:
+                    st.warning("No hay partidos próximos en la Leagues Cup con los criterios requeridos en este momento o faltan cuotas configuradas.")
