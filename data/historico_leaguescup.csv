@@ -1,0 +1,2182 @@
+Fecha,Temporada,Liga_ID,Local,Visitante,Arbitro,Goles_Local,Goles_Visita,Corners_L,Corners_V,Amarillas_L,Amarillas_V,Rojas_L,Rojas_V,Tiros_Puerta_L,Tiros_Puerta_V,Atajadas_L,Atajadas_V,xG_L,xG_V
+2021-07-06,2021,848,Mosta,Spartak Trnava,K. Hagenes,3,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-06,2021,848,Mons Calpe,FC Santa Coloma,O. Berka,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-06,2021,848,Mladost Lješkopolje,Laci,B. Van Driessche,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,NK Domzale,Swift Hesperange,C. Ciochirca,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Partizani,Sfîntul Gheorghe,L. Fähndrich,5,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Shkupi 1927,Llapi,A. Lindhout,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Birkirkara,La Fiorita,N. Neokleous,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Europa,Kauno Žalgiris,A. Davey,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Drita,Dečić,Vitor Ferreira,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Sutjeska,Gagra,M. Skoulas,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Velež,Coleraine FC,A. Bitigen,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Maribor,FC Urartu,N. Verboomen,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Tre Penne,Dinamo Batumi,R. Valikonis,0,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Siroki Brijeg,Vllaznia Shkodër,A. Matyunin,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Stjarnan,Bohemians,S. Putros,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Fehérvár FC,Ararat,I. Orlic,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Bala Town,Larne,M. Al Emara,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Paide,Slask Wroclaw,A. Ghaltakchyan,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Glentoran,The New Saints,L. Soteriou,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Racing FC Union Luxembourg,Breidablik,H. Nalbandyan,2,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Milsami Orhei,FK Sarajevo,Y. Uğurlu,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Žilina,Dila,P. Farrugia,5,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Dundalk,Newtown AFC,L. Barbeno,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,FC Levadia Tallinn,St Joseph S Fc,S. Levi,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,FH hafnarfjordur,Sligo Rovers,I. Barbara,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Rīgas FS,KI Klaksvik,N. Popov,2,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Honka,NSI Runavik,V. Spasjoņņikovs,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,UE Sant Julia,Gzira United,H. Kaljanac,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Suduva Marijampole,Valmiera / BSS,J. Šabotić,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Inter Turku,Puskas Academy,Tore Hansen,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,Sileks,Petrocub,R. Jenkins,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,FC Noah,KuPS,I. Stojchevski,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-08,2021,848,FK Liepaja,Struga,V. Shimusik,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-13,2021,848,Newtown AFC,Dundalk,A. Chivulete,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Vllaznia Shkodër,Siroki Brijeg,K. Sjöberg,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,KI Klaksvik,Rīgas FS,K. Kennedy,2,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,FK Sarajevo,Milsami Orhei,P. McLaughlin,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Coleraine FC,Velež,B. Berke,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Slask Wroclaw,Paide,L. Bilbija,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Breidablik,Racing FC Union Luxembourg,V. Romanov,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Bohemians,Stjarnan,J. Barcelo,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Dečić,Drita,L. Fähndrich,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,La Fiorita,Birkirkara,E. Hamiti,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Spartak Trnava,Mosta,N. Kajtazović,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Larne,Bala Town,D. Bel,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Llapi,Shkupi 1927,W. Altmann,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Swift Hesperange,NK Domzale,G. Davidov,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Puskas Academy,Inter Turku,T. Tzilos,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Gzira United,UE Sant Julia,V. Spasjoņņikovs,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Laci,Mladost Lješkopolje,Y. Kozyk,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Sligo Rovers,FH hafnarfjordur,Luis Teixeira,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Sfîntul Gheorghe,Partizani,V. Fotias,2,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Ararat,Fehérvár FC,I. Pajač,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Struga,FK Liepaja,A. Kuchin,1,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,KuPS,FC Noah,N. Simović,5,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,FC Urartu,Maribor,C. Jäger,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Gagra,Sutjeska,F. Karakó,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Kauno Žalgiris,Europa,I. Kvirikashvili,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Valmiera / BSS,Suduva Marijampole,M. Barbu,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,St Joseph S Fc,FC Levadia Tallinn,Hugo Miguel,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Dinamo Batumi,Tre Penne,V. Banari,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,NSI Runavik,Honka,G. Owen,1,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Petrocub,Sileks,E. Məsiyev,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,Dila,Žilina,M. Milanović,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,The New Saints,Glentoran,I. Kristjánsson,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-15,2021,848,FC Santa Coloma,Mons Calpe,M. Šćepanović,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-20,2021,848,Folgore,Hibernians,T. Christofi,1,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-20,2021,848,Kauno Žalgiris,The New Saints,A. Jaccottet,0,5,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-20,2021,848,NK Domzale,Honka,K. Karlsson,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-20,2021,848,Prishtina,GAP Connah S Quay FC,E. Hamiti,4,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-21,2021,848,Cukaricki,Sumqayıt,U. Schnyder,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Larne,Aarhus,G. Laibuvitz,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Arda Kardzhali,Hapoel Beer Sheva,V. Kastrati,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Riga,Shkendija,O. Pechanec,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Shkupi 1927,Santa Clara,K. Steen,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,HB Torshavn,Buducnost Podgorica,D. Munro,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,FC Basel 1893,Partizani,D. Higler,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,FCSB,Shakhter Karagandy,V. Demetriou,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Gent,Valerenga,M. Zebec,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Sutjeska,Maccabi Tel Aviv,C. Jäger,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Velež,AEK Athens FC,N. Verboomen,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Hibernian,FC Santa Coloma,V. Thórarinsson,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Drita,Feyenoord,A. Munukka,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Linfield,Borac Banja Luka,K. Hämäläinen,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,FH hafnarfjordur,Rosenborg,F. Glova,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Valur Reykjavik,Bodo/Glimt,Vitor Ferreira,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Pogon Szczecin,NK Osijek,H. Feșnic,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,FK Partizan,Dunajska Streda,J. Maae,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Dundalk,FC Levadia Tallinn,M. Zelinka,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,HNK Hajduk Split,FK Tobol Kostanay,C. Dingert,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Ujpest,FC Vaduz,D. Shurman,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Shakhter Soligorsk,Fola Esch,L. Lukić,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,AEL,Vllaznia Shkodër,M. Kristoffersen,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Aberdeen,BK Hacken,José Munuera,5,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Teuta Durrës,Inter Club d'Escaldes,R. Cabbarov,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Panevėžys,Vojvodina,A. Durieux,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Gzira United,HNK Rijeka,N. Doyle,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Ararat,Slask Wroclaw,N. Popov,2,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Molde,Servette FC,D. Strukan,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Qarabag,Ashdod,S. Boyko,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Austria Vienna,Breidablik,K. Høvdanum,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Olimpija Ljubljana,Birkirkara,D. Fuxman,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,KuPS,Vorskla Poltava,D. Dmitriev,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,PFC Sochi,Şamaxı FK,E. Jorgji,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Rīgas FS,Puskas Academy,G. Kikacheishvili,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,F91 Dudelange,Bohemians,N. Kajtazović,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,FC Astana,Aris Thessalonikis,B. Dankert,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Dinamo Tbilisi,Maccabi Haifa,L. Fähndrich,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,IF Elfsborg,Milsami Orhei,A. Matyunin,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,FC Copenhagen,Torpedo Zhodino,D. Muntean,4,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Plzen,Dinamo Brest,J. Lardot,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Apollon Limassol,Žilina,L. Barbeno,1,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Suduva Marijampole,Raków Częstochowa,I. Papadopoulos,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Dinamo Batumi,Bate Borisov,A. Kuchin,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,CSKA Sofia,FK Liepaja,P. Bankes,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Lokomotiv Plovdiv,Slovácko,K. Abed,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Spartak Trnava,Sepsi OSK Sfantu Gheorghe,I. Stoyanov,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Laci,CS Universitatea Craiova,R. Saggi,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Hammarby FF,Maribor,N. Walsh,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-22,2021,848,Petrocub,Sivasspor,J. Pignard,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-27,2021,848,Hibernians,Folgore,A. Kardeşler,4,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-27,2021,848,Buducnost Podgorica,HB Torshavn,A. Davey,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-27,2021,848,Inter Club d'Escaldes,Teuta Durrës,V. Kopievskiy,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Ashdod,Qarabag,N. Simović,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,The New Saints,Kauno Žalgiris,M. Skoulas,5,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Breidablik,Austria Vienna,P. McLaughlin,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Maccabi Tel Aviv,Sutjeska,P. Kjærsgaard-Andersen,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Fola Esch,Shakhter Soligorsk,Y. Kozyk,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Feyenoord,Drita,E. Eskås,3,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Slask Wroclaw,Ararat,I. Griffith,3,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,GAP Connah S Quay FC,Prishtina,P. Viljanen,4,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,HNK Rijeka,Gzira United,V. Banari,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,AEK Athens FC,Velež,K. Clancy,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Shkendija,Riga,F. Maresca,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Vojvodina,Panevėžys,J. Frischer,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Partizani,FC Basel 1893,A. Diamantopoulos,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Borac Banja Luka,Linfield,Z. Hovhannisyan,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,CS Universitatea Craiova,Laci,M. Gestranius,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Aris Thessalonikis,FC Astana,M. Fabbri,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Servette FC,Molde,J. Kamphuis,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Maribor,Hammarby FF,Juan Martínez,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Dunajska Streda,FK Partizan,A. Bieri,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Bohemians,F91 Dudelange,G. Bogár,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,NK Osijek,Pogon Szczecin,Luis Godinho,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Vllaznia Shkodër,AEL,R. Harvey,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Santa Clara,Shkupi 1927,R. Hennessy,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Puskas Academy,Rīgas FS,W. Altmann,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Maccabi Haifa,Dinamo Tbilisi,A. Kurgkheli,5,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,FC Santa Coloma,Hibernian,A. Troleis,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Raków Częstochowa,Suduva Marijampole,T. Farrugia Cann,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Shakhter Karagandy,FCSB,D. Draganov,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,FK Liepaja,CSKA Sofia,M. Bîrsan,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,FK Tobol Kostanay,HNK Hajduk Split,V. Moskalev,4,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Bodo/Glimt,Valur Reykjavik,P. Valeri,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,FC Vaduz,Ujpest,C. Ciochirca,1,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Şamaxı FK,PFC Sochi,V. Shimusik,2,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Vorskla Poltava,KuPS,P. Orel,2,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Honka,NK Domzale,P. Kralovic,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Birkirkara,Olimpija Ljubljana,B. Van Driessche,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Sumqayıt,Cukaricki,J. Burchardt,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,BK Hacken,Aberdeen,A. Farkas,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Dinamo Brest,Plzen,M. Al Hakim,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,FC Levadia Tallinn,Dundalk,Þ. Arnason,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Slovácko,Lokomotiv Plovdiv,A. Madley,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Sivasspor,Petrocub,K. Levnikov,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Milsami Orhei,IF Elfsborg,P. Bankes,0,5,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Aarhus,Larne,V. Chinkov,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Bate Borisov,Dinamo Batumi,U. Schnyder,1,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Hapoel Beer Sheva,Arda Kardzhali,D. Doveri,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Rosenborg,FH hafnarfjordur,F. Karakó,4,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Valerenga,Gent,D. Robertson,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Žilina,Apollon Limassol,A. Boucaut,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Sepsi OSK Sfantu Gheorghe,Spartak Trnava,B. Kasumi,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-07-29,2021,848,Torpedo Zhodino,FC Copenhagen,A. Anufrijevs,0,5,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-03,2021,848,Linfield,Fola Esch,A. Anufrijevs,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-03,2021,848,Bohemians,PAOK,A. Munukka,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Prishtina,Bodo/Glimt,T. Christofi,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,FC Luzern,Feyenoord,Alejandro Hernández,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Kolos Kovalivka,Shakhter Karagandy,P. Kjærsgaard-Andersen,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Spartak Trnava,Maccabi Tel Aviv,K. Levnikov,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Gent,Rīgas FS,M. Al Hakim,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Hibernian,HNK Rijeka,Juan Martínez,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Santa Clara,Olimpija Ljubljana,H. Lechner,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Breidablik,Aberdeen,I. Bebek,2,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Shamrock Rovers,Teuta Durrës,K. Steen,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Ujpest,FC Basel 1893,J. Brisard,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Cukaricki,Hammarby FF,E. Aranovskiy,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Raków Częstochowa,Rubin,João Pedro Pinheiro,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Slask Wroclaw,Hapoel Beer Sheva,P. Orel,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,The New Saints,Plzen,J. Frischer,4,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Pacos Ferreira,Larne,M. Jug,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,CSKA Sofia,NK Osijek,D. Rumšas,4,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Riga,Hibernians,V. Chinkov,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Maccabi Haifa,HB Torshavn,E. Lambrechts,7,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,AEL,Qarabag,G. Nyberg,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Laci,Anderlecht,José Sánchez,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Trabzonspor,Molde,H. Osmers,3,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Dinamo Batumi,Sivasspor,I. Peljto,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Vojvodina,Lask Linz,M. Fabbri,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Rosenborg,NK Domzale,S. Boyko,6,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Vitesse,Dundalk,A. Papapetrou,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,IF Elfsborg,Velež,P. Gil,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,FK Tobol Kostanay,Žilina,S. Ivanov,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,PFC Sochi,FK Partizan,D. Muntean,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,KuPS,FC Astana,A. Jaccottet,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-05,2021,848,Lokomotiv Plovdiv,FC Copenhagen,N. Walsh,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-10,2021,848,NK Domzale,Rosenborg,F. Maresca,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-10,2021,848,Shakhter Karagandy,Kolos Kovalivka,H. Özkahya,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Anderlecht,Laci,S. Attwell,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Lask Linz,Vojvodina,B. Millot,6,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,NK Osijek,CSKA Sofia,D. Robertson,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Dundalk,Vitesse,A. Durieux,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,FK Partizan,PFC Sochi,J. Kehlet,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,HB Torshavn,Maccabi Haifa,H. Feșnic,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Aberdeen,Breidablik,M. Di Bello,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Larne,Pacos Ferreira,F. Jović,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Hibernians,Riga,R. Hennessy,1,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Velež,IF Elfsborg,F. Glova,1,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Teuta Durrës,Shamrock Rovers,P. Viljanen,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Sivasspor,Dinamo Batumi,Ricardo De Burgos,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Olimpija Ljubljana,Santa Clara,A. Palabıyık,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,HNK Rijeka,Hibernian,D. Rumšas,4,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,FC Copenhagen,Lokomotiv Plovdiv,D. Strukan,4,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Bodo/Glimt,Prishtina,K. Høvdanum,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Fola Esch,Linfield,Ə. Ağayev,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Feyenoord,FC Luzern,M. Guida,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Molde,Trabzonspor,Fábio Veríssimo,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Qarabag,AEL,K. Tohver,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Rubin,Raków Częstochowa,T. Bognár,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Hammarby FF,Cukaricki,D. Higler,5,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Žilina,FK Tobol Kostanay,J. Beaton,5,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,FC Astana,KuPS,N. Dabanović,3,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Plzen,The New Saints,S. Stegemann,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,PAOK,Bohemians,J. Weinberger,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Rīgas FS,Gent,R. Obrenović,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,FC Basel 1893,Ujpest,I. Frid,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Maccabi Tel Aviv,Spartak Trnava,T. Farrugia Cann,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-12,2021,848,Hapoel Beer Sheva,Slask Wroclaw,R. Buquet,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,Fola Esch,Kairat Almaty,Fábio Veríssimo,1,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,Trabzonspor,AS Roma,M. Jug,1,2,5,4,2,1,0,0,7,2,0,6,0.0,0.0
+2021-08-19,2021,848,Rennes,Rosenborg,R. Petrescu,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,Feyenoord,IF Elfsborg,C. Pawson,5,0,5,3,2,4,1,1,9,1,1,4,0.0,0.0
+2021-08-19,2021,848,Sivasspor,FC Copenhagen,M. Balakin,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,PAOK,HNK Rijeka,J. Brisard,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,FK Jablonec,Žilina,J. Kehlet,5,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,Pacos Ferreira,Tottenham,M. Mariani,1,0,2,5,3,2,0,0,3,0,0,2,0.0,0.0
+2021-08-19,2021,848,Santa Clara,FK Partizan,S. Gözübüyük,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,Anderlecht,Vitesse,D. Strukan,3,3,4,2,2,8,0,0,10,5,3,8,0.0,0.0
+2021-08-19,2021,848,FC Basel 1893,Hammarby FF,S. Ivanov,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,Neftchi Baku,Maccabi Haifa,W. Delajod,3,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,Lask Linz,ST Johnstone,G. Nyberg,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,FK Zalgiris Vilnius,Bodo/Glimt,R. Reinshreiber,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,Plzen,CSKA Sofia,Tiago Martins,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,Hapoel Beer Sheva,Anorthosis,I. Peljto,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,Raków Częstochowa,Gent,Alejandro Hernández,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,KuPS,Union Berlin,I. Bebek,0,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,Flora Tallinn,Shamrock Rovers,E. Aranovskiy,4,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,Qarabag,Aberdeen,R. Obrenović,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,Shakhter Karagandy,Maccabi Tel Aviv,S. Jovanović,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-19,2021,848,Riga,Lincoln Red Imps FC,João Pedro Pinheiro,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,Maccabi Tel Aviv,Shakhter Karagandy,N. Dabanović,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,ST Johnstone,Lask Linz,D. Siebert,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,HNK Rijeka,PAOK,S. Boyko,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,Gent,Raków Częstochowa,Ə. Ağayev,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,FK Partizan,Santa Clara,C. Pawson,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,Tottenham,Pacos Ferreira,R. Buquet,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,Aberdeen,Qarabag,H. Lechner,1,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,Shamrock Rovers,Flora Tallinn,T. Bognár,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,Maccabi Haifa,Neftchi Baku,A. Stavrev,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,Union Berlin,KuPS,H. Meler,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,Anorthosis,Hapoel Beer Sheva,D. Rumšas,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,CSKA Sofia,Plzen,A. Palabıyık,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,AS Roma,Trabzonspor,S. Jovanović,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,Bodo/Glimt,FK Zalgiris Vilnius,J. Beaton,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,Lincoln Red Imps FC,Riga,P. Kjærsgaard-Andersen,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,Žilina,FK Jablonec,K. Tohver,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,Vitesse,Anderlecht,B. Frankowski,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,Kairat Almaty,Fola Esch,F. Jović,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,Hammarby FF,FC Basel 1893,B. Madden,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,IF Elfsborg,Feyenoord,G. Kabakov,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,FC Copenhagen,Sivasspor,L. Visser,5,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-08-26,2021,848,Rosenborg,Rennes,P. Raczkowski,1,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-09-14,2021,848,Maccabi Tel Aviv,Alashkert,E. Eskås,4,1,5,2,2,3,0,0,9,5,4,5,0.0,0.0
+2021-09-14,2021,848,Maccabi Haifa,Feyenoord,F. Maresca,0,0,2,4,4,1,0,0,0,4,4,0,0.0,0.0
+2021-09-16,2021,848,Mura,Vitesse,M. Al Hakim,0,2,6,12,1,0,0,0,1,8,6,1,0.0,0.0
+2021-09-16,2021,848,Anorthosis,FK Partizan,P. Kjærsgaard-Andersen,0,2,3,7,2,3,0,0,4,6,4,4,0.0,0.0
+2021-09-16,2021,848,FK Jablonec,CFR 1907 Cluj,E. Jorgji,1,0,5,5,3,1,0,1,5,4,4,4,0.0,0.0
+2021-09-16,2021,848,AS Roma,CSKA Sofia,G. Nyberg,5,1,5,5,0,3,0,1,7,4,3,2,0.0,0.0
+2021-09-16,2021,848,Randers FC,AZ Alkmaar,D. Strukan,2,2,2,3,1,2,0,0,2,6,4,0,0.0,0.0
+2021-09-16,2021,848,Bodo/Glimt,Zorya Luhansk,D. Higler,3,1,4,2,1,3,0,0,6,1,0,3,0.0,0.0
+2021-09-16,2021,848,Flora Tallinn,Gent,T. Farrugia Cann,0,1,3,6,1,1,0,0,3,8,7,3,0.0,0.0
+2021-09-16,2021,848,HJK Helsinki,Lask Linz,K. Levnikov,0,2,6,2,1,4,0,0,3,5,3,3,0.0,0.0
+2021-09-16,2021,848,Slovan Bratislava,FC Copenhagen,M. Fabbri,1,3,4,4,2,2,0,0,1,5,2,0,0.0,0.0
+2021-09-16,2021,848,Slavia Praha,Union Berlin,Fábio Veríssimo,3,1,4,3,3,3,0,1,4,1,0,1,0.0,0.0
+2021-09-16,2021,848,Qarabag,FC Basel 1893,E. Lambrechts,0,0,8,1,1,3,0,0,5,1,1,5,0.0,0.0
+2021-09-16,2021,848,Rennes,Tottenham,H. Özkahya,2,2,2,1,1,1,0,0,4,4,3,2,0.0,0.0
+2021-09-16,2021,848,Kairat Almaty,Omonia Nicosia,S. Boyko,0,0,5,6,3,2,0,0,3,3,3,3,0.0,0.0
+2021-09-16,2021,848,Lincoln Red Imps FC,PAOK,R. Harvey,0,2,7,3,2,1,0,0,3,5,3,3,0.0,0.0
+2021-09-30,2021,848,Union Berlin,Maccabi Haifa,N. Walsh,3,0,1,1,3,2,0,0,6,1,1,3,0.0,0.0
+2021-09-30,2021,848,Omonia Nicosia,Qarabag,B. Madden,1,4,2,1,1,1,0,0,3,8,4,2,0.0,0.0
+2021-09-30,2021,848,PAOK,Slovan Bratislava,João Pedro Pinheiro,1,1,6,2,1,4,0,0,2,5,4,1,0.0,0.0
+2021-09-30,2021,848,FC Basel 1893,Kairat Almaty,S. Attwell,4,2,9,6,2,1,0,0,8,9,7,4,0.0,0.0
+2021-09-30,2021,848,FC Copenhagen,Lincoln Red Imps FC,K. Monzul,3,1,8,3,1,0,0,0,6,1,0,5,0.0,0.0
+2021-09-30,2021,848,Feyenoord,Slavia Praha,R. Petrescu,2,1,7,4,4,3,0,0,5,4,3,3,0.0,0.0
+2021-09-30,2021,848,Vitesse,Rennes,K. Clancy,1,2,4,3,4,6,0,1,6,4,3,5,0.0,0.0
+2021-09-30,2021,848,Tottenham,Mura,I. Frid,5,1,2,2,1,2,0,0,7,1,0,2,0.0,0.0
+2021-09-30,2021,848,Lask Linz,Maccabi Tel Aviv,M. Balakin,1,1,4,3,3,2,0,0,6,3,2,5,0.0,0.0
+2021-09-30,2021,848,CSKA Sofia,Bodo/Glimt,A. Anufrijevs,0,0,11,8,2,2,0,0,2,2,1,2,0.0,0.0
+2021-09-30,2021,848,Gent,Anorthosis,F. Glova,2,0,11,1,1,4,0,0,7,2,2,6,0.0,0.0
+2021-09-30,2021,848,Zorya Luhansk,AS Roma,Luis Godinho,0,3,5,5,0,2,0,0,2,10,7,2,0.0,0.0
+2021-09-30,2021,848,Alashkert,HJK Helsinki,H. Feșnic,2,4,7,4,3,2,1,0,4,4,0,2,0.0,0.0
+2021-09-30,2021,848,FK Partizan,Flora Tallinn,J. Weinberger,2,0,3,3,1,0,0,0,6,3,3,4,0.0,0.0
+2021-09-30,2021,848,AZ Alkmaar,FK Jablonec,R. Obrenović,1,0,4,2,1,3,0,0,3,1,1,2,0.0,0.0
+2021-09-30,2021,848,CFR 1907 Cluj,Randers FC,D. Massa,1,1,6,3,0,0,0,0,2,2,1,1,0.0,0.0
+2021-10-21,2021,848,Anorthosis,Flora Tallinn,I. Vad II,2,2,4,0,1,1,0,0,6,3,1,4,0.0,0.0
+2021-10-21,2021,848,CFR 1907 Cluj,AZ Alkmaar,H. Özkahya,0,1,5,4,3,1,0,0,3,4,3,3,0.0,0.0
+2021-10-21,2021,848,FK Jablonec,Randers FC,Ə. Ağayev,2,2,3,4,2,2,0,0,6,6,4,4,0.0,0.0
+2021-10-21,2021,848,CSKA Sofia,Zorya Luhansk,M. Schüttengruber,0,1,10,3,5,3,1,0,4,3,2,4,0.0,0.0
+2021-10-21,2021,848,Slovan Bratislava,Lincoln Red Imps FC,V. Thórarinsson,2,0,3,2,3,1,0,0,6,1,1,4,0.0,0.0
+2021-10-21,2021,848,FK Partizan,Gent,B. Madden,0,1,4,6,1,1,0,0,2,4,3,2,0.0,0.0
+2021-10-21,2021,848,FC Basel 1893,Omonia Nicosia,S. Frappart,3,1,8,5,0,2,0,0,11,2,1,8,0.0,0.0
+2021-10-21,2021,848,Mura,Rennes,V. Chinkov,1,2,2,8,1,1,0,0,3,8,6,2,0.0,0.0
+2021-10-21,2021,848,Qarabag,Kairat Almaty,E. Aranovskiy,2,1,10,3,2,2,0,0,8,2,1,6,0.0,0.0
+2021-10-21,2021,848,Alashkert,Lask Linz,J. Maae,0,3,5,3,0,2,0,0,4,9,4,4,0.0,0.0
+2021-10-21,2021,848,FC Copenhagen,PAOK,E. Lambrechts,1,2,4,5,3,4,1,0,3,8,5,2,0.0,0.0
+2021-10-21,2021,848,Bodo/Glimt,AS Roma,A. Palabıyık,6,1,3,3,1,1,0,0,9,2,1,3,0.0,0.0
+2021-10-21,2021,848,Feyenoord,Union Berlin,G. Kruashvili,3,1,7,4,0,2,0,0,11,3,2,7,0.0,0.0
+2021-10-21,2021,848,Vitesse,Tottenham,H. Osmers,1,0,5,2,3,4,0,0,4,1,1,3,0.0,0.0
+2021-10-21,2021,848,HJK Helsinki,Maccabi Tel Aviv,P. Orel,0,5,1,0,1,1,0,0,3,7,2,3,0.0,0.0
+2021-10-21,2021,848,Maccabi Haifa,Slavia Praha,A. Farkas,1,0,4,9,4,2,0,0,3,5,5,2,0.0,0.0
+2021-11-04,2021,848,Rennes,Mura,J. Frischer,1,0,11,6,2,0,0,0,7,1,1,6,0.0,0.0
+2021-11-04,2021,848,Union Berlin,Feyenoord,D. Stefanski,1,2,7,6,3,1,2,0,6,7,5,5,0.0,0.0
+2021-11-04,2021,848,Tottenham,Vitesse,M. Di Bello,3,2,2,9,2,4,1,2,5,6,4,3,0.0,0.0
+2021-11-04,2021,848,Slavia Praha,Maccabi Haifa,K. Steen,1,0,9,1,6,4,0,0,4,1,1,3,0.0,0.0
+2021-11-04,2021,848,PAOK,FC Copenhagen,P. Raczkowski,1,2,9,1,3,5,1,0,4,4,2,2,0.0,0.0
+2021-11-04,2021,848,AS Roma,Bodo/Glimt,A. Papapetrou,2,2,13,1,2,3,0,0,4,2,0,2,0.0,0.0
+2021-11-04,2021,848,Omonia Nicosia,FC Basel 1893,V. Meshkov,1,1,0,8,2,2,0,0,1,6,5,0,0.0,0.0
+2021-11-04,2021,848,Lask Linz,Alashkert,M. Al Hakim,2,0,5,0,1,2,0,0,8,2,2,6,0.0,0.0
+2021-11-04,2021,848,Gent,FK Partizan,C. Kavanagh,1,1,6,1,0,0,0,0,6,3,2,5,0.0,0.0
+2021-11-04,2021,848,Maccabi Tel Aviv,HJK Helsinki,R. Obrenović,3,0,9,2,2,1,0,0,3,1,1,1,0.0,0.0
+2021-11-04,2021,848,Zorya Luhansk,CSKA Sofia,P. Viljanen,2,0,4,4,3,0,0,0,3,1,1,1,0.0,0.0
+2021-11-04,2021,848,Randers FC,FK Jablonec,O. Grinfeeld,2,2,4,6,2,3,1,1,4,3,1,3,0.0,0.0
+2021-11-04,2021,848,AZ Alkmaar,CFR 1907 Cluj,A. Durieux,2,0,1,1,2,3,0,0,5,0,0,3,0.0,0.0
+2021-11-04,2021,848,Flora Tallinn,Anorthosis,K. Høvdanum,2,2,9,3,2,2,0,0,11,7,5,9,0.0,0.0
+2021-11-04,2021,848,Kairat Almaty,Qarabag,D. Muntean,1,2,1,6,3,1,0,0,8,2,1,7,0.0,0.0
+2021-11-04,2021,848,Lincoln Red Imps FC,Slovan Bratislava,K. Karlsson,1,4,5,3,2,2,0,0,3,5,0,2,0.0,0.0
+2021-11-25,2021,848,Lincoln Red Imps FC,FC Copenhagen,H. Jónasson,0,4,0,6,3,0,0,0,0,9,5,0,0.0,0.0
+2021-11-25,2021,848,Anorthosis,Gent,U. Schnyder,1,0,0,3,4,3,0,0,1,2,1,0,0.0,0.0
+2021-11-25,2021,848,FK Jablonec,AZ Alkmaar,M. Schüttengruber,1,1,6,0,4,5,0,0,3,3,2,2,0.0,0.0
+2021-11-25,2021,848,Maccabi Tel Aviv,Lask Linz,J. Brisard,0,1,6,6,1,3,0,0,3,4,3,3,0.0,0.0
+2021-11-25,2021,848,AS Roma,Zorya Luhansk,I. Kovacs,4,0,8,5,2,0,0,0,9,2,2,5,0.0,0.0
+2021-11-25,2021,848,Randers FC,CFR 1907 Cluj,D. Robertson,2,1,6,2,1,2,0,0,11,2,1,8,0.0,0.0
+2021-11-25,2021,848,Bodo/Glimt,CSKA Sofia,I. Frid,2,0,7,5,1,3,0,0,3,1,1,1,0.0,0.0
+2021-11-25,2021,848,Mura,Tottenham,António Nobre,2,1,1,3,7,3,0,1,2,3,2,0,0.0,0.0
+2021-11-25,2021,848,HJK Helsinki,Alashkert,B. Van Driessche,1,0,1,6,2,3,0,0,3,2,2,2,0.0,0.0
+2021-11-25,2021,848,Slovan Bratislava,PAOK,D. Higler,0,0,5,5,0,0,0,0,3,2,2,3,0.0,0.0
+2021-11-25,2021,848,Slavia Praha,Feyenoord,M. Gestranius,2,2,6,3,6,4,0,1,6,5,2,4,0.0,0.0
+2021-11-25,2021,848,Qarabag,Omonia Nicosia,M. Krogh,2,2,13,4,3,5,0,1,6,4,1,5,0.0,0.0
+2021-11-25,2021,848,Rennes,Vitesse,E. Eskås,3,3,3,5,2,4,0,0,7,8,5,3,0.0,0.0
+2021-11-25,2021,848,Flora Tallinn,FK Partizan,R. Harvey,1,0,1,9,2,1,0,0,2,4,4,1,0.0,0.0
+2021-11-25,2021,848,Kairat Almaty,FC Basel 1893,G. Kikacheishvili,2,3,4,6,6,4,1,0,6,4,1,3,0.0,0.0
+2021-11-25,2021,848,Maccabi Haifa,Union Berlin,M. Očenáš,0,1,3,2,3,3,0,0,4,2,1,4,0.0,0.0
+2021-12-09,2021,848,Feyenoord,Maccabi Haifa,M. Balakin,2,1,9,3,3,2,0,0,10,2,1,8,0.0,0.0
+2021-12-09,2021,848,Vitesse,Mura,F. Glova,3,1,11,5,2,4,0,0,11,3,2,8,0.0,0.0
+2021-12-09,2021,848,FC Copenhagen,Slovan Bratislava,I. Vad II,2,0,5,5,3,3,0,0,6,2,2,4,0.0,0.0
+2021-12-09,2021,848,Union Berlin,Slavia Praha,M. Balakin,1,1,8,4,2,3,0,0,2,5,4,1,0.0,0.0
+2021-12-09,2021,848,PAOK,Lincoln Red Imps FC,R. Saggi,2,0,9,2,3,2,0,0,5,1,1,3,0.0,0.0
+2021-12-09,2021,848,Omonia Nicosia,Kairat Almaty,G. Nuza,0,0,6,5,0,7,0,0,0,3,3,0,0.0,0.0
+2021-12-09,2021,848,FC Basel 1893,Qarabag,F. Jović,3,0,5,9,1,1,0,0,8,7,5,5,0.0,0.0
+2021-12-09,2021,848,Tottenham,Rennes,H. Feșnic,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2021-12-09,2021,848,CFR 1907 Cluj,FK Jablonec,H. Osmers,2,0,3,4,2,2,0,0,4,3,2,2,0.0,0.0
+2021-12-09,2021,848,Lask Linz,HJK Helsinki,I. Pajač,3,0,6,2,2,3,0,0,6,1,1,3,0.0,0.0
+2021-12-09,2021,848,CSKA Sofia,AS Roma,N. Walsh,2,3,7,7,2,3,0,0,5,5,2,3,0.0,0.0
+2021-12-09,2021,848,Gent,Flora Tallinn,K. Sjöberg,1,0,2,3,0,3,0,0,6,3,3,3,0.0,0.0
+2021-12-09,2021,848,Zorya Luhansk,Bodo/Glimt,K. Jakubik,1,1,5,9,2,1,0,0,2,5,5,1,0.0,0.0
+2021-12-09,2021,848,Alashkert,Maccabi Tel Aviv,G. Bogár,1,1,1,8,0,1,0,0,2,4,3,1,0.0,0.0
+2021-12-09,2021,848,FK Partizan,Anorthosis,G. Kruashvili,1,1,7,6,3,0,0,0,3,4,3,2,0.0,0.0
+2021-12-09,2021,848,AZ Alkmaar,Randers FC,T. Farrugia Cann,1,0,3,4,0,1,0,0,8,0,0,7,0.0,0.0
+2022-02-17,2021,848,Sparta Praha,FK Partizan,A. Ekberg,0,1,1,2,2,3,0,0,2,4,3,1,0.0,0.0
+2022-02-17,2021,848,Celtic,Bodo/Glimt,A. Treimanis,1,3,12,0,0,2,0,0,6,4,1,5,0.0,0.0
+2022-02-17,2021,848,Marseille,Qarabag,N. Dabanović,3,1,4,5,3,0,0,0,9,4,3,5,0.0,0.0
+2022-02-17,2021,848,Leicester,Randers FC,R. Petrescu,4,1,5,2,0,0,0,0,15,2,1,11,0.0,0.0
+2022-02-17,2021,848,Fenerbahçe,Slavia Praha,M. Mariani,2,3,2,5,2,1,0,0,3,5,2,1,0.0,0.0
+2022-02-17,2021,848,FC Midtjylland,PAOK,C. Pawson,1,0,3,7,1,3,0,0,2,1,1,1,0.0,0.0
+2022-02-17,2021,848,PSV Eindhoven,Maccabi Tel Aviv,G. Nyberg,1,0,7,2,2,2,0,0,6,1,1,5,0.0,0.0
+2022-02-17,2021,848,Rapid Vienna,Vitesse,D. Rumšas,2,1,0,3,7,4,1,0,2,5,4,0,0.0,0.0
+2022-02-24,2021,848,Vitesse,Rapid Vienna,J. Kehlet,2,0,5,1,2,3,0,0,5,2,2,2,0.0,0.0
+2022-02-24,2021,848,PAOK,FC Midtjylland,L. Visser,2,1,3,2,4,2,0,0,7,4,3,5,0.0,0.0
+2022-02-24,2021,848,Slavia Praha,Fenerbahçe,C. Kavanagh,3,2,8,4,2,3,0,0,8,3,1,5,0.0,0.0
+2022-02-24,2021,848,Maccabi Tel Aviv,PSV Eindhoven,H. Lechner,1,1,3,9,1,1,0,0,6,2,1,5,0.0,0.0
+2022-02-24,2021,848,Bodo/Glimt,Celtic,S. Ivanov,2,0,8,4,2,2,0,0,6,2,2,4,0.0,0.0
+2022-02-24,2021,848,Qarabag,Marseille,B. Frankowski,0,3,14,1,3,5,0,0,3,4,2,3,0.0,0.0
+2022-02-24,2021,848,Randers FC,Leicester,I. Peljto,1,3,8,6,1,1,0,0,6,5,2,5,0.0,0.0
+2022-02-24,2021,848,FK Partizan,Sparta Praha,G. Kabakov,2,1,4,7,7,3,1,0,3,3,2,1,0.0,0.0
+2022-03-10,2021,848,PSV Eindhoven,FC Copenhagen,C. Pawson,4,4,5,3,2,2,0,0,9,7,2,5,0.0,0.0
+2022-03-10,2021,848,Vitesse,AS Roma,P. Raczkowski,0,1,5,4,1,4,0,1,5,3,2,5,0.0,0.0
+2022-03-10,2021,848,Slavia Praha,Lask Linz,A. Treimanis,4,1,3,6,1,2,0,0,9,3,2,5,0.0,0.0
+2022-03-10,2021,848,FK Partizan,Feyenoord,M. Mariani,2,5,4,5,3,1,0,0,6,8,3,4,0.0,0.0
+2022-03-10,2021,848,PAOK,Gent,B. Frankowski,1,0,8,2,3,3,0,0,2,2,2,1,0.0,0.0
+2022-03-10,2021,848,Leicester,Rennes,O. Grinfeeld,2,0,8,5,0,1,0,0,3,1,1,1,0.0,0.0
+2022-03-10,2021,848,Marseille,FC Basel 1893,I. Peljto,2,1,5,2,1,2,0,0,5,2,2,3,0.0,0.0
+2022-03-10,2021,848,Bodo/Glimt,AZ Alkmaar,N. Dabanović,2,1,1,3,1,3,0,0,5,3,2,3,0.0,0.0
+2022-03-17,2021,848,Gent,PAOK,D. Siebert,1,2,8,3,2,1,0,0,7,3,1,6,0.0,0.0
+2022-03-17,2021,848,Lask Linz,Slavia Praha,L. Visser,4,3,3,1,3,4,0,2,11,4,1,7,0.0,0.0
+2022-03-17,2021,848,AS Roma,Vitesse,R. Petrescu,1,1,5,5,3,2,0,0,1,2,1,0,0.0,0.0
+2022-03-17,2021,848,Feyenoord,FK Partizan,A. Taylor,3,1,3,4,0,2,0,0,6,3,2,3,0.0,0.0
+2022-03-17,2021,848,FC Copenhagen,PSV Eindhoven,W. Collum,0,4,4,6,2,2,0,0,1,6,2,1,0.0,0.0
+2022-03-17,2021,848,AZ Alkmaar,Bodo/Glimt,I. Kružliak,2,2,3,1,4,4,0,0,6,4,2,4,0.0,0.0
+2022-03-17,2021,848,Rennes,Leicester,A. Sidiropoulos,2,1,6,7,5,3,0,0,3,4,3,1,0.0,0.0
+2022-03-17,2021,848,FC Basel 1893,Marseille,Artur Soares Dias,1,2,3,8,5,5,0,0,5,8,6,4,0.0,0.0
+2022-04-07,2021,848,Feyenoord,Slavia Praha,H. Meler,3,3,4,5,5,3,0,0,6,3,0,3,0.0,0.0
+2022-04-07,2021,848,Leicester,PSV Eindhoven,I. Kružliak,0,0,5,3,1,0,0,0,2,1,1,2,0.0,0.0
+2022-04-07,2021,848,Marseille,PAOK,S. Marciniak,2,1,10,1,4,2,1,0,9,1,0,7,0.0,0.0
+2022-04-07,2021,848,Bodo/Glimt,AS Roma,S. Gözübüyük,2,1,3,7,0,2,0,0,6,4,3,4,0.0,0.0
+2022-04-14,2021,848,PSV Eindhoven,Leicester,B. Bastien,1,2,7,6,1,1,0,0,4,5,3,3,0.0,0.0
+2022-04-14,2021,848,AS Roma,Bodo/Glimt,José Sánchez,4,0,5,2,1,0,0,0,9,1,1,5,0.0,0.0
+2022-04-14,2021,848,Slavia Praha,Feyenoord,D. Aytekin,1,3,7,4,1,1,1,0,4,6,3,3,0.0,0.0
+2022-04-14,2021,848,PAOK,Marseille,D. Makkelie,0,1,6,7,2,0,0,0,5,1,0,5,0.0,0.0
+2022-04-28,2021,848,Leicester,AS Roma,Carlos del Cerro,1,1,11,1,2,2,0,0,2,2,1,2,0.0,0.0
+2022-04-28,2021,848,Feyenoord,Marseille,M. Oliver,3,2,6,5,3,1,0,0,5,7,5,2,0.0,0.0
+2022-05-05,2021,848,Marseille,Feyenoord,S. Schärer,0,0,4,2,4,4,0,0,3,3,2,3,0.0,0.0
+2022-05-05,2021,848,AS Roma,Leicester,S. Jovanović,1,0,8,7,2,2,0,0,4,2,2,3,0.0,0.0
+2022-05-25,2021,848,AS Roma,Feyenoord,I. Kovacs,1,0,4,6,4,1,0,0,3,5,5,2,0.0,0.0
+2022-07-05,2022,848,St Joseph S Fc,Larne,I. Papadopoulos,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-05,2022,848,Gzira United,Atlètic Club d'Escaldes,Z. Hovhannisyan,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-06,2022,848,Inter Turku,Drita,J. Petřík,1,0,4,3,1,4,0,0,0,0,0,0,0.0,0.0
+2022-07-06,2022,848,Vikingur Gota,Europa,K. Karlsson,1,0,6,5,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,HB Torshavn,Newtown AFC,R. Valikonis,1,0,12,5,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Fola Esch,Tre Fiori,V. Kastrati,0,1,4,5,4,4,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Laci,Iskra,A. Durieux,0,0,9,2,2,3,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Shkendija,Ararat,L. Fähndrich,2,0,7,7,4,3,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Gjilani,FK Liepaja,R. Jenkins,1,0,4,4,2,2,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Ružomberok,Kauno Žalgiris,I. Orlic,2,0,5,1,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Buducnost Podgorica,Llapi,F. San,2,0,4,3,5,3,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Dunajska Streda,Cliftonville FC,Juan Martínez,2,1,9,2,1,2,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Derry City,Riga,V. Thórarinsson,0,2,3,2,2,4,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Tre Penne,Tuzla City,D. Dmitriev,0,2,4,7,4,1,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Dinamo Minsk,Dečić,J. Pignard,1,1,5,4,3,2,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Lechia Gdansk,Akademija Pandev,N. Laforge,4,1,3,5,2,2,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Bala Town,Sligo Rovers,J. Barcelo,1,2,6,6,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Borac Banja Luka,B36 Torshavn,R. Cabarov,2,0,5,2,1,2,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Floriana,Petrocub,P. Orel,0,0,5,3,3,4,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Alashkert,Hamrun Spartans,V. Fotias,1,0,2,5,2,4,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,UE Santa Coloma,Breidablik,V. Banari,0,1,5,4,4,4,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Pogon Szczecin,KR Reykjavik,E. Hamiti,4,1,15,6,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Flora Tallinn,SJK,L. Lukić,1,0,5,3,3,4,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Sfîntul Gheorghe,Mura,V. Spasjoņņikovs,1,2,5,11,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,KuPS,Dila,L. Cibelli,2,0,3,4,2,4,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Panevėžys,Milsami Orhei,M. Zebec,0,0,2,2,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Magpies,Crusaders FC,H. Jónasson,2,1,5,5,5,3,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Olimpija Ljubljana,FC Differdange 03,M. Balakin,1,1,13,2,3,2,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Dinamo Tbilisi,Paide,M. Bošković,2,3,2,4,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-07,2022,848,Saburtalo,Partizani,M. Al Emara,0,1,7,1,1,3,0,0,0,0,0,0,0.0,0.0
+2022-07-12,2022,848,Drita,Inter Turku,N. Doyle,3,0,3,6,4,1,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,KR Reykjavik,Pogon Szczecin,A. Davey,1,0,1,5,3,2,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Partizani,Saburtalo,D. England,0,1,8,5,3,2,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Sligo Rovers,Bala Town,J. Kamphuis,0,1,8,2,1,3,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Llapi,Buducnost Podgorica,M. Kristoffersen,2,2,11,1,2,3,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Tre Fiori,Fola Esch,V. Kopievskiy,3,1,3,5,4,2,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Hamrun Spartans,Alashkert,M. Savović,4,1,4,7,2,3,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Larne,St Joseph S Fc,M. Očenáš,0,1,7,2,1,1,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Crusaders FC,Magpies,K. Hämäläinen,3,1,7,2,1,4,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Cliftonville FC,Dunajska Streda,Þ. Arnason,0,3,6,5,1,2,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Iskra,Laci,L. Pairetto,0,1,11,5,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Breidablik,UE Santa Coloma,J. Hyytiä,4,1,6,2,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,FC Differdange 03,Olimpija Ljubljana,S. Attwell,1,2,3,7,7,6,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Dečić,Dinamo Minsk,D. Draganov,1,2,4,7,2,1,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Newtown AFC,HB Torshavn,W. Altmann,2,1,6,11,2,4,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Mura,Sfîntul Gheorghe,J. Kooij,2,1,8,2,1,3,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Dila,KuPS,S. Karabayev,0,0,5,2,3,2,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Atlètic Club d'Escaldes,Gzira United,V. Romanov,0,1,6,3,5,6,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Petrocub,Floriana,A. Kuchin,1,0,4,3,2,2,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Riga,Derry City,J. Machálek,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,B36 Torshavn,Borac Banja Luka,J. Jaanovits,3,1,3,8,6,7,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Kauno Žalgiris,Ružomberok,E. Manouchos,0,0,3,6,2,1,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Paide,Dinamo Tbilisi,S. Moen,1,2,6,4,2,2,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Tuzla City,Tre Penne,I. Frid,6,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Milsami Orhei,Panevėžys,V. Demetriou,2,0,9,6,1,2,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,SJK,Flora Tallinn,J. Burchardt,4,2,15,2,3,3,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Europa,Vikingur Gota,A. Munukka,1,2,0,0,5,1,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Akademija Pandev,Lechia Gdansk,D. Chiffi,1,2,5,6,2,1,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,Ararat,Shkendija,O. Derevinskyi,2,2,3,6,3,1,0,0,0,0,0,0,0.0,0.0
+2022-07-14,2022,848,FK Liepaja,Gjilani,Tore Hansen,3,1,7,1,6,2,0,0,0,0,0,0,0.0,0.0
+2022-07-19,2022,848,La Fiorita,Ballkani,N. Popov,0,4,4,4,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-19,2022,848,Tirana,Zrinjski,L. Soteriou,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-19,2022,848,Hibernians,FC Levadia Tallinn,V. Chinkov,3,2,6,3,3,1,0,0,0,0,0,0,0.0,0.0
+2022-07-20,2022,848,Vikingur Gota,Dunajska Streda,N. Kajtazović,0,2,6,9,1,3,0,0,0,0,0,0,0.0,0.0
+2022-07-20,2022,848,Botev Plovdiv,Apoel Nicosia,B. Berke,0,0,8,2,2,1,0,0,0,0,0,0,0.0,0.0
+2022-07-20,2022,848,Sutjeska,KI Klaksvik,A. Kardeşler,0,0,2,3,2,1,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Sepsi OSK Sfantu Gheorghe,Olimpija Ljubljana,D. Robertson,3,1,14,2,1,4,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Petrocub,Laci,K. Jakubik,0,0,8,2,1,2,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Hapoel Beer Sheva,Dinamo Minsk,E. Eskås,2,1,9,1,3,2,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,CFR 1907 Cluj,Inter Club d'Escaldes,A. Troleis,3,0,5,1,2,2,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Aris,Neftchi Baku,I. Bebek,2,0,8,4,1,2,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Başakşehir,Maccabi Netanya,I. Kvirikashvili,1,1,10,1,2,5,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Gzira United,Radnicki NIS,F. Karakó,2,2,2,6,2,4,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Aris Thessalonikis,FC Gomel,W. Altmann,5,1,4,4,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Racing FC Union Luxembourg,Cukaricki,V. Shimusik,1,4,7,3,1,2,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,AZ Alkmaar,Tuzla City,L. Fähndrich,1,0,6,1,1,3,0,0,4,0,0,3,0.0,0.0
+2022-07-21,2022,848,Breidablik,Buducnost Podgorica,D. Shurman,2,0,8,3,1,3,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Spartak Trnava,Newtown AFC,L. Bilbija,4,1,12,5,1,2,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Velež,Hamrun Spartans,A. Davey,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Motherwell,Sligo Rovers,K. Høvdanum,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,St Patrick's Athl.,Mura,I. Barbara,1,1,9,4,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Bate Borisov,Konyaspor,Gustavo Correia,0,3,6,5,1,2,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Vllaznia Shkodër,CS Universitatea Craiova,P. McLaughlin,1,1,3,6,2,4,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Raków Częstochowa,FC Astana,G. Kikacheishvili,5,0,0,0,2,5,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Vorskla Poltava,AIK Stockholm,U. Schnyder,3,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Guimaraes,Puskas Academy,H. Nalbandyan,3,0,9,4,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Vikingur Reykjavik,The New Saints,P. Kralovic,2,0,11,4,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,HNK Rijeka,Djurgardens IF,C. Ciochirca,1,2,0,0,2,2,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Rapid Vienna,Lechia Gdansk,E. Məsiyev,0,0,9,3,2,1,0,0,3,2,2,3,0.0,0.0
+2022-07-21,2022,848,Pogon Szczecin,Brondby,N. Minaković,1,1,8,7,2,1,0,0,6,4,3,5,0.0,0.0
+2022-07-21,2022,848,St Joseph S Fc,Slavia Praha,I. Kristjánsson,0,4,4,8,4,1,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Kyzyl-Zhar,NK Osijek,A. Anufrijevs,1,2,4,3,1,1,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,FK Liepaja,BSC Young Boys,D. Munro,0,1,2,11,0,1,0,0,1,7,4,1,0.0,0.0
+2022-07-21,2022,848,Kairat Almaty,Kisvarda FC,P. Kjærsgaard-Andersen,0,1,6,7,2,4,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,FK Tobol Kostanay,Lincoln Red Imps FC,M. De Gabriele,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Ararat-Armenia,Paide,S. Putros,0,0,4,3,1,3,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Valmiera / BSS,Shkendija,M. Očenáš,1,2,6,2,1,1,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Makedonija GjP,CSKA Sofia,B. Van Driessche,0,0,3,9,2,2,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Molde,IF Elfsborg,M. Kristoffersen,4,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Lech Poznan,Dinamo Batumi,I. McNabb,5,0,4,4,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Antwerp,Drita,P. Farrugia,0,0,11,1,1,2,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Zira,Maccabi Tel Aviv,R. Hennessy,0,3,7,6,3,2,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,KuPS,Milsami Orhei,A. Diamantopoulos,2,2,5,3,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Saburtalo,FCSB,K. Steen,1,0,4,7,1,4,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Koper,FC Vaduz,G. Bogár,0,1,1,1,1,4,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Suduva Marijampole,Viborg,G. Davidov,0,1,2,9,2,2,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Ružomberok,Riga,G. Nuza,0,3,5,3,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,FC Basel 1893,Crusaders FC,A. Kurgkheli,2,0,7,4,2,2,1,0,5,2,2,3,0.0,0.0
+2022-07-21,2022,848,Fehérvár FC,Qabala,K. Sjöberg,4,1,0,0,1,3,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,Sparta Praha,Viking,M. Lukjančukas,0,0,13,3,3,4,0,0,4,2,2,4,0.0,0.0
+2022-07-21,2022,848,Levski Sofia,PAOK,J. Pignard,2,0,0,0,2,4,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,B36 Torshavn,Tre Fiori,António Nobre,1,0,10,2,4,5,0,0,0,0,0,0,0.0,0.0
+2022-07-21,2022,848,SJK,Lillestrom,M. Bîrsan,0,1,3,8,2,3,0,0,0,0,0,0,0.0,0.0
+2022-07-26,2022,848,The New Saints,Vikingur Reykjavik,I. Stoyanov,0,0,3,6,3,2,0,0,0,0,0,0,0.0,0.0
+2022-07-26,2022,848,Lincoln Red Imps FC,FK Tobol Kostanay,G. Laibuvitz,0,1,2,3,2,2,0,0,0,0,0,0,0.0,0.0
+2022-07-26,2022,848,Ballkani,La Fiorita,A. Ladebäck,6,0,6,1,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-27,2022,848,KI Klaksvik,Sutjeska,C. Ciochirca,1,0,2,2,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-27,2022,848,FC Gomel,Aris Thessalonikis,N. Laforge,1,2,2,5,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-27,2022,848,AIK Stockholm,Vorskla Poltava,M. Milanović,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-27,2022,848,Inter Club d'Escaldes,CFR 1907 Cluj,K. Hagenes,1,1,3,4,4,2,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Lechia Gdansk,Rapid Vienna,A. Dudic,1,2,8,3,3,3,0,0,2,5,3,1,0.0,0.0
+2022-07-28,2022,848,Dinamo Minsk,Hapoel Beer Sheva,M. Barbu,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Brondby,Pogon Szczecin,A. Boucaut,4,0,3,11,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,BSC Young Boys,FK Liepaja,A. Bitigen,3,0,5,4,1,2,0,0,7,2,2,3,0.0,0.0
+2022-07-28,2022,848,Konyaspor,Bate Borisov,N. Simović,2,0,10,2,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,FC Vaduz,Koper,B. Kasumi,1,1,8,11,6,4,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Laci,Petrocub,M. Schüttengruber,1,4,5,6,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Cukaricki,Racing FC Union Luxembourg,B. Saryev,4,0,6,1,1,3,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Sligo Rovers,Motherwell,B. Pandzic,2,0,4,8,1,3,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,CS Universitatea Craiova,Vllaznia Shkodër,O. Berka,3,0,10,1,2,1,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Mura,St Patrick's Athl.,U. Schnyder,0,0,6,6,4,3,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Drita,Antwerp,S. van der Eijk,0,2,5,4,3,3,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Buducnost Podgorica,Breidablik,T. Owen,2,1,5,5,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,NK Osijek,Kyzyl-Zhar,A. Papapetrou,0,2,8,2,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Tre Fiori,B36 Torshavn,D. Schlager,0,0,4,3,3,3,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Tuzla City,AZ Alkmaar,A. Ghaltakchyan,0,4,3,4,2,2,0,0,0,9,5,0,0.0,0.0
+2022-07-28,2022,848,Zrinjski,Tirana,Y. Uğurlu,3,2,4,4,6,2,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Crusaders FC,FC Basel 1893,D. Šmajc,1,1,2,7,5,3,0,0,3,3,2,2,0.0,0.0
+2022-07-28,2022,848,Dunajska Streda,Vikingur Gota,J. Xhaja,2,0,15,4,2,3,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Puskas Academy,Guimaraes,J. A. Sundberg,0,0,6,2,5,2,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Hamrun Spartans,Velež,J. Frischer,1,0,3,6,5,2,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,PAOK,Levski Sofia,César Soto,1,1,6,4,5,3,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Shkendija,Valmiera / BSS,K. Clancy,3,1,10,7,2,4,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,FCSB,Saburtalo,J. Lardot,4,2,7,2,3,3,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,FC Astana,Raków Częstochowa,T. Klíma,0,1,3,6,2,2,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Qabala,Fehérvár FC,C. Jäeger,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Milsami Orhei,KuPS,T. Farrugia Cann,1,4,5,2,4,1,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Maccabi Tel Aviv,Zira,M. Zebec,0,0,5,6,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Paide,Ararat-Armenia,D. Sylwestrzak,0,0,3,5,3,5,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,IF Elfsborg,Molde,P. Bankes,1,2,9,5,1,1,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Maccabi Netanya,Başakşehir,D. Bel,0,1,4,3,1,2,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Lillestrom,SJK,I. Griffith,5,2,6,5,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Newtown AFC,Spartak Trnava,A. Diamantopoulos,1,2,3,2,4,3,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Djurgardens IF,HNK Rijeka,S. Levi,2,0,4,3,4,2,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Slavia Praha,St Joseph S Fc,T. Musial,7,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Kisvarda FC,Kairat Almaty,C. Theouli,1,0,2,7,2,1,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Dinamo Batumi,Lech Poznan,I. Stojchevski,1,1,8,2,2,2,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Viking,Sparta Praha,V. Kastrati,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,CSKA Sofia,Makedonija GjP,M. Bîrsan,4,0,8,1,2,3,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Olimpija Ljubljana,Sepsi OSK Sfantu Gheorghe,S. Gishamer,2,0,6,2,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Viborg,Suduva Marijampole,J. Robinson,1,0,8,3,0,0,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Apoel Nicosia,Botev Plovdiv,M. Krogh,2,0,7,2,3,3,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Radnicki NIS,Gzira United,A. Chivulete,3,3,10,5,4,7,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Neftchi Baku,Aris,B. Dankert,3,0,2,6,3,4,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,FC Levadia Tallinn,Hibernians,H. Nalbandyan,1,1,3,5,3,3,0,0,0,0,0,0,0.0,0.0
+2022-07-28,2022,848,Riga,Ružomberok,J. Šabotić,2,1,9,4,1,2,0,0,0,0,0,0,0.0,0.0
+2022-08-03,2022,848,Wolfsberger AC,Gzira United,U. Schnyder,0,0,11,2,2,2,0,0,7,1,1,6,0.0,0.0
+2022-08-03,2022,848,Dunajska Streda,FCSB,R. Obrenović,0,1,3,1,2,4,0,0,0,0,0,0,0.0,0.0
+2022-08-03,2022,848,Viborg,B36 Torshavn,H. Nalbandyan,3,0,12,3,1,1,0,0,0,0,0,0,0.0,0.0
+2022-08-03,2022,848,Riga,GIL Vicente,J. Kehlet,1,1,3,7,2,2,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Hamrun Spartans,Levski Sofia,W. Delajod,0,1,6,5,2,1,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Dundee Utd,AZ Alkmaar,Vitor Ferreira,1,0,2,4,4,2,0,0,2,4,4,1,0.0,0.0
+2022-08-04,2022,848,HNK Hajduk Split,Guimaraes,M. Al Hakim,3,1,5,3,1,2,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Zrinjski,FK Tobol Kostanay,António Nobre,1,0,5,3,3,4,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Fehérvár FC,Petrocub,V. Thórarinsson,5,0,3,3,3,4,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Vikingur Reykjavik,Lech Poznan,J. Xhaja,1,0,5,4,1,3,0,0,4,1,1,3,0.0,0.0
+2022-08-04,2022,848,Breidablik,Başakşehir,P. Viljanen,1,3,3,4,2,3,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Brondby,FC Basel 1893,F. Glova,1,0,8,1,2,2,0,0,5,2,2,4,0.0,0.0
+2022-08-04,2022,848,Cukaricki,Twente,H. Lechner,1,3,6,3,1,2,0,0,5,6,3,4,0.0,0.0
+2022-08-04,2022,848,Sepsi OSK Sfantu Gheorghe,Djurgardens IF,P. Raczkowski,1,3,3,9,4,2,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,FC Vaduz,Konyaspor,M. Lukjančukas,1,1,3,15,0,0,0,0,3,8,4,2,0.0,0.0
+2022-08-04,2022,848,FC Lugano,Hapoel Beer Sheva,M. Fabbri,0,2,5,2,2,2,0,0,1,4,2,1,0.0,0.0
+2022-08-04,2022,848,Zorya Luhansk,Universitatea Craiova,G. Davidov,1,0,8,3,3,2,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Ballkani,KI Klaksvik,E. Eskås,3,2,4,8,2,2,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Apoel Nicosia,Kyzyl-Zhar,E. Lambrechts,1,0,0,0,1,2,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,CSKA Sofia,St Patrick's Athl.,M. Schüttengruber,0,1,8,2,1,5,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Viking,Sligo Rovers,R. Petrescu,5,1,6,3,2,3,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Maccabi Tel Aviv,Aris Thessalonikis,D. Higler,2,0,3,6,3,1,0,0,6,2,2,4,0.0,0.0
+2022-08-04,2022,848,Slavia Praha,Panathinaikos,R. Buquet,2,0,4,2,1,4,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Shakhter Soligorsk,CFR 1907 Cluj,I. Papadopoulos,0,0,2,1,3,1,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Neftchi Baku,Rapid Vienna,D. Bel,2,1,1,7,1,3,0,0,6,8,7,4,0.0,0.0
+2022-08-04,2022,848,AIK Stockholm,Shkendija,B. Van Driessche,1,1,5,5,4,4,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Molde,Kisvarda FC,I. Stojchevski,3,0,1,1,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Lillestrom,Antwerp,D. Stefanski,1,3,4,6,2,3,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Paide,Anderlecht,D. Fuxman,0,2,3,4,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,Spartak Trnava,Raków Częstochowa,I. Pajač,0,2,8,4,4,1,0,0,3,5,3,3,0.0,0.0
+2022-08-04,2022,848,Rīgas FS,Hibernians,G. Nuza,1,1,6,1,3,5,0,0,0,0,0,0,0.0,0.0
+2022-08-04,2022,848,KuPS,BSC Young Boys,G. Bogár,0,2,4,7,2,1,0,0,1,6,4,1,0.0,0.0
+2022-08-09,2022,848,B36 Torshavn,Viborg,P. Orel,1,2,2,3,2,3,0,0,5,5,3,4,0.0,0.0
+2022-08-09,2022,848,Gzira United,Wolfsberger AC,N. Walsh,0,4,2,10,6,3,2,0,1,12,7,1,0.0,0.0
+2022-08-10,2022,848,Guimaraes,HNK Hajduk Split,A. Palabıyık,1,0,7,2,3,6,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,Anderlecht,Paide,G. Kruashvili,3,0,5,3,0,0,0,0,11,2,2,8,0.0,0.0
+2022-08-11,2022,848,GIL Vicente,Riga,M. Balakin,4,0,4,3,3,4,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,BSC Young Boys,KuPS,S. Frappart,3,0,6,2,2,1,0,0,5,1,1,1,0.0,0.0
+2022-08-11,2022,848,AZ Alkmaar,Dundee Utd,Antonio Mateu,7,0,6,3,1,0,0,0,12,2,2,5,0.0,0.0
+2022-08-11,2022,848,St Patrick's Athl.,CSKA Sofia,H. Feșnic,0,2,4,2,4,6,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,Rapid Vienna,Neftchi Baku,R. Saggi,2,0,14,4,3,5,0,0,5,2,2,2,0.0,0.0
+2022-08-11,2022,848,Kisvarda FC,Molde,A. Durieux,2,1,3,3,3,2,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,Hibernians,Rīgas FS,K. Monzul,1,3,6,3,3,4,0,0,3,4,1,2,0.0,0.0
+2022-08-11,2022,848,Sligo Rovers,Viking,N. Simović,1,0,0,0,5,1,0,0,3,3,3,3,0.0,0.0
+2022-08-11,2022,848,Aris Thessalonikis,Maccabi Tel Aviv,J. Beaton,2,1,3,4,4,7,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,KI Klaksvik,Ballkani,G. Kikacheishvili,2,1,8,3,2,3,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,Levski Sofia,Hamrun Spartans,I. Kovacs,1,2,10,5,1,4,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,Shkendija,AIK Stockholm,D. Robertson,1,1,9,8,5,5,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,Başakşehir,Breidablik,T. Bognár,3,0,7,4,1,2,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,Lech Poznan,Vikingur Reykjavik,J. Weinberger,4,1,4,4,5,4,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,Universitatea Craiova,Zorya Luhansk,M. Jug,3,0,5,4,4,1,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,Antwerp,Lillestrom,D. Strukan,2,0,8,5,2,2,0,0,3,1,1,1,0.0,0.0
+2022-08-11,2022,848,FK Tobol Kostanay,Zrinjski,N. Verboomen,1,1,5,4,7,5,0,0,2,3,2,1,0.0,0.0
+2022-08-11,2022,848,Raków Częstochowa,Spartak Trnava,A. Lindhout,1,0,10,5,1,5,0,0,3,2,2,2,0.0,0.0
+2022-08-11,2022,848,Djurgardens IF,Sepsi OSK Sfantu Gheorghe,S. Stegemann,3,1,5,5,2,4,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,Twente,Cukaricki,K. Tohver,4,1,5,7,0,2,0,0,9,8,7,5,0.0,0.0
+2022-08-11,2022,848,FC Basel 1893,Brondby,C. Dingert,2,1,11,3,5,6,0,0,11,3,2,9,0.0,0.0
+2022-08-11,2022,848,Kyzyl-Zhar,Apoel Nicosia,D. Siebert,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,Konyaspor,FC Vaduz,Guillermo Cuadra,2,4,12,3,1,2,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,CFR 1907 Cluj,Shakhter Soligorsk,M. Krogh,1,0,3,3,1,2,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,Petrocub,Fehérvár FC,J. Brisard,1,2,3,2,3,1,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,FCSB,Dunajska Streda,Ə. Ağayev,1,0,9,2,1,1,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,Panathinaikos,Slavia Praha,P. Bankes,1,1,0,0,5,5,0,0,0,0,0,0,0.0,0.0
+2022-08-11,2022,848,Hapoel Beer Sheva,FC Lugano,Juan Martínez,3,1,4,7,3,4,0,0,5,9,8,3,0.0,0.0
+2022-08-17,2022,848,Djurgardens IF,Apoel Nicosia,J. Xhaja,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-18,2022,848,1. FC Köln,Fehérvár FC,Tiago Martins,1,2,9,2,2,5,1,0,2,2,0,1,0.0,0.0
+2022-08-18,2022,848,Lech Poznan,F91 Dudelange,M. Lukjančukas,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-18,2022,848,FCSB,Viking,G. Kruashvili,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-18,2022,848,West Ham,Viborg,M. Di Bello,3,1,7,4,0,1,0,0,7,4,3,4,0.0,0.0
+2022-08-18,2022,848,Fiorentina,Twente,D. Stefanski,2,1,3,1,3,4,0,0,5,1,0,3,0.0,0.0
+2022-08-18,2022,848,AZ Alkmaar,GIL Vicente,Guillermo Cuadra,4,0,3,7,4,3,0,0,6,1,1,2,0.0,0.0
+2022-08-18,2022,848,FK Partizan,Hamrun Spartans,F. Glova,4,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-18,2022,848,Shkupi 1927,Ballkani,I. Kristjánsson,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-18,2022,848,Villarreal,HNK Hajduk Split,A. Kulbakov,4,2,6,6,2,4,0,0,7,3,1,4,0.0,0.0
+2022-08-18,2022,848,Maribor,CFR 1907 Cluj,P. Orel,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-18,2022,848,Başakşehir,Antwerp,J. Brisard,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-18,2022,848,Zrinjski,Slovan Bratislava,J. Weinberger,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-18,2022,848,Universitatea Craiova,Hapoel Beer Sheva,N. Walsh,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-18,2022,848,Rīgas FS,Linfield,Ə. Ağayev,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-18,2022,848,Slovácko,AIK Stockholm,H. Feșnic,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-18,2022,848,CSKA Sofia,FC Basel 1893,D. Strukan,1,0,7,6,2,4,0,0,3,1,1,2,0.0,0.0
+2022-08-18,2022,848,Maccabi Tel Aviv,Nice,A. Lindhout,1,0,5,6,1,3,0,0,6,6,6,3,0.0,0.0
+2022-08-18,2022,848,BSC Young Boys,Anderlecht,A. Stavrev,0,1,6,3,3,4,0,0,1,1,0,1,0.0,0.0
+2022-08-18,2022,848,Molde,Wolfsberger AC,A. Papapetrou,0,1,16,4,2,1,0,0,8,3,2,8,0.0,0.0
+2022-08-18,2022,848,Raków Częstochowa,Slavia Praha,R. Saggi,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-18,2022,848,FC Vaduz,Rapid Vienna,K. Tohver,1,1,1,1,2,3,0,0,7,3,2,6,0.0,0.0
+2022-08-23,2022,848,Apoel Nicosia,Djurgardens IF,R. Reinshreiber,3,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-25,2022,848,Rapid Vienna,FC Vaduz,R. Obrenović,0,1,4,1,4,3,1,0,3,5,4,3,0.0,0.0
+2022-08-25,2022,848,GIL Vicente,AZ Alkmaar,F. Jović,1,2,6,1,1,1,0,0,4,4,2,3,0.0,0.0
+2022-08-25,2022,848,HNK Hajduk Split,Villarreal,A. Treimanis,0,2,7,4,1,3,0,0,4,4,2,4,0.0,0.0
+2022-08-25,2022,848,Antwerp,Başakşehir,M. Schüttengruber,1,3,8,2,2,6,0,0,6,5,2,5,0.0,0.0
+2022-08-25,2022,848,Linfield,Rīgas FS,M. Jug,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-25,2022,848,Slovan Bratislava,Zrinjski,M. Al Hakim,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-25,2022,848,F91 Dudelange,Lech Poznan,N. Dabanović,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-25,2022,848,Ballkani,Shkupi 1927,I. Vad II,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-25,2022,848,Hamrun Spartans,FK Partizan,J. Kehlet,3,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-25,2022,848,Anderlecht,BSC Young Boys,S. Boyko,0,1,7,2,3,3,0,0,1,2,1,2,0.0,0.0
+2022-08-25,2022,848,Twente,Fiorentina,R. Petrescu,0,0,6,5,4,5,0,1,8,5,5,7,0.0,0.0
+2022-08-25,2022,848,CFR 1907 Cluj,Maribor,J. Beaton,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-25,2022,848,AIK Stockholm,Slovácko,D. Rumšas,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-25,2022,848,FC Basel 1893,CSKA Sofia,António Nobre,2,0,5,6,2,5,0,0,6,1,1,4,0.0,0.0
+2022-08-25,2022,848,Slavia Praha,Raków Częstochowa,C. Pawson,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-25,2022,848,Hapoel Beer Sheva,Universitatea Craiova,E. Lambrechts,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-25,2022,848,Nice,Maccabi Tel Aviv,S. Stegemann,2,0,12,4,6,2,1,0,8,2,2,6,0.0,0.0
+2022-08-25,2022,848,Viking,FCSB,T. Bognár,1,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2022-08-25,2022,848,Wolfsberger AC,Molde,R. Harvey,0,4,6,9,2,3,0,0,1,6,2,1,0.0,0.0
+2022-08-25,2022,848,Viborg,West Ham,H. Lechner,0,3,3,4,1,2,0,0,3,5,2,3,0.0,0.0
+2022-08-25,2022,848,Fehérvár FC,1. FC Köln,A. Palabıyık,0,3,2,8,3,4,0,0,2,5,2,2,0.0,0.0
+2022-09-08,2022,848,Molde,Gent,P. Viljanen,0,0,8,3,2,3,0,0,4,2,2,4,0.0,0.0
+2022-09-08,2022,848,Dnipro-1,AZ Alkmaar,I. Frid,0,1,3,3,0,1,0,0,2,3,2,2,0.0,0.0
+2022-09-08,2022,848,Sivasspor,Slavia Praha,F. Jović,1,1,1,9,4,3,1,0,3,8,6,2,0.0,0.0
+2022-09-08,2022,848,FC Vaduz,Apollon Limassol,D. Muntean,0,0,2,5,3,2,0,0,0,1,1,0,0.0,0.0
+2022-09-08,2022,848,Slovan Bratislava,FK Zalgiris Vilnius,R. Cabarov,0,0,0,2,2,1,0,0,5,1,1,5,0.0,0.0
+2022-09-08,2022,848,Shamrock Rovers,Djurgardens IF,I. Kristjánsson,0,0,5,5,2,1,0,0,5,3,3,5,0.0,0.0
+2022-09-08,2022,848,FC Basel 1893,Pyunik Yerevan,Juan Martínez,3,1,4,3,1,3,0,0,4,2,1,1,0.0,0.0
+2022-09-08,2022,848,West Ham,FCSB,B. Bastien,3,1,10,2,3,3,0,0,7,4,3,4,0.0,0.0
+2022-09-08,2022,848,Slovácko,FK Partizan,R. Harvey,3,3,13,1,3,3,0,1,3,3,0,0,0.0,0.0
+2022-09-08,2022,848,Austria Vienna,Hapoel Beer Sheva,H. Feșnic,0,0,9,4,3,2,0,0,6,0,0,6,0.0,0.0
+2022-09-08,2022,848,Anderlecht,Silkeborg,I. Vad II,1,0,6,3,2,2,0,0,5,0,0,4,0.0,0.0
+2022-09-08,2022,848,Villarreal,Lech Poznan,A. Palabıyık,4,3,7,1,4,1,0,0,6,3,0,2,0.0,0.0
+2022-09-08,2022,848,Fiorentina,Rīgas FS,P. Orel,1,1,8,2,1,4,0,0,9,3,2,8,0.0,0.0
+2022-09-08,2022,848,Heart Of Midlothian,Başakşehir,K. Jakubik,0,4,2,3,2,1,0,0,2,8,3,1,0.0,0.0
+2022-09-08,2022,848,Nice,1. FC Köln,Luis Godinho,1,1,10,4,1,2,0,0,7,4,3,6,0.0,0.0
+2022-09-08,2022,848,Ballkani,CFR 1907 Cluj,U. Schnyder,1,1,2,6,2,3,0,0,2,6,5,1,0.0,0.0
+2022-09-15,2022,848,Lech Poznan,Austria Vienna,P. Kjærsgaard-Andersen,4,1,1,1,4,3,0,0,5,4,3,1,0.0,0.0
+2022-09-15,2022,848,Rīgas FS,Heart Of Midlothian,A. Stavrev,0,2,4,7,4,5,0,0,3,9,6,3,0.0,0.0
+2022-09-15,2022,848,Silkeborg,West Ham,Fábio Veríssimo,2,3,2,3,2,1,0,0,4,5,2,2,0.0,0.0
+2022-09-15,2022,848,FK Partizan,Nice,A. Madley,1,1,8,3,1,1,0,0,3,3,2,1,0.0,0.0
+2022-09-15,2022,848,Başakşehir,Fiorentina,Guillermo Cuadra,3,0,1,6,0,3,0,1,3,2,2,0,0.0,0.0
+2022-09-15,2022,848,Hapoel Beer Sheva,Villarreal,W. Collum,1,2,4,3,4,3,0,0,2,4,2,1,0.0,0.0
+2022-09-15,2022,848,FCSB,Anderlecht,S. Gishamer,0,0,8,1,3,2,0,0,4,3,3,3,0.0,0.0
+2022-09-15,2022,848,1. FC Köln,Slovácko,Y. Aranovskyi,4,2,5,3,3,1,0,0,6,6,4,3,0.0,0.0
+2022-09-15,2022,848,Pyunik Yerevan,Slovan Bratislava,G. Laibuvitz,2,0,4,9,3,2,0,0,7,5,5,5,0.0,0.0
+2022-09-15,2022,848,Gent,Shamrock Rovers,V. Kastrati,3,0,3,5,1,2,0,0,7,4,4,4,0.0,0.0
+2022-09-15,2022,848,Apollon Limassol,Dnipro-1,A. Farkas,1,3,6,4,2,3,0,0,5,5,3,4,0.0,0.0
+2022-09-15,2022,848,FK Zalgiris Vilnius,FC Basel 1893,I. Griffith,0,1,4,4,4,3,0,0,2,4,3,2,0.0,0.0
+2022-09-15,2022,848,Slavia Praha,Ballkani,W. Delajod,3,2,12,1,3,1,0,1,7,2,0,5,0.0,0.0
+2022-09-15,2022,848,Djurgardens IF,Molde,G. Bogár,3,2,5,3,2,5,0,1,7,2,0,5,0.0,0.0
+2022-09-15,2022,848,AZ Alkmaar,FC Vaduz,N. Walsh,4,1,8,1,0,2,0,1,12,1,0,7,0.0,0.0
+2022-09-15,2022,848,CFR 1907 Cluj,Sivasspor,A. Lindhout,0,1,7,1,2,3,0,0,7,3,2,5,0.0,0.0
+2022-10-06,2022,848,1. FC Köln,FK Partizan,Ricardo De Burgos,0,1,9,3,0,1,0,0,5,5,4,6,0.0,0.0
+2022-10-06,2022,848,Rīgas FS,Başakşehir,R. Petrescu,0,0,1,6,4,2,1,0,3,4,4,3,0.0,0.0
+2022-10-06,2022,848,Gent,Djurgardens IF,A. Kulbakov,0,1,10,2,0,3,0,0,7,2,1,7,0.0,0.0
+2022-10-06,2022,848,Slavia Praha,CFR 1907 Cluj,F. Maresca,0,1,12,3,1,5,0,0,9,2,1,9,0.0,0.0
+2022-10-06,2022,848,FC Basel 1893,Slovan Bratislava,K. Clancy,0,2,9,2,5,3,1,0,4,4,2,4,0.0,0.0
+2022-10-06,2022,848,Villarreal,Austria Vienna,J. Kamphuis,5,0,5,3,1,1,0,0,7,3,3,2,0.0,0.0
+2022-10-06,2022,848,Heart Of Midlothian,Fiorentina,E. Lambrechts,0,3,1,10,2,0,1,0,2,7,4,2,0.0,0.0
+2022-10-06,2022,848,AZ Alkmaar,Apollon Limassol,R. Saggi,3,2,8,5,0,3,0,0,6,3,1,3,0.0,0.0
+2022-10-06,2022,848,Silkeborg,FCSB,M. Balakin,5,0,5,1,0,3,0,0,5,0,0,0,0.0,0.0
+2022-10-06,2022,848,Dnipro-1,FC Vaduz,F. Jović,2,2,7,6,2,3,0,0,5,6,4,3,0.0,0.0
+2022-10-06,2022,848,Sivasspor,Ballkani,José Munuera,3,4,5,4,3,3,0,0,7,9,6,4,0.0,0.0
+2022-10-06,2022,848,Pyunik Yerevan,FK Zalgiris Vilnius,J. Beaton,2,0,4,2,2,1,0,0,6,1,1,4,0.0,0.0
+2022-10-06,2022,848,Anderlecht,West Ham,N. Simović,0,1,6,7,1,4,0,0,2,3,2,2,0.0,0.0
+2022-10-06,2022,848,Lech Poznan,Hapoel Beer Sheva,T. Bognár,0,0,7,2,2,2,0,0,5,0,0,5,0.0,0.0
+2022-10-06,2022,848,Molde,Shamrock Rovers,M. Milanović,3,0,12,0,3,3,0,0,8,0,0,5,0.0,0.0
+2022-10-06,2022,848,Slovácko,Nice,J. Weinberger,0,1,3,3,1,2,0,0,4,3,2,4,0.0,0.0
+2022-10-13,2022,848,Ballkani,Sivasspor,M. Schüttengruber,1,2,4,6,1,3,0,0,8,5,3,7,0.0,0.0
+2022-10-13,2022,848,FCSB,Silkeborg,N. Walsh,0,5,2,5,3,1,0,0,8,7,2,7,0.0,0.0
+2022-10-13,2022,848,Hapoel Beer Sheva,Lech Poznan,R. Buquet,1,1,7,3,1,2,0,0,3,4,3,2,0.0,0.0
+2022-10-13,2022,848,Nice,Slovácko,I. Griffith,1,2,6,2,1,4,1,0,9,5,3,8,0.0,0.0
+2022-10-13,2022,848,Shamrock Rovers,Molde,D. Bel,0,2,7,4,2,3,0,0,4,5,3,4,0.0,0.0
+2022-10-13,2022,848,FC Vaduz,Dnipro-1,M. Barbu,1,2,7,4,1,5,0,0,7,3,1,6,0.0,0.0
+2022-10-13,2022,848,FK Zalgiris Vilnius,Pyunik Yerevan,J. Xhaja,2,1,3,2,2,1,0,0,8,3,2,6,0.0,0.0
+2022-10-13,2022,848,West Ham,Anderlecht,W. Delajod,2,1,5,3,3,1,0,0,4,3,2,2,0.0,0.0
+2022-10-13,2022,848,Austria Vienna,Villarreal,G. Kabakov,0,1,2,3,2,4,0,0,5,2,1,5,0.0,0.0
+2022-10-13,2022,848,Slovan Bratislava,FC Basel 1893,S. Boyko,3,3,4,5,1,4,0,0,5,6,3,2,0.0,0.0
+2022-10-13,2022,848,Apollon Limassol,AZ Alkmaar,M. Krogh,1,0,2,6,1,3,0,0,2,3,2,1,0.0,0.0
+2022-10-13,2022,848,FK Partizan,1. FC Köln,R. Reinshreiber,2,0,2,11,5,3,0,0,4,2,2,2,0.0,0.0
+2022-10-13,2022,848,Başakşehir,Rīgas FS,P. Farrugia,3,0,6,3,1,1,0,0,8,1,1,5,0.0,0.0
+2022-10-13,2022,848,Fiorentina,Heart Of Midlothian,I. Bebek,5,1,5,0,2,4,0,0,10,2,1,5,0.0,0.0
+2022-10-13,2022,848,Djurgardens IF,Gent,M. Lukjančukas,4,2,1,11,1,2,0,0,5,5,2,1,0.0,0.0
+2022-10-13,2022,848,CFR 1907 Cluj,Slavia Praha,Luis Godinho,2,0,4,7,3,6,0,0,2,4,4,0,0.0,0.0
+2022-10-27,2022,848,Ballkani,Slavia Praha,M. Krogh,0,1,2,8,7,2,0,0,3,3,2,3,0.0,0.0
+2022-10-27,2022,848,Dnipro-1,Apollon Limassol,António Nobre,1,0,2,1,0,2,0,1,4,1,1,3,0.0,0.0
+2022-10-27,2022,848,Sivasspor,CFR 1907 Cluj,R. Saggi,3,0,4,6,2,1,0,0,7,3,3,4,0.0,0.0
+2022-10-27,2022,848,Slovan Bratislava,Pyunik Yerevan,M. Schüttengruber,2,1,5,1,3,3,0,0,6,3,2,4,0.0,0.0
+2022-10-27,2022,848,Shamrock Rovers,Gent,J. Weinberger,1,1,7,10,7,1,1,0,2,6,5,1,0.0,0.0
+2022-10-27,2022,848,FC Basel 1893,FK Zalgiris Vilnius,A. Palabıyık,2,2,9,4,2,0,0,0,4,3,1,1,0.0,0.0
+2022-10-27,2022,848,Heart Of Midlothian,Rīgas FS,B. Van Driessche,2,1,8,5,1,2,0,1,6,2,1,4,0.0,0.0
+2022-10-27,2022,848,Molde,Djurgardens IF,U. Schnyder,2,3,11,2,4,1,0,0,4,3,0,2,0.0,0.0
+2022-10-27,2022,848,FC Vaduz,AZ Alkmaar,D. Robertson,1,2,6,4,2,2,0,0,3,5,4,2,0.0,0.0
+2022-10-27,2022,848,Austria Vienna,Lech Poznan,D. England,1,1,2,7,1,5,0,0,3,5,4,2,0.0,0.0
+2022-10-27,2022,848,Anderlecht,FCSB,M. Lukjančukas,2,2,8,4,3,3,1,0,8,6,4,6,0.0,0.0
+2022-10-27,2022,848,Villarreal,Hapoel Beer Sheva,J. Xhaja,2,2,4,0,1,4,0,0,8,2,0,5,0.0,0.0
+2022-10-27,2022,848,Fiorentina,Başakşehir,A. Lindhout,2,1,6,0,2,3,0,0,6,1,0,4,0.0,0.0
+2022-10-27,2022,848,Nice,FK Partizan,I. Vad II,2,1,9,2,1,0,0,0,7,2,1,5,0.0,0.0
+2022-10-27,2022,848,West Ham,Silkeborg,J. Hyytiä,1,0,6,1,3,1,0,0,5,3,3,3,0.0,0.0
+2022-10-28,2022,848,Slovácko,1. FC Köln,G. Kruashvili,0,1,2,1,0,0,0,0,0,0,0,0,0.0,0.0
+2022-11-03,2022,848,Silkeborg,Anderlecht,D. Chiffi,0,2,5,1,1,3,1,0,4,5,3,4,0.0,0.0
+2022-11-03,2022,848,FK Partizan,Slovácko,P. Raczkowski,1,1,5,4,5,2,0,0,2,2,1,1,0.0,0.0
+2022-11-03,2022,848,Hapoel Beer Sheva,Austria Vienna,E. Məsiyev,4,0,12,7,1,1,0,0,7,3,3,4,0.0,0.0
+2022-11-03,2022,848,FCSB,West Ham,S. Stegemann,0,3,7,8,0,3,0,0,1,10,7,1,0.0,0.0
+2022-11-03,2022,848,Lech Poznan,Villarreal,N. Verboomen,3,0,0,6,0,1,0,0,5,2,2,1,0.0,0.0
+2022-11-03,2022,848,1. FC Köln,Nice,César Soto,2,2,6,3,2,0,0,0,7,4,2,5,0.0,0.0
+2022-11-03,2022,848,CFR 1907 Cluj,Ballkani,D. Schlager,1,0,2,1,3,3,0,0,5,3,3,4,0.0,0.0
+2022-11-03,2022,848,Pyunik Yerevan,FC Basel 1893,H. Feșnic,1,2,7,4,1,4,0,1,6,4,2,5,0.0,0.0
+2022-11-03,2022,848,Apollon Limassol,FC Vaduz,D. Bel,1,0,5,3,2,2,0,0,3,3,3,2,0.0,0.0
+2022-11-03,2022,848,FK Zalgiris Vilnius,Slovan Bratislava,Luis Godinho,1,2,3,6,2,4,0,0,2,8,6,1,0.0,0.0
+2022-11-03,2022,848,Slavia Praha,Sivasspor,R. Obrenović,1,1,9,0,1,2,0,0,6,1,0,6,0.0,0.0
+2022-11-03,2022,848,Djurgardens IF,Shamrock Rovers,N. Walsh,1,0,3,6,2,3,0,0,3,2,2,2,0.0,0.0
+2022-11-03,2022,848,AZ Alkmaar,Dnipro-1,A. Papapetrou,2,1,4,1,1,1,0,0,5,4,4,3,0.0,0.0
+2022-11-03,2022,848,Rīgas FS,Fiorentina,M. Kristoffersen,0,3,1,7,1,3,0,0,4,5,2,4,0.0,0.0
+2022-11-03,2022,848,Başakşehir,Heart Of Midlothian,G. Kikacheishvili,3,1,4,4,2,5,0,0,6,2,1,3,0.0,0.0
+2022-11-03,2022,848,Gent,Molde,S. Gishamer,4,0,5,6,1,3,0,0,8,2,2,4,0.0,0.0
+2023-02-16,2022,848,AEK Larnaca,Dnipro-1,J. Kehlet,1,0,5,3,1,2,0,0,5,4,4,4,1.54,0.31
+2023-02-16,2022,848,Ludogorets,Anderlecht,D. Strukan,1,0,4,7,3,3,0,0,3,3,3,2,0.49,1.44
+2023-02-16,2022,848,Lazio,CFR 1907 Cluj,C. Pawson,1,0,6,5,3,3,1,0,6,1,1,4,0.99,0.77
+2023-02-16,2022,848,Sheriff Tiraspol,FK Partizan,H. Osmers,0,1,2,1,2,2,0,1,6,3,2,6,1.38,0.42
+2023-02-16,2022,848,Qarabag,Gent,M. Al Hakim,1,0,7,5,2,3,0,0,4,0,0,3,1.85,0.71
+2023-02-16,2022,848,Bodo/Glimt,Lech Poznan,H. Lechner,0,0,7,2,1,1,0,0,3,0,0,3,0.64,0.78
+2023-02-16,2022,848,SC Braga,Fiorentina,Carlos del Cerro,0,4,4,4,0,3,1,0,1,7,3,1,0.3,1.54
+2023-02-16,2022,848,Trabzonspor,FC Basel 1893,D. Rumšas,1,0,8,1,1,0,0,0,10,2,2,9,2.26,0.65
+2023-02-23,2022,848,Anderlecht,Ludogorets,D. Siebert,2,1,11,4,4,6,0,1,8,1,0,6,1.97,1.29
+2023-02-23,2022,848,FK Partizan,Sheriff Tiraspol,A. Ekberg,1,3,4,4,1,2,0,0,3,4,1,2,0.91,0.96
+2023-02-23,2022,848,CFR 1907 Cluj,Lazio,F. Zwayer,0,0,4,5,4,2,1,0,0,3,3,0,1.2,1.85
+2023-02-23,2022,848,Dnipro-1,AEK Larnaca,A. Treimanis,0,0,7,5,3,3,0,0,2,2,2,2,0.66,0.28
+2023-02-23,2022,848,Lech Poznan,Bodo/Glimt,N. Dabanović,1,0,5,7,1,2,0,0,3,1,1,1,0.54,1.28
+2023-02-23,2022,848,Fiorentina,SC Braga,B. Bastien,3,2,7,5,4,0,0,0,6,5,3,3,1.81,0.81
+2023-02-23,2022,848,FC Basel 1893,Trabzonspor,Antonio Mateu,2,0,2,9,5,2,0,0,5,5,5,3,0.91,2.18
+2023-02-23,2022,848,Gent,Qarabag,W. Collum,1,0,7,7,3,3,0,0,4,1,1,3,0.68,0.49
+2023-03-07,2022,848,Lazio,AZ Alkmaar,G. Nyberg,1,2,5,1,0,2,0,0,6,2,0,5,1.32,0.69
+2023-03-09,2022,848,FC Basel 1893,Slovan Bratislava,R. Obrenović,2,2,6,6,2,3,0,0,5,4,2,3,2.28,1.33
+2023-03-09,2022,848,Gent,Başakşehir,K. Tohver,1,1,8,3,0,3,0,0,4,2,1,3,2.49,0.37
+2023-03-09,2022,848,Fiorentina,Sivasspor,E. Jorgji,1,0,12,4,5,2,0,1,6,1,1,4,2.22,0.72
+2023-03-09,2022,848,Sheriff Tiraspol,Nice,Ə. Ağayev,0,1,3,2,3,3,0,0,3,3,2,3,1.03,0.22
+2023-03-09,2022,848,AEK Larnaca,West Ham,E. Eskås,0,2,14,0,0,2,0,0,4,4,2,4,0.78,1.01
+2023-03-09,2022,848,Lech Poznan,Djurgardens IF,S. Frappart,2,0,6,1,2,2,0,0,4,0,0,2,0.85,0.71
+2023-03-09,2022,848,Anderlecht,Villarreal,B. Frankowski,1,1,5,4,0,1,0,0,3,5,4,2,0.52,0.66
+2023-03-15,2022,848,Başakşehir,Gent,B. Bastien,1,4,6,8,3,0,0,0,3,6,2,2,0.69,1.79
+2023-03-16,2022,848,Villarreal,Anderlecht,M. Di Bello,0,1,12,5,2,4,0,0,10,3,2,9,2.92,2.08
+2023-03-16,2022,848,Nice,Sheriff Tiraspol,L. Visser,3,1,4,1,0,0,0,0,5,3,2,2,1.73,0.38
+2023-03-16,2022,848,West Ham,AEK Larnaca,G. Kabakov,4,0,1,2,1,0,0,1,7,3,3,3,1.77,0.27
+2023-03-16,2022,848,AZ Alkmaar,Lazio,M. Jug,2,1,4,2,1,2,0,0,5,3,2,3,1.34,0.21
+2023-03-16,2022,848,Slovan Bratislava,FC Basel 1893,J. Kehlet,2,2,5,7,2,2,0,0,5,5,3,3,1.88,1.12
+2023-03-16,2022,848,Djurgardens IF,Lech Poznan,D. Strukan,0,3,2,5,3,6,1,0,2,6,3,2,0.79,2.5
+2023-03-16,2022,848,Sivasspor,Fiorentina,N. Dabanović,1,4,3,8,3,2,1,0,2,9,6,1,0.2,1.64
+2023-04-13,2022,848,Gent,West Ham,A. Sidiropoulos,1,1,8,3,2,3,0,0,4,2,1,2,1.32,1.19
+2023-04-13,2022,848,Lech Poznan,Fiorentina,I. Peljto,1,4,2,5,0,1,0,0,2,6,2,1,0.54,2.21
+2023-04-13,2022,848,FC Basel 1893,Nice,G. Nyberg,2,2,7,5,1,2,0,0,5,4,2,3,1.47,1.15
+2023-04-13,2022,848,Anderlecht,AZ Alkmaar,D. Siebert,2,0,1,8,1,3,0,0,5,2,2,3,0.75,0.7
+2023-04-20,2022,848,Nice,FC Basel 1893,S. Gözübüyük,1,2,7,3,6,2,0,0,3,4,2,2,1.18,0.54
+2023-04-20,2022,848,AZ Alkmaar,Anderlecht,D. Massa,2,0,3,6,5,2,0,0,7,4,4,5,3.6,0.66
+2023-04-20,2022,848,Fiorentina,Lech Poznan,R. Obrenović,2,3,5,2,4,4,0,0,7,3,0,5,1.65,2.2
+2023-04-20,2022,848,West Ham,Gent,O. Grinfeeld,4,1,9,3,0,1,0,0,8,1,0,4,2.82,0.99
+2023-05-11,2022,848,Fiorentina,FC Basel 1893,F. Letexier,1,2,9,4,0,3,0,0,3,3,1,2,1.42,1.21
+2023-05-11,2022,848,West Ham,AZ Alkmaar,H. Meler,2,1,4,0,1,3,0,0,7,3,2,4,2.89,0.28
+2023-05-18,2022,848,AZ Alkmaar,West Ham,I. Kružliak,0,1,5,3,0,2,0,0,2,2,1,3,0.48,0.77
+2023-05-18,2022,848,FC Basel 1893,Fiorentina,José Sánchez,1,3,2,14,1,6,0,0,3,11,8,2,0.55,4.3
+2023-06-07,2022,848,Fiorentina,West Ham,Carlos del Cerro,1,2,3,4,4,4,0,0,4,4,2,3,1.3,1.39
+2023-07-12,2023,848,F91 Dudelange,St Patrick's Athl.,R. Gidzhenov,2,1,0,0,3,3,0,0,0,0,0,0,0.0,0.0
+2023-07-12,2023,848,B36 Torshavn,Paide,L. D'hondt,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Penybont,FC Santa Coloma,A. Argyrou,1,1,4,3,1,2,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Dunajska Streda,Dila,J. Gillett,2,1,6,2,3,3,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,KA Akureyri,GAP Connah S Quay FC,Antoine Chiaramonti,2,0,11,3,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Shkendija,Haverfordwest County AFC,J. Kooij,1,0,5,3,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,FC Vaduz,Neman,J. Kachevski,1,2,4,5,1,3,0,0,1,3,0,0,0.0,0.0
+2023-07-13,2023,848,Tirana,Dinamo Batumi,R. Jones,1,1,4,2,0,0,0,0,7,3,2,6,0.0,0.0
+2023-07-13,2023,848,Zeljeznicar Sarajevo,Dinamo Minsk,E. Manouchos,2,2,5,4,2,2,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Progres Niederkorn,Gjilani,O. Reitala,2,2,8,3,3,4,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Sutjeska,Cosmos,J. Barcelo,1,0,2,2,2,1,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Linfield,Vllaznia Shkodër,I. Torres Rocha,3,1,15,1,5,2,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,La Fiorita,Zimbru,Luis Teixeira,1,1,3,5,3,1,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Maribor,Birkirkara,M. Al Emara,1,1,10,2,4,7,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,HB Torshavn,Derry City,K. Hagenes,0,0,1,5,2,1,0,0,3,8,8,2,0.0,0.0
+2023-07-13,2023,848,Dukagjini,Europa,J. Ellefsen,2,1,6,4,4,3,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Alashkert,Arsenal Tivat,A. Farkas,1,1,12,4,1,3,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Hegelmann Litauen,Shkupi 1927,M. Antoniou,0,5,4,2,0,0,0,0,2,7,2,2,0.0,0.0
+2023-07-13,2023,848,Gzira United,Glentoran,S. Ebner,2,2,0,0,4,1,0,0,4,2,0,0,0.0,0.0
+2023-07-13,2023,848,Torpedo Kutaisi,FK Sarajevo,S. Levi,2,2,5,8,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,NK Domzale,Balzan FC,P. McLaughlin,1,4,10,4,1,4,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Riga,Vikingur Reykjavik,T. Owen,2,0,6,4,1,1,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Magpies,Dundalk,M. Aslam,0,0,3,3,4,1,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Panevėžys,Milsami Orhei,A. Bandić,2,2,6,1,2,7,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Haka,Crusaders FC,S. Amland,2,2,4,6,3,2,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Makedonija GjP,Rīgas FS,M. Redder,0,1,6,3,1,1,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Žilina,FC Levadia Tallinn,D. Dickinson,2,1,6,9,3,4,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Ararat-Armenia,Egnatia Rrogozhinë,T. Farrugia Cann,1,1,1,5,3,2,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,Inter Club d'Escaldes,Vikingur Gota,J. Muller,2,1,5,1,1,4,0,0,0,0,0,0,0.0,0.0
+2023-07-13,2023,848,FK Tobol Kostanay,Honka,D. Dmitriev,2,1,12,2,4,2,0,0,11,1,0,0,0.0,0.0
+2023-07-13,2023,848,Pyunik Yerevan,Trans Narva,K. Athanasiou,2,0,8,1,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-18,2023,848,Balzan FC,NK Domzale,V. Kastrati,1,3,12,6,6,6,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Shkupi 1927,Hegelmann Litauen,T. Marshall,0,0,8,3,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Crusaders FC,Haka,J. Petřík,1,0,4,2,2,2,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,FK Sarajevo,Torpedo Kutaisi,I. Orlic,1,1,4,6,2,4,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Cosmos,Sutjeska,D. Starý,1,1,4,12,3,3,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,St Patrick's Athl.,F91 Dudelange,E. Maļcevs,2,3,2,5,0,0,0,0,1,3,0,0,0.0,0.0
+2023-07-20,2023,848,Vllaznia Shkodër,Linfield,R. Cabarov,1,0,10,1,2,5,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Haverfordwest County AFC,Shkendija,I. Kristjánsson,1,0,5,6,4,2,0,0,2,3,3,1,0.0,0.0
+2023-07-20,2023,848,Derry City,HB Torshavn,T. Klíma,1,0,7,2,0,0,0,0,5,1,1,3,0.0,0.0
+2023-07-20,2023,848,Dundalk,Magpies,P. Kolarić,3,1,4,3,2,3,0,0,4,3,2,2,0.0,0.0
+2023-07-20,2023,848,Vikingur Reykjavik,Riga,A. Dudic,1,0,6,5,2,1,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Glentoran,Gzira United,S. Kringstad,1,1,0,0,4,3,0,0,10,3,2,9,0.0,0.0
+2023-07-20,2023,848,Arsenal Tivat,Alashkert,O. Derevinskyi,1,6,3,6,2,1,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Gjilani,Progres Niederkorn,Y. Uğurlu,0,2,7,5,5,5,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Egnatia Rrogozhinë,Ararat-Armenia,D. Draganov,4,4,5,8,2,3,0,0,6,11,7,2,0.0,0.0
+2023-07-20,2023,848,Vikingur Gota,Inter Club d'Escaldes,J. Machálek,1,1,4,7,5,3,0,0,1,4,0,0,0.0,0.0
+2023-07-20,2023,848,Europa,Dukagjini,N. Doyle,2,3,7,2,4,5,2,1,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,GAP Connah S Quay FC,KA Akureyri,Gustavo Correia,0,2,1,4,4,1,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,FC Santa Coloma,Penybont,R. Jitari,2,0,3,7,4,7,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Birkirkara,Maribor,M. Dohál,1,2,6,3,3,3,0,0,3,5,3,2,0.0,0.0
+2023-07-20,2023,848,Paide,B36 Torshavn,V. Romanov,0,2,5,4,4,6,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Rīgas FS,Makedonija GjP,U. Schnyder,4,1,8,5,1,1,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Milsami Orhei,Panevėžys,E. Özdamar,0,1,6,4,3,1,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Trans Narva,Pyunik Yerevan,A. Davey,0,3,1,6,1,1,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,FC Levadia Tallinn,Žilina,M. Savović,1,2,4,4,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Dinamo Minsk,Zeljeznicar Sarajevo,M. Očenáš,1,2,7,6,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Dinamo Batumi,Tirana,F. Maresca,1,2,3,3,1,3,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Dila,Dunajska Streda,A. Čulina,2,0,5,7,2,1,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Zimbru,La Fiorita,M. Bejtullahu,1,0,6,2,4,1,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Honka,FK Tobol Kostanay,L. Lukić,0,0,4,5,3,2,0,0,0,0,0,0,0.0,0.0
+2023-07-20,2023,848,Neman,FC Vaduz,N. Minaković,1,1,2,6,2,3,0,0,0,0,0,0,0.0,0.0
+2023-07-25,2023,848,Atlètic Club d'Escaldes,Partizani,R. Jenkins,0,1,4,7,2,4,0,0,0,0,0,0,0.0,0.0
+2023-07-25,2023,848,The New Saints,Swift Hesperange,J. Vergoote,1,1,8,4,2,3,0,0,0,0,0,0,0.0,0.0
+2023-07-25,2023,848,Hamrun Spartans,Dinamo Tbilisi,M. Gigović,2,1,4,5,6,4,0,0,0,0,0,0,0.0,0.0
+2023-07-25,2023,848,Tre Penne,Valmiera / BSS,M. Bošković,0,3,3,5,2,1,0,0,0,0,0,0,0.0,0.0
+2023-07-25,2023,848,Ballkani,Larne,D. Shurman,3,0,11,6,3,2,0,0,0,0,0,0,0.0,0.0
+2023-07-26,2023,848,Neman,Balzan FC,I. Kristjánsson,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-26,2023,848,Fenerbahçe,Zimbru,N. Minaković,5,0,10,5,1,3,0,0,7,1,1,1,0.0,0.0
+2023-07-26,2023,848,CSKA 1948,FCSB,L. Pairetto,0,1,5,2,2,1,0,0,0,0,0,0,0.0,0.0
+2023-07-26,2023,848,Rīgas FS,Sabah FA,J. Machálek,0,2,19,4,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-26,2023,848,Struga,Buducnost Podgorica,A. Kuchin,1,0,4,3,3,4,0,0,0,0,0,0,0.0,0.0
+2023-07-26,2023,848,Midtjylland,Progres Niederkorn,V. Chinkov,2,0,6,3,2,5,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,KA Akureyri,Dundalk,G. Davidov,3,1,1,1,4,2,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Torpedo Zhodino,AEK Larnaca,T. Marshall,2,3,8,6,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Twente,Hammarby FF,J. Brooks,1,0,9,5,3,2,0,0,2,0,0,1,0.0,0.0
+2023-07-27,2023,848,Beşiktaş,Tirana,D. Schlager,3,1,9,3,0,2,0,0,8,1,0,5,0.0,0.0
+2023-07-27,2023,848,Hapoel Beer Sheva,Panevėžys,R. Hennessy,1,0,6,2,1,1,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Club Brugge KV,Aarhus,G. Kikacheishvili,3,0,4,1,1,2,0,0,11,0,0,8,0.0,0.0
+2023-07-27,2023,848,NK Osijek,Zalaegerszegi TE,B. Dankert,1,0,9,4,2,2,0,0,3,3,3,2,0.0,0.0
+2023-07-27,2023,848,Gent,Žilina,V. Kastrati,5,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,B36 Torshavn,Haverfordwest County AFC,S. Levi,2,1,0,0,2,1,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Celje,Guimaraes,C. Theouli,3,4,6,5,2,2,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Lech Poznan,Kauno Žalgiris,L. Bilbija,3,1,4,1,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Austria Vienna,Borac Banja Luka,J. Kooij,1,0,8,2,3,2,0,0,11,4,3,10,0.0,0.0
+2023-07-27,2023,848,Shkupi 1927,Levski Sofia,D. Fuxman,0,2,9,5,5,3,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Derry City,KuPS,R. Valikonis,2,1,4,6,2,1,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Zeljeznicar Sarajevo,Neftchi Baku,J. Frischer,2,2,3,4,3,1,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Sutjeska,FC Santa Coloma,S. Putros,2,0,5,6,6,2,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Crusaders FC,Rosenborg,E. Manouchos,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Farul Constanta,FC Urartu,M. Dohál,3,2,6,4,2,5,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Dukagjini,HNK Rijeka,J. Šabotić,0,1,1,2,4,2,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,CFR 1907 Cluj,Adana Demirspor,E. Məsiyev,1,1,3,4,2,3,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Linfield,Pogon Szczecin,D. Šmajc,2,5,4,8,5,3,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,FC Differdange 03,Maribor,J. Jaanovits,1,1,5,3,4,1,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Alashkert,Debreceni VSC,V. Fotias,0,1,5,4,2,0,0,0,3,8,7,3,0.0,0.0
+2023-07-27,2023,848,Ordabasy,Legia Warszawa,H. Jónasson,2,2,2,10,4,2,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Inter Club d'Escaldes,Hibernian,J. Hyytiä,2,1,2,7,4,1,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Ararat-Armenia,Aris Thessalonikis,B. Saryev,1,1,3,3,3,4,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Bodo/Glimt,Bohemians 1905,A. Kardeşler,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Qabala,Omonia Nicosia,A. Chivulete,2,3,3,10,2,4,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Djurgardens IF,FC Luzern,S. van der Eijk,1,2,2,0,1,3,0,0,3,2,0,1,0.0,0.0
+2023-07-27,2023,848,Kalmar FF,Pyunik Yerevan,I. McNabb,1,2,7,4,0,0,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Plzen,Drita,H. Nalbandyan,0,0,0,0,2,5,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Vorskla Poltava,Dila,N. Popov,2,1,7,3,3,4,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Torpedo Kutaisi,Aktobe,J. Lardot,1,4,6,4,3,4,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,CSKA Sofia,Sepsi OSK Sfantu Gheorghe,J. Kamphuis,0,2,6,1,4,3,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Apoel Nicosia,Vojvodina,D. Robertson,2,1,8,2,1,3,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Gzira United,F91 Dudelange,T. Klíma,2,0,0,0,1,3,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Auda,Spartak Trnava,K. Høvdanum,1,1,7,6,3,2,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Kecskeméti TE,Riga,I. Kvirikashvili,2,1,5,8,1,3,0,0,4,4,3,2,0.0,0.0
+2023-07-27,2023,848,FC Basel 1893,FK Tobol Kostanay,Gustavo Correia,1,3,4,5,2,3,2,0,4,8,4,3,0.0,0.0
+2023-07-27,2023,848,Maccabi Tel Aviv,Petrocub,M. De Gabriele,3,0,10,1,2,1,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,PAOK,Beitar Jerusalem,M. Balakin,0,0,8,2,2,5,0,0,0,0,0,0,0.0,0.0
+2023-07-27,2023,848,Ferencvarosi TC,Shamrock Rovers,A. Ghaltakchyan,4,0,9,3,1,2,0,0,7,2,2,3,0.0,0.0
+2023-08-01,2023,848,Buducnost Podgorica,Struga,D. Munro,3,4,5,2,3,1,0,0,3,4,0,0,0.0,0.0
+2023-08-01,2023,848,Partizani,Atlètic Club d'Escaldes,Z. Hovhannisyan,4,1,2,1,3,2,0,0,9,1,0,0,0.0,0.0
+2023-08-01,2023,848,Swift Hesperange,The New Saints,I. Barbara,3,2,0,0,4,1,0,0,0,0,0,0,0.0,0.0
+2023-08-01,2023,848,Balzan FC,Neman,I. Papadopoulos,0,0,7,6,2,1,0,0,1,3,3,1,0.0,0.0
+2023-08-01,2023,848,Valmiera / BSS,Tre Penne,T. Klíma,7,0,8,2,2,4,0,0,11,3,2,5,0.0,0.0
+2023-08-01,2023,848,Zimbru,Fenerbahçe,R. Harvey,0,4,2,13,1,2,0,0,0,0,0,0,0.0,0.0
+2023-08-02,2023,848,AEK Larnaca,Torpedo Zhodino,M. Barbu,1,1,6,5,1,2,0,0,5,4,3,4,0.0,0.0
+2023-08-02,2023,848,F91 Dudelange,Gzira United,I. Frid,2,1,8,2,1,3,0,0,6,2,1,4,0.0,0.0
+2023-08-03,2023,848,Hibernian,Inter Club d'Escaldes,P. Kralovic,6,1,11,4,3,2,0,0,12,2,2,6,0.0,0.0
+2023-08-03,2023,848,Aarhus,Club Brugge KV,A. Karaoğlan,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2023-08-03,2023,848,Tirana,Beşiktaş,S. Attwell,0,2,3,6,0,0,0,0,0,0,0,0,0.0,0.0
+2023-08-03,2023,848,Vojvodina,Apoel Nicosia,V. Spasjoņņikovs,1,2,8,3,3,3,0,0,5,5,3,4,0.0,0.0
+2023-08-03,2023,848,Žilina,Gent,D. Muntean,2,5,6,3,0,0,0,0,4,6,1,2,0.0,0.0
+2023-08-03,2023,848,Adana Demirspor,CFR 1907 Cluj,N. Verboomen,2,1,3,1,3,4,0,0,5,2,1,3,0.0,0.0
+2023-08-03,2023,848,Hammarby FF,Twente,M. Lukjančukas,1,1,5,4,3,3,0,0,2,5,4,1,0.0,0.0
+2023-08-03,2023,848,Drita,Plzen,J. A. Sundberg,1,2,4,6,5,4,0,0,2,3,1,1,0.0,0.0
+2023-08-03,2023,848,HNK Rijeka,Dukagjini,J. Robinson,6,1,12,1,0,0,0,0,12,2,1,6,0.0,0.0
+2023-08-03,2023,848,Legia Warszawa,Ordabasy,K. Clancy,3,2,4,4,3,5,0,0,8,6,4,4,0.0,0.0
+2023-08-03,2023,848,Maribor,FC Differdange 03,K. Jakubik,4,3,6,1,5,7,0,0,9,6,3,5,0.0,0.0
+2023-08-03,2023,848,FCSB,CSKA 1948,J. Xhaja,3,2,2,2,5,2,0,0,5,2,0,0,0.0,0.0
+2023-08-03,2023,848,Borac Banja Luka,Austria Vienna,U. Schnyder,1,2,5,10,3,5,0,0,5,8,5,4,0.0,0.0
+2023-08-03,2023,848,Larne,Ballkani,V. Thórarinsson,1,4,15,3,5,1,0,0,7,5,1,6,0.0,0.0
+2023-08-03,2023,848,Dundalk,KA Akureyri,W. Altmann,2,2,7,6,3,1,0,0,4,3,1,1,0.0,0.0
+2023-08-03,2023,848,FC Luzern,Djurgardens IF,G. Nuza,1,1,6,7,5,2,0,0,3,4,2,1,0.0,0.0
+2023-08-03,2023,848,Haverfordwest County AFC,B36 Torshavn,C. Ciochirca,1,1,5,11,4,1,0,0,1,4,0,0,0.0,0.0
+2023-08-03,2023,848,Progres Niederkorn,Midtjylland,F. Karakó,2,1,3,8,3,3,0,0,5,4,3,3,0.0,0.0
+2023-08-03,2023,848,Shamrock Rovers,Ferencvarosi TC,T. Musial,0,2,4,7,0,2,0,0,2,6,4,2,0.0,0.0
+2023-08-03,2023,848,Debreceni VSC,Alashkert,R. Schröder,1,2,5,5,2,6,0,1,4,5,3,3,0.0,0.0
+2023-08-03,2023,848,Aris Thessalonikis,Ararat-Armenia,M. Fabbri,1,0,12,1,1,3,0,0,3,4,4,2,0.0,0.0
+2023-08-03,2023,848,Beitar Jerusalem,PAOK,B. Millot,1,4,5,2,1,1,0,0,3,6,4,2,0.0,0.0
+2023-08-03,2023,848,Rosenborg,Crusaders FC,A. Farkas,3,2,17,9,2,9,0,0,11,4,2,8,0.0,0.0
+2023-08-03,2023,848,Riga,Kecskeméti TE,I. Griffith,3,1,13,3,1,5,0,0,5,5,4,2,0.0,0.0
+2023-08-03,2023,848,FK Tobol Kostanay,FC Basel 1893,M. Milanović,1,2,6,4,3,3,0,0,4,4,2,3,0.0,0.0
+2023-08-03,2023,848,FC Santa Coloma,Sutjeska,K. Karlsson,3,0,5,5,3,4,0,0,4,5,6,1,0.0,0.0
+2023-08-03,2023,848,Pyunik Yerevan,Kalmar FF,I. Stojchevski,2,1,4,9,1,3,0,0,2,2,0,0,0.0,0.0
+2023-08-03,2023,848,Spartak Trnava,Auda,L. Cibelli,4,1,0,0,2,1,0,0,7,2,1,3,0.0,0.0
+2023-08-03,2023,848,Pogon Szczecin,Linfield,A. Bitigen,3,2,8,5,0,0,0,0,8,5,3,5,0.0,0.0
+2023-08-03,2023,848,KuPS,Derry City,D. Bel,3,3,5,8,2,4,0,0,4,5,2,1,0.0,0.0
+2023-08-03,2023,848,Dinamo Tbilisi,Hamrun Spartans,V. Shimusik,0,1,10,1,1,1,0,0,5,2,1,5,0.0,0.0
+2023-08-03,2023,848,FC Urartu,Farul Constanta,T. Owen,2,3,8,4,0,0,0,0,3,5,2,1,0.0,0.0
+2023-08-03,2023,848,Bohemians 1905,Bodo/Glimt,M. Bîrsan,2,4,6,2,4,1,0,0,2,5,0,0,0.0,0.0
+2023-08-03,2023,848,Guimaraes,Celje,V. Kopievskiy,0,1,14,4,4,7,0,0,6,4,3,5,0.0,0.0
+2023-08-03,2023,848,Aktobe,Torpedo Kutaisi,T. Farrugia Cann,1,2,4,4,2,4,0,0,6,3,1,5,0.0,0.0
+2023-08-03,2023,848,Sabah FA,Rīgas FS,F. San,2,1,2,4,5,5,0,0,5,3,2,3,0.0,0.0
+2023-08-03,2023,848,Zalaegerszegi TE,NK Osijek,G. Laibuvitz,1,2,9,4,4,3,0,0,4,5,4,3,0.0,0.0
+2023-08-03,2023,848,Levski Sofia,Shkupi 1927,L. Tschudi,1,0,5,2,2,4,0,0,3,2,2,2,0.0,0.0
+2023-08-03,2023,848,Neftchi Baku,Zeljeznicar Sarajevo,B. Berke,2,0,8,3,3,4,0,0,6,3,3,4,0.0,0.0
+2023-08-03,2023,848,Petrocub,Maccabi Tel Aviv,P. Kjærsgaard-Andersen,0,2,4,3,1,1,0,0,3,6,2,3,0.0,0.0
+2023-08-03,2023,848,Sepsi OSK Sfantu Gheorghe,CSKA Sofia,E. Hamiti,4,0,3,7,3,7,0,0,6,3,3,2,0.0,0.0
+2023-08-03,2023,848,Omonia Nicosia,Qabala,A. Ladebäck,4,1,6,1,0,0,0,0,8,4,2,4,0.0,0.0
+2023-08-03,2023,848,Dila,Vorskla Poltava,S. Sozza,3,1,10,5,1,4,0,0,3,1,0,0,0.0,0.0
+2023-08-03,2023,848,Panevėžys,Hapoel Beer Sheva,J. Petřík,1,1,3,4,3,5,0,0,1,4,0,0,0.0,0.0
+2023-08-03,2023,848,Kauno Žalgiris,Lech Poznan,M. Kristoffersen,1,2,5,6,2,2,0,0,3,8,5,2,0.0,0.0
+2023-08-09,2023,848,Gent,Pogon Szczecin,V. Fotias,5,0,0,0,1,2,0,0,7,2,2,2,0.0,0.0
+2023-08-09,2023,848,AEK Larnaca,Maccabi Tel Aviv,N. Verboomen,1,1,4,6,2,3,0,0,3,6,5,1,0.0,0.0
+2023-08-10,2023,848,FK Tobol Kostanay,Derry City,S. Ebner,1,0,5,1,6,3,0,0,3,3,3,2,0.0,0.0
+2023-08-10,2023,848,Rapid Vienna,Debreceni VSC,R. Hennessy,0,0,5,7,4,1,0,0,3,0,0,3,0.0,0.0
+2023-08-10,2023,848,HNK Hajduk Split,PAOK,M. Krogh,0,0,9,5,1,4,0,0,5,3,3,3,0.0,0.0
+2023-08-10,2023,848,Ballkani,Lincoln Red Imps FC,K. Karlsson,2,0,11,1,0,0,0,0,3,4,4,1,0.0,0.0
+2023-08-10,2023,848,FCSB,FC Nordsjaelland,M. Bošković,0,0,2,5,3,2,0,0,1,3,3,1,0.0,0.0
+2023-08-10,2023,848,Hibernian,FC Luzern,R. Valikonis,3,1,5,4,1,4,0,0,4,2,1,1,0.0,0.0
+2023-08-10,2023,848,Aris Thessalonikis,Dynamo Kyiv,J. Gillett,1,0,4,3,5,2,0,0,4,2,2,3,0.0,0.0
+2023-08-10,2023,848,Celje,Neman,D. Sakhi,1,0,3,3,1,1,0,0,6,5,5,4,0.0,0.0
+2023-08-10,2023,848,B36 Torshavn,HNK Rijeka,M. Al Emara,1,3,0,0,3,1,0,0,3,7,3,1,0.0,0.0
+2023-08-10,2023,848,Fenerbahçe,Maribor,R. Jones,3,1,11,3,2,2,0,0,9,2,1,6,0.0,0.0
+2023-08-10,2023,848,Club Brugge KV,KA Akureyri,M. Milanović,5,1,14,1,1,2,0,0,9,2,1,4,0.0,0.0
+2023-08-10,2023,848,Twente,Riga,R. Schröder,2,0,8,2,1,4,0,0,11,3,3,9,0.0,0.0
+2023-08-10,2023,848,Lech Poznan,Spartak Trnava,A. Karaoğlan,2,1,6,4,1,2,0,0,8,4,3,6,0.0,0.0
+2023-08-10,2023,848,Arouca,Brann,D. Munro,2,1,4,4,2,2,0,0,8,5,4,6,0.0,0.0
+2023-08-10,2023,848,Hamrun Spartans,Ferencvarosi TC,E. Hamiti,1,6,3,2,4,1,0,0,4,13,7,3,0.0,0.0
+2023-08-10,2023,848,Adana Demirspor,NK Osijek,G. Kikacheishvili,5,1,0,5,1,4,0,0,8,3,2,3,0.0,0.0
+2023-08-10,2023,848,Hapoel Beer Sheva,Levski Sofia,Miguel Nogueira,0,0,7,6,2,2,0,0,3,2,2,4,0.0,0.0
+2023-08-10,2023,848,Valmiera / BSS,Partizani,J. Hyytiä,1,2,3,4,1,6,0,0,6,5,3,5,0.0,0.0
+2023-08-10,2023,848,Dila,Apoel Nicosia,J. Šabotić,0,2,1,3,1,2,0,0,4,4,2,3,0.0,0.0
+2023-08-10,2023,848,Omonia Nicosia,Midtjylland,S. Kringstad,1,0,3,3,0,1,0,0,3,5,5,2,0.0,0.0
+2023-08-10,2023,848,Sepsi OSK Sfantu Gheorghe,Aktobe,V. Kastrati,1,1,5,3,2,3,0,0,5,3,2,4,0.0,0.0
+2023-08-10,2023,848,Neftchi Baku,Beşiktaş,L. Fähndrich,1,3,5,7,3,1,0,0,6,7,3,3,0.0,0.0
+2023-08-10,2023,848,Farul Constanta,Flora Tallinn,I. Papadopoulos,3,0,6,7,1,2,0,0,8,2,2,6,0.0,0.0
+2023-08-10,2023,848,FC Santa Coloma,AZ Alkmaar,S. Karabayev,0,1,5,1,2,1,0,0,2,1,0,2,0.0,0.0
+2023-08-10,2023,848,Plzen,Gzira United,V. Thórarinsson,4,0,0,0,0,0,0,0,5,1,1,1,0.0,0.0
+2023-08-10,2023,848,Legia Warszawa,Austria Vienna,P. Gaillouste,1,2,11,6,1,2,0,0,8,3,1,7,0.0,0.0
+2023-08-10,2023,848,Rosenborg,Heart Of Midlothian,A. Chivulete,2,1,4,3,0,0,0,0,4,3,2,2,0.0,0.0
+2023-08-10,2023,848,Sabah FA,FK Partizan,G. Kruashvili,2,0,0,0,3,1,0,0,8,2,2,6,0.0,0.0
+2023-08-10,2023,848,Bodo/Glimt,Pyunik Yerevan,I. Orlic,3,0,12,8,0,0,0,0,0,0,0,0,0.0,0.0
+2023-08-10,2023,848,Struga,Swift Hesperange,J. A. Sundberg,3,1,5,2,5,2,0,0,8,4,3,5,0.0,0.0
+2023-08-16,2023,848,Flora Tallinn,Farul Constanta,L. Bilbija,0,2,3,4,0,0,0,0,6,8,6,6,0.0,0.0
+2023-08-17,2023,848,Debreceni VSC,Rapid Vienna,A. Stavrev,0,5,2,2,2,5,0,0,1,5,1,1,0.0,0.0
+2023-08-17,2023,848,FK Partizan,Sabah FA,B. Frankowski,2,0,11,3,3,5,0,0,4,3,3,2,0.0,0.0
+2023-08-17,2023,848,Derry City,FK Tobol Kostanay,P. Kralovic,1,0,4,3,3,4,0,0,4,4,4,3,0.0,0.0
+2023-08-17,2023,848,FC Luzern,Hibernian,A. Diamantopoulos,2,2,10,2,4,3,0,0,7,4,2,4,0.0,0.0
+2023-08-17,2023,848,Heart Of Midlothian,Rosenborg,D. Fuxman,3,1,4,4,2,2,0,0,5,4,3,2,0.0,0.0
+2023-08-17,2023,848,AZ Alkmaar,FC Santa Coloma,H. Nalbandyan,2,0,10,1,3,1,0,0,8,1,1,6,0.0,0.0
+2023-08-17,2023,848,HNK Rijeka,B36 Torshavn,O. Derevinskyi,2,0,0,0,1,1,0,0,5,2,2,3,0.0,0.0
+2023-08-17,2023,848,Maribor,Fenerbahçe,Fábio Veríssimo,0,3,5,4,3,1,0,0,4,4,1,4,0.0,0.0
+2023-08-17,2023,848,Swift Hesperange,Struga,M. De Gabriele,2,1,10,2,4,3,0,0,10,3,2,7,0.0,0.0
+2023-08-17,2023,848,Spartak Trnava,Lech Poznan,César Soto,3,1,1,5,8,3,0,0,4,3,2,1,0.0,0.0
+2023-08-17,2023,848,Partizani,Valmiera / BSS,S. Putros,1,0,6,8,3,2,0,0,5,2,2,3,0.0,0.0
+2023-08-17,2023,848,NK Osijek,Adana Demirspor,J. Brooks,3,2,10,2,4,5,0,0,7,6,4,4,0.0,0.0
+2023-08-17,2023,848,Beşiktaş,Neftchi Baku,J. Weinberger,2,1,9,2,0,0,0,0,9,3,2,6,0.0,0.0
+2023-08-17,2023,848,Neman,Celje,F. Karakó,1,4,4,5,1,2,0,0,8,10,6,7,0.0,0.0
+2023-08-17,2023,848,KA Akureyri,Club Brugge KV,M. Fabbri,1,5,2,11,4,2,0,0,2,11,4,1,0.0,0.0
+2023-08-17,2023,848,FC Nordsjaelland,FCSB,G. Nuza,2,0,8,4,3,3,0,0,7,4,4,5,0.0,0.0
+2023-08-17,2023,848,PAOK,HNK Hajduk Split,S. Stegemann,3,0,2,6,3,5,0,0,4,3,3,1,0.0,0.0
+2023-08-17,2023,848,Pogon Szczecin,Gent,R. Buquet,2,1,9,6,0,0,0,0,3,2,1,1,0.0,0.0
+2023-08-17,2023,848,Lincoln Red Imps FC,Ballkani,K. Hagenes,1,3,11,4,0,0,0,0,4,8,4,3,0.0,0.0
+2023-08-17,2023,848,Midtjylland,Omonia Nicosia,I. McNabb,5,1,6,3,3,5,0,1,10,2,1,5,0.0,0.0
+2023-08-17,2023,848,Aktobe,Sepsi OSK Sfantu Gheorghe,D. Chiffi,0,1,6,5,2,1,0,0,3,3,2,3,0.0,0.0
+2023-08-17,2023,848,Brann,Arouca,B. Van Driessche,3,1,7,5,3,5,0,0,5,5,4,2,0.0,0.0
+2023-08-17,2023,848,Dynamo Kyiv,Aris Thessalonikis,S. Gishamer,2,1,4,6,2,5,0,0,5,6,5,4,0.0,0.0
+2023-08-17,2023,848,Pyunik Yerevan,Bodo/Glimt,H. Jónasson,0,3,2,5,2,0,0,0,4,5,2,4,0.0,0.0
+2023-08-17,2023,848,Maccabi Tel Aviv,AEK Larnaca,F. Jović,1,0,5,3,2,7,0,0,8,1,1,6,0.0,0.0
+2023-08-17,2023,848,Austria Vienna,Legia Warszawa,I. Vad II,3,5,9,6,3,5,1,0,5,7,2,2,0.0,0.0
+2023-08-17,2023,848,Levski Sofia,Hapoel Beer Sheva,D. Muntean,2,1,3,3,4,4,0,0,3,3,2,1,0.0,0.0
+2023-08-17,2023,848,Ferencvarosi TC,Hamrun Spartans,G. Davidov,2,1,6,1,0,3,0,0,8,2,1,6,0.0,0.0
+2023-08-17,2023,848,Apoel Nicosia,Dila,R. Jenkins,1,0,2,6,5,2,0,0,4,3,3,3,0.0,0.0
+2023-08-17,2023,848,Gzira United,Plzen,D. Shurman,0,2,1,5,0,0,0,0,3,4,2,3,0.0,0.0
+2023-08-17,2023,848,Riga,Twente,C. Theouli,0,3,6,6,1,0,0,0,3,5,2,3,0.0,0.0
+2023-08-23,2023,848,Hibernian,Aston Villa,Ricardo De Burgos,0,5,3,8,1,1,0,0,2,7,2,2,0.0,0.0
+2023-08-23,2023,848,Spartak Trnava,Dnipro-1,J. Xhaja,1,1,7,1,4,5,0,0,7,1,0,0,0.0,0.0
+2023-08-24,2023,848,Farul Constanta,HJK Helsinki,P. Farrugia,2,1,2,1,0,0,0,0,0,0,0,0,0.0,0.0
+2023-08-24,2023,848,Ballkani,Bate Borisov,V. Chinkov,4,1,8,6,2,4,0,0,7,1,0,3,0.0,0.0
+2023-08-24,2023,848,AZ Alkmaar,Brann,E. Manouchos,1,1,6,5,0,3,0,0,7,5,4,6,0.0,0.0
+2023-08-24,2023,848,Osasuna,Club Brugge KV,B. Millot,1,2,4,1,2,5,0,0,4,2,0,3,0.0,0.0
+2023-08-24,2023,848,Genk,Adana Demirspor,António Nobre,2,1,6,4,3,3,0,0,8,5,4,6,0.0,0.0
+2023-08-24,2023,848,Gent,Apoel Nicosia,S. Jablonski,2,0,6,4,2,2,0,0,9,3,4,7,0.0,0.0
+2023-08-24,2023,848,FC Midtjylland,Legia Warszawa,M. Balakin,3,3,5,3,3,4,0,0,4,5,2,1,0.0,0.0
+2023-08-24,2023,848,Lille,HNK Rijeka,A. Karaoğlan,2,1,9,2,2,2,0,0,7,6,5,5,0.0,0.0
+2023-08-24,2023,848,Sepsi OSK Sfantu Gheorghe,Bodo/Glimt,R. Buquet,2,2,1,10,1,2,0,0,6,3,1,3,0.0,0.0
+2023-08-24,2023,848,Heart Of Midlothian,PAOK,A. Treimanis,1,2,1,2,2,4,0,0,4,7,5,3,0.0,0.0
+2023-08-24,2023,848,Levski Sofia,Eintracht Frankfurt,A. Ladebäck,1,1,1,2,3,1,0,0,1,3,2,0,0.0,0.0
+2023-08-24,2023,848,FC Astana,Partizani,D. Robertson,1,0,0,0,1,2,0,0,7,1,1,6,0.0,0.0
+2023-08-24,2023,848,FK Tobol Kostanay,Plzen,M. Barbu,1,2,6,8,2,2,0,0,7,6,4,6,0.0,0.0
+2023-08-24,2023,848,Struga,Breidablik,D. Sylwestrzak,0,1,6,1,4,4,0,0,7,5,2,6,0.0,0.0
+2023-08-24,2023,848,FK Zalgiris Vilnius,Ferencvarosi TC,I. Stojchevski,0,4,0,3,0,1,1,0,4,5,1,4,0.0,0.0
+2023-08-24,2023,848,Rapid Vienna,Fiorentina,I. Pajač,1,0,3,6,2,2,0,0,1,4,4,0,0.0,0.0
+2023-08-24,2023,848,Dynamo Kyiv,Beşiktaş,D. England,2,3,4,2,1,2,0,0,7,6,3,5,0.0,0.0
+2023-08-24,2023,848,Maccabi Tel Aviv,Celje,M. Lukjančukas,4,1,7,5,1,5,0,0,10,3,2,5,0.0,0.0
+2023-08-24,2023,848,FC Nordsjaelland,FK Partizan,I. Frid,5,0,8,5,0,4,0,0,9,3,3,4,0.0,0.0
+2023-08-24,2023,848,Fenerbahçe,Twente,A. Madley,5,1,7,0,2,1,0,1,10,3,2,5,0.0,0.0
+2023-08-31,2023,848,FK Partizan,FC Nordsjaelland,K. Clancy,0,1,4,1,4,1,1,0,3,1,0,3,0.0,0.0
+2023-08-31,2023,848,Legia Warszawa,FC Midtjylland,S. Sozza,1,1,8,2,1,2,0,0,3,3,2,2,0.0,0.0
+2023-08-31,2023,848,Aston Villa,Hibernian,L. Pairetto,3,0,2,0,0,1,0,0,9,1,1,5,0.0,0.0
+2023-08-31,2023,848,Club Brugge KV,Osasuna,D. Stefanski,2,2,7,1,6,8,0,0,4,3,1,2,0.0,0.0
+2023-08-31,2023,848,Eintracht Frankfurt,Levski Sofia,A. Lindhout,2,0,1,1,1,4,0,0,3,0,0,1,0.0,0.0
+2023-08-31,2023,848,HNK Rijeka,Lille,Luis Godinho,1,1,6,11,6,2,0,0,8,4,3,6,0.0,0.0
+2023-08-31,2023,848,Celje,Maccabi Tel Aviv,J. Pignard,1,1,3,3,1,3,0,0,2,6,4,1,0.0,0.0
+2023-08-31,2023,848,Dnipro-1,Spartak Trnava,B. Berke,1,2,11,6,3,1,2,0,4,7,4,4,0.0,0.0
+2023-08-31,2023,848,Adana Demirspor,Genk,José Munuera,1,0,9,6,4,2,0,0,5,3,3,4,0.0,0.0
+2023-08-31,2023,848,Ferencvarosi TC,FK Zalgiris Vilnius,U. Schnyder,3,0,5,3,2,0,0,0,8,3,3,5,0.0,0.0
+2023-08-31,2023,848,Partizani,FC Astana,A. Bitigen,1,1,8,2,2,2,0,0,6,4,1,5,0.0,0.0
+2023-08-31,2023,848,Fiorentina,Rapid Vienna,N. Simović,2,0,9,2,3,6,0,0,8,3,3,7,0.0,0.0
+2023-08-31,2023,848,Bodo/Glimt,Sepsi OSK Sfantu Gheorghe,R. Harvey,3,2,6,4,1,8,0,0,7,4,2,4,0.0,0.0
+2023-08-31,2023,848,Beşiktaş,Dynamo Kyiv,João Pedro Pinheiro,1,0,5,3,6,3,0,0,7,1,1,6,0.0,0.0
+2023-08-31,2023,848,Breidablik,Struga,D. Schlager,1,0,5,3,2,3,0,0,0,0,0,0,0.0,0.0
+2023-08-31,2023,848,Brann,AZ Alkmaar,G. Bogár,3,3,3,6,3,6,1,0,4,5,2,1,0.0,0.0
+2023-08-31,2023,848,Twente,Fenerbahçe,F. Maresca,0,1,3,3,3,5,0,0,3,5,4,3,0.0,0.0
+2023-08-31,2023,848,HJK Helsinki,Farul Constanta,S. Gishamer,2,0,5,7,1,3,0,0,6,5,5,3,0.0,0.0
+2023-08-31,2023,848,Apoel Nicosia,Gent,R. Saggi,1,2,2,5,3,2,0,0,2,6,3,2,0.0,0.0
+2023-08-31,2023,848,PAOK,Heart Of Midlothian,Guillermo Cuadra,4,0,2,4,2,3,0,0,9,2,2,5,0.0,0.0
+2023-08-31,2023,848,Bate Borisov,Ballkani,J. Frischer,1,0,7,1,0,0,0,0,0,0,0,0,0.0,0.0
+2023-08-31,2023,848,Plzen,FK Tobol Kostanay,M. Jug,3,0,6,2,1,4,0,0,0,0,0,0,0.0,0.0
+2023-09-20,2023,848,Lille,Olimpija Ljubljana,J. Kooij,2,0,4,0,1,2,0,0,9,1,1,7,2.87,0.37
+2023-09-21,2023,848,Club Brugge KV,Beşiktaş,A. Kulbakov,1,1,12,0,6,1,0,0,10,3,2,8,3.53,1.04
+2023-09-21,2023,848,Slovan Bratislava,KI Klaksvik,C. Ciochirca,2,1,5,4,2,3,0,0,9,2,1,7,0.82,1.48
+2023-09-21,2023,848,Dinamo Zagreb,FC Astana,P. Raczkowski,5,1,2,3,1,4,0,0,8,2,1,3,2.3,1.03
+2023-09-21,2023,848,FC Lugano,Bodo/Glimt,D. Šmajc,0,0,3,6,3,1,0,0,3,5,5,2,1.06,0.84
+2023-09-21,2023,848,Maccabi Tel Aviv,Breidablik,V. Spasjoņņikovs,3,2,8,3,0,2,0,0,6,4,2,3,1.06,0.71
+2023-09-21,2023,848,Zorya Luhansk,Gent,D. Chiffi,1,1,0,1,0,0,0,0,0,0,0,0,0.0,0.12
+2023-09-21,2023,848,Plzen,Ballkani,D. Sylwestrzak,1,0,4,0,4,2,0,0,2,0,0,1,0.57,0.19
+2023-09-21,2023,848,HJK Helsinki,PAOK,M. Barbu,2,3,7,8,1,1,0,0,4,10,7,2,1.35,2.2
+2023-09-21,2023,848,Ferencvarosi TC,Cukaricki,Guillermo Cuadra,3,1,8,1,1,5,0,0,6,2,1,3,2.04,0.37
+2023-09-21,2023,848,Fenerbahçe,FC Nordsjaelland,G. Bogár,3,1,6,3,1,3,0,0,5,3,2,2,1.46,0.37
+2023-09-21,2023,848,Zrinjski,AZ Alkmaar,D. Robertson,4,3,1,9,4,1,0,0,5,8,5,1,0.81,1.54
+2023-09-21,2023,848,Ludogorets,Spartak Trnava,G. Nuza,4,0,9,5,2,3,0,0,8,2,2,4,2.02,0.48
+2023-09-21,2023,848,Legia Warszawa,Aston Villa,E. Manouchos,3,2,3,3,3,2,0,0,6,6,4,2,1.67,1.56
+2023-09-21,2023,848,Eintracht Frankfurt,Aberdeen,C. Theouli,2,1,8,2,1,1,0,0,5,1,0,3,1.16,0.81
+2023-09-21,2023,848,Genk,Fiorentina,S. Frappart,2,2,4,4,1,2,0,0,3,4,2,1,1.69,1.47
+2023-10-05,2023,848,Cukaricki,Genk,A. Ladebäck,0,2,6,4,2,0,0,0,4,6,4,4,0.61,2.73
+2023-10-05,2023,848,Spartak Trnava,Fenerbahçe,S. Stegemann,1,2,2,10,2,1,0,0,3,5,3,2,0.79,2.67
+2023-10-05,2023,848,PAOK,Eintracht Frankfurt,S. Sozza,2,1,5,6,1,1,0,0,2,7,6,0,0.54,1.52
+2023-10-05,2023,848,Fiorentina,Ferencvarosi TC,D. Schlager,2,2,5,3,1,5,0,0,6,6,4,4,2.22,1.5
+2023-10-05,2023,848,FC Nordsjaelland,Ludogorets,J. Xhaja,7,1,7,4,0,2,0,0,8,4,3,2,4.21,1.62
+2023-10-05,2023,848,Aberdeen,HJK Helsinki,D. Stefanski,1,1,8,3,0,1,0,0,5,2,1,4,1.27,0.78
+2023-10-05,2023,848,AZ Alkmaar,Legia Warszawa,N. Minaković,1,0,2,6,1,1,1,0,2,2,2,1,0.61,0.45
+2023-10-05,2023,848,Aston Villa,Zrinjski,U. Schnyder,1,0,15,0,2,2,0,0,9,1,1,8,1.68,0.48
+2023-10-05,2023,848,Ballkani,Dinamo Zagreb,A. Karaoğlan,2,0,2,9,4,1,0,0,4,2,2,2,0.35,0.43
+2023-10-05,2023,848,Olimpija Ljubljana,Slovan Bratislava,A. Sidiropoulos,0,1,4,5,3,3,0,0,2,4,3,2,0.39,2.85
+2023-10-05,2023,848,Gent,Maccabi Tel Aviv,A. Bitigen,2,0,7,7,2,4,0,0,6,4,4,4,2.82,0.9
+2023-10-05,2023,848,Beşiktaş,FC Lugano,D. Fuxman,2,3,1,1,2,1,1,0,4,5,3,2,0.33,1.93
+2023-10-05,2023,848,Bodo/Glimt,Club Brugge KV,O. Berka,0,1,3,5,3,3,0,0,3,2,1,3,0.96,0.54
+2023-10-05,2023,848,Breidablik,Zorya Luhansk,A. Stavrev,0,1,5,4,0,4,0,0,3,4,3,3,1.44,1.61
+2023-10-05,2023,848,FC Astana,Plzen,Gustavo Correia,1,2,3,3,4,3,0,0,3,2,0,2,0.37,1.01
+2023-10-05,2023,848,KI Klaksvik,Lille,E. Məsiyev,0,0,1,4,2,1,0,0,1,0,0,1,0.05,0.7
+2023-10-26,2023,848,Bodo/Glimt,Beşiktaş,N. Minaković,3,1,2,3,1,2,0,0,7,5,5,2,2.77,0.98
+2023-10-26,2023,848,Spartak Trnava,FC Nordsjaelland,A. Lindhout,0,2,5,5,2,3,0,0,4,5,3,4,0.95,1.17
+2023-10-26,2023,848,Genk,Ferencvarosi TC,A. Stavrev,0,0,7,5,2,1,1,0,4,3,3,4,1.07,0.71
+2023-10-26,2023,848,Dinamo Zagreb,Plzen,R. Jones,0,1,8,3,3,2,0,0,2,2,1,2,0.69,1.3
+2023-10-26,2023,848,Zrinjski,Legia Warszawa,A. Chivulete,1,2,2,3,2,3,0,0,3,2,1,2,0.86,0.86
+2023-10-26,2023,848,Fiorentina,Cukaricki,C. Theouli,6,0,7,0,0,2,0,1,10,1,1,4,2.27,0.22
+2023-10-26,2023,848,Eintracht Frankfurt,HJK Helsinki,V. Kopiievskyi,6,0,9,5,1,3,0,0,11,6,6,4,3.36,0.44
+2023-10-26,2023,848,Aberdeen,PAOK,S. Gishamer,2,3,2,5,1,2,0,0,3,6,3,2,1.36,2.75
+2023-10-26,2023,848,Ballkani,FC Astana,V. Fotias,1,2,7,5,2,4,0,0,5,2,0,3,1.7,0.96
+2023-10-26,2023,848,KI Klaksvik,Olimpija Ljubljana,H. Osmers,3,0,2,8,0,3,0,0,4,4,4,1,1.79,0.84
+2023-10-26,2023,848,Gent,Breidablik,R. Valikonis,5,0,3,3,0,2,0,0,11,5,5,6,2.57,1.3
+2023-10-26,2023,848,Fenerbahçe,Ludogorets,Guillermo Cuadra,3,1,1,5,3,5,0,0,6,8,8,3,1.39,0.57
+2023-10-26,2023,848,FC Lugano,Club Brugge KV,O. Hațegan,1,3,0,0,0,1,0,0,0,1,0,0,0.0,0.21
+2023-10-26,2023,848,AZ Alkmaar,Aston Villa,S. Jablonski,1,4,4,1,3,2,0,0,3,5,1,2,0.4,1.48
+2023-10-26,2023,848,Lille,Slovan Bratislava,L. Pairetto,2,1,7,3,2,2,0,1,5,2,0,3,2.45,1.28
+2023-11-09,2023,848,Olimpija Ljubljana,KI Klaksvik,P. Farrugia,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2023-11-09,2023,848,Slovan Bratislava,Lille,G. Bogár,1,1,3,4,4,1,0,0,3,3,2,2,1.2,1.1
+2023-11-09,2023,848,Zorya Luhansk,Maccabi Tel Aviv,J. Beaton,1,3,7,5,1,2,0,0,14,7,4,13,1.59,1.8
+2023-11-09,2023,848,Club Brugge KV,FC Lugano,T. Bognár,2,0,6,8,2,5,0,0,6,2,2,4,2.56,0.28
+2023-11-09,2023,848,Ludogorets,Fenerbahçe,O. Berka,2,0,4,4,4,4,0,0,3,2,2,1,0.98,0.14
+2023-11-09,2023,848,Breidablik,Gent,J. Weinberger,2,3,4,6,2,3,0,0,6,4,1,4,1.97,2.37
+2023-11-09,2023,848,Aston Villa,AZ Alkmaar,Luís Godinho,2,1,8,1,0,0,0,0,6,3,2,3,1.44,0.73
+2023-11-09,2023,848,Cukaricki,Fiorentina,R. Schröder,0,1,2,7,4,2,0,0,1,3,2,1,0.68,1.32
+2023-11-09,2023,848,HJK Helsinki,Eintracht Frankfurt,P. Gaillouste,0,1,9,6,0,1,0,0,3,7,6,3,0.81,2.44
+2023-11-09,2023,848,PAOK,Aberdeen,J. Xhaja,2,2,13,0,3,1,0,0,5,2,0,3,2.1,0.17
+2023-11-09,2023,848,Plzen,Dinamo Zagreb,A. Sidiropoulos,1,0,7,5,5,3,0,0,4,3,3,3,2.48,0.57
+2023-11-09,2023,848,Beşiktaş,Bodo/Glimt,S. van der Eijk,1,2,4,2,4,1,1,0,5,7,5,4,0.93,2.22
+2023-11-09,2023,848,FC Nordsjaelland,Spartak Trnava,M. Al Emara,1,1,5,2,1,4,0,0,4,5,4,3,1.86,0.81
+2023-11-09,2023,848,Legia Warszawa,Zrinjski,Ricardo De Burgos,2,0,6,4,3,0,0,0,2,3,3,0,1.71,0.27
+2023-11-09,2023,848,FC Astana,Ballkani,B. Berke,0,0,5,4,2,1,0,0,1,4,4,1,0.33,0.64
+2023-11-09,2023,848,Ferencvarosi TC,Genk,A. Kulbakov,1,1,8,4,1,4,0,0,7,4,3,6,2.03,1.53
+2023-11-25,2023,848,Maccabi Tel Aviv,Zorya Luhansk,L. Fähndrich,3,2,6,2,2,3,0,0,4,6,4,1,1.35,1.08
+2023-11-30,2023,848,Aston Villa,Legia Warszawa,M. Di Bello,2,1,5,3,4,4,0,0,5,3,2,3,1.65,0.25
+2023-11-30,2023,848,Cukaricki,Ferencvarosi TC,M. Al Emara,1,2,5,6,5,4,1,0,6,6,4,5,0.47,2.11
+2023-11-30,2023,848,Spartak Trnava,Ludogorets,V. Spasjoņņikovs,1,2,1,11,2,3,0,0,2,10,8,1,0.2,3.56
+2023-11-30,2023,848,Fiorentina,Genk,J. Kooij,2,1,11,5,4,7,0,0,8,2,1,5,2.48,0.58
+2023-11-30,2023,848,FC Nordsjaelland,Fenerbahçe,J. Pignard,6,1,7,5,1,0,0,0,12,4,3,6,3.32,0.83
+2023-11-30,2023,848,Eintracht Frankfurt,PAOK,D. Sylwestrzak,1,2,8,3,4,1,1,0,7,5,3,6,1.69,1.45
+2023-11-30,2023,848,Ballkani,Plzen,M. Barbu,0,1,3,3,2,1,0,0,3,6,5,3,0.65,1.16
+2023-11-30,2023,848,KI Klaksvik,Slovan Bratislava,K. Tohver,1,2,7,2,2,5,0,0,4,3,1,3,1.29,0.97
+2023-11-30,2023,848,HJK Helsinki,Aberdeen,G. Nuza,2,2,5,6,2,2,0,0,6,6,4,4,1.3,1.29
+2023-11-30,2023,848,Gent,Zorya Luhansk,E. Manouchos,4,1,5,5,2,2,0,0,7,4,3,4,1.8,0.32
+2023-11-30,2023,848,Beşiktaş,Club Brugge KV,D. Šmajc,0,5,3,4,1,1,0,0,1,10,5,1,0.53,2.78
+2023-11-30,2023,848,Bodo/Glimt,FC Lugano,D. Bel,5,2,2,5,3,5,0,0,8,5,3,3,1.27,1.38
+2023-11-30,2023,848,AZ Alkmaar,Zrinjski,O. Derevinskyi,1,0,21,2,1,1,0,0,6,0,0,4,2.26,0.15
+2023-11-30,2023,848,FC Astana,Dinamo Zagreb,J. Beaton,0,2,3,5,4,1,1,0,1,9,7,1,1.24,1.64
+2023-11-30,2023,848,Breidablik,Maccabi Tel Aviv,L. Bilbija,1,2,7,9,3,3,1,0,2,4,2,1,2.0,0.62
+2023-11-30,2023,848,Olimpija Ljubljana,Lille,S. Jablonski,0,2,5,5,3,3,0,0,5,7,4,5,0.77,2.16
+2023-12-14,2023,848,Lille,KI Klaksvik,António Nobre,3,0,5,4,1,7,0,2,6,4,4,3,3.59,0.81
+2023-12-14,2023,848,Slovan Bratislava,Olimpija Ljubljana,A. Kardeşler,1,2,6,4,1,1,1,0,5,3,1,4,1.01,0.56
+2023-12-14,2023,848,Dinamo Zagreb,Ballkani,Ricardo De Burgos,3,0,3,1,2,3,0,0,8,1,1,5,2.83,0.56
+2023-12-14,2023,848,FC Lugano,Beşiktaş,P. Raczkowski,0,2,5,5,2,5,1,1,5,6,4,5,1.27,1.04
+2023-12-14,2023,848,Maccabi Tel Aviv,Gent,Jesús Gil,3,1,3,3,1,2,0,0,8,3,2,5,1.71,0.4
+2023-12-14,2023,848,Zorya Luhansk,Breidablik,T. Klíma,4,0,4,5,5,3,0,0,7,1,1,3,2.46,1.51
+2023-12-14,2023,848,Club Brugge KV,Bodo/Glimt,A. Papapetrou,3,1,7,3,3,3,0,0,4,4,4,1,1.21,1.15
+2023-12-14,2023,848,Plzen,FC Astana,W. Delajod,3,0,5,4,1,2,0,0,9,1,1,7,3.76,0.33
+2023-12-14,2023,848,PAOK,HJK Helsinki,G. Kruashvili,4,2,7,4,1,1,0,0,11,2,0,7,3.54,1.19
+2023-12-14,2023,848,Ferencvarosi TC,Fiorentina,Luís Godinho,1,1,2,5,1,2,0,0,5,2,1,4,0.77,1.28
+2023-12-14,2023,848,Fenerbahçe,Spartak Trnava,A. Stavrev,4,0,9,3,3,1,0,0,10,2,2,7,4.14,0.37
+2023-12-14,2023,848,Zrinjski,Aston Villa,B. Berke,1,1,3,8,2,2,0,0,1,6,5,0,1.15,1.07
+2023-12-14,2023,848,Ludogorets,FC Nordsjaelland,O. Hațegan,1,0,4,3,5,2,0,0,6,5,5,5,1.26,1.12
+2023-12-14,2023,848,Legia Warszawa,AZ Alkmaar,H. Lechner,2,0,1,3,0,0,0,1,5,1,1,3,1.11,0.14
+2023-12-14,2023,848,Aberdeen,Eintracht Frankfurt,Miguel Nogueira,2,0,2,8,0,1,0,0,2,6,5,0,1.17,0.88
+2023-12-14,2023,848,Genk,Cukaricki,T. Farrugia Cann,2,0,4,2,1,3,1,0,6,3,3,4,2.64,0.43
+2024-02-15,2023,848,Real Betis,Dinamo Zagreb,M. Balakin,0,1,8,1,3,2,0,0,3,1,0,3,1.07,0.91
+2024-02-15,2023,848,Servette FC,Ludogorets,F. Glova,0,0,9,1,3,1,0,0,4,2,2,4,1.18,0.18
+2024-02-15,2023,848,Ajax,Bodo/Glimt,António Nobre,2,2,6,0,2,1,0,1,5,3,1,3,2.22,0.51
+2024-02-15,2023,848,Maccabi Haifa,Gent,W. Collum,1,0,2,8,2,1,0,0,3,3,3,2,0.51,1.72
+2024-02-15,2023,848,Sturm Graz,Slovan Bratislava,M. Al Hakim,4,1,8,2,1,2,0,1,8,2,1,4,2.48,1.1
+2024-02-15,2023,848,Olympiakos Piraeus,Ferencvarosi TC,G. Nyberg,1,0,8,4,2,3,0,0,5,3,3,4,1.56,0.31
+2024-02-15,2023,848,Molde,Legia Warszawa,E. Jorgji,3,2,5,10,5,2,0,0,5,5,1,2,1.85,1.1
+2024-02-15,2023,848,Union St. Gilloise,Eintracht Frankfurt,C. Pawson,2,2,5,5,4,3,1,0,6,6,4,4,1.74,1.76
+2024-02-21,2023,848,Gent,Maccabi Haifa,M. Jug,1,1,12,1,0,4,0,1,7,3,3,6,1.7,0.68
+2024-02-22,2023,848,Ferencvarosi TC,Olympiakos Piraeus,C. Turpin,0,1,3,9,2,0,0,0,1,5,4,1,0.56,1.83
+2024-02-22,2023,848,Slovan Bratislava,Sturm Graz,O. Grinfeeld,0,1,9,3,2,1,1,0,5,5,4,5,1.47,1.62
+2024-02-22,2023,848,Legia Warszawa,Molde,H. Osmers,0,3,7,4,2,4,0,0,2,4,1,2,0.97,1.48
+2024-02-22,2023,848,Dinamo Zagreb,Real Betis,U. Schnyder,1,1,5,3,1,2,0,0,2,2,1,1,1.47,0.78
+2024-02-22,2023,848,Ludogorets,Servette FC,Ə. Ağayev,0,1,7,0,3,3,0,0,7,3,2,7,1.25,0.87
+2024-02-22,2023,848,Bodo/Glimt,Ajax,A. Sidiropoulos,1,2,10,4,5,2,1,1,8,3,1,6,2.7,1.9
+2024-02-22,2023,848,Eintracht Frankfurt,Union St. Gilloise,E. Eskås,1,2,7,4,4,2,0,0,3,4,2,2,1.12,0.6
+2024-03-07,2023,848,Servette FC,Plzen,M. Krogh,0,0,6,3,3,2,0,0,3,1,1,3,0.62,0.22
+2024-03-07,2023,848,Ajax,Aston Villa,E. Jorgji,0,0,2,5,3,4,1,1,1,1,1,1,0.79,0.23
+2024-03-07,2023,848,Molde,Club Brugge KV,F. Glova,2,1,1,7,1,0,0,0,4,2,1,2,0.9,1.47
+2024-03-07,2023,848,Olympiakos Piraeus,Maccabi Tel Aviv,C. Pawson,1,4,2,2,1,4,0,0,5,6,2,5,1.2,2.04
+2024-03-07,2023,848,Sturm Graz,Lille,B. Frankowski,0,3,6,6,1,1,0,0,2,8,5,2,0.98,2.88
+2024-03-07,2023,848,Dinamo Zagreb,PAOK,Ə. Ağayev,2,0,3,5,2,3,0,0,7,0,1,5,1.64,0.4
+2024-03-07,2023,848,Union St. Gilloise,Fenerbahçe,João Pedro Pinheiro,0,3,12,0,3,1,0,0,2,3,0,2,0.75,1.63
+2024-03-07,2023,848,Maccabi Haifa,Fiorentina,D. Rumšas,3,4,2,3,3,2,1,0,4,8,4,1,0.72,1.77
+2024-03-14,2023,848,Club Brugge KV,Molde,R. Petrescu,3,0,3,2,1,1,0,0,7,1,1,4,1.09,0.29
+2024-03-14,2023,848,Lille,Sturm Graz,M. Jug,1,1,8,3,0,0,0,0,6,5,4,5,1.84,1.59
+2024-03-14,2023,848,PAOK,Dinamo Zagreb,H. Osmers,5,1,8,6,1,3,0,0,6,4,3,2,3.03,0.96
+2024-03-14,2023,848,Aston Villa,Ajax,O. Grinfeeld,4,0,3,1,2,2,0,1,8,1,0,4,1.18,0.31
+2024-03-14,2023,848,Plzen,Servette FC,W. Collum,0,0,6,7,4,5,0,0,4,9,9,4,1.27,1.52
+2024-03-14,2023,848,Fiorentina,Maccabi Haifa,I. Peljto,1,1,7,0,1,2,0,0,4,2,1,3,1.21,0.14
+2024-03-14,2023,848,Maccabi Tel Aviv,Olympiakos Piraeus,M. Mariani,1,6,2,6,1,2,0,0,5,8,2,4,1.27,2.6
+2024-03-14,2023,848,Fenerbahçe,Union St. Gilloise,N. Dabanović,0,1,4,12,2,1,0,0,1,4,2,1,0.66,1.73
+2024-04-11,2023,848,Aston Villa,Lille,E. Eskås,2,1,7,3,3,0,0,0,4,7,6,2,1.15,1.51
+2024-04-11,2023,848,Club Brugge KV,PAOK,D. Siebert,1,0,3,2,4,2,0,0,4,1,1,3,1.36,0.18
+2024-04-11,2023,848,Olympiakos Piraeus,Fenerbahçe,S. Schärer,3,2,6,6,2,2,0,0,7,8,6,4,0.78,1.95
+2024-04-11,2023,848,Plzen,Fiorentina,O. Grinfeeld,0,0,2,5,3,1,0,0,1,2,2,1,0.15,0.36
+2024-04-18,2023,848,Lille,Aston Villa,I. Kružliak,2,1,7,7,4,7,0,0,4,7,5,2,1.47,0.66
+2024-04-18,2023,848,Fiorentina,Plzen,Jesús Gil,2,0,19,2,2,2,0,1,10,0,0,7,3.74,0.11
+2024-04-18,2023,848,Fenerbahçe,Olympiakos Piraeus,T. Stieler,1,0,6,1,1,7,0,1,2,3,2,1,0.69,0.61
+2024-04-18,2023,848,PAOK,Club Brugge KV,D. Massa,0,2,3,3,0,0,0,0,1,4,2,1,0.21,2.75
+2024-05-02,2023,848,Aston Villa,Olympiakos Piraeus,M. Guida,2,4,6,4,1,1,0,0,7,5,1,5,1.43,1.26
+2024-05-02,2023,848,Fiorentina,Club Brugge KV,M. Oliver,3,2,8,1,2,3,0,1,10,3,1,7,2.23,1.24
+2024-05-08,2023,848,Club Brugge KV,Fiorentina,H. Meler,1,1,3,7,7,3,1,0,2,2,1,1,0.21,2.52
+2024-05-09,2023,848,Olympiakos Piraeus,Aston Villa,F. Zwayer,2,0,0,9,3,3,0,0,5,4,4,3,1.2,1.14
+2024-05-29,2023,848,Olympiakos Piraeus,Fiorentina,Artur Soares Dias,1,0,5,6,4,3,0,0,4,4,4,3,0.65,1.13
+2024-07-10,2024,848,Velež,Inter Club d'Escaldes,J. Karlsen,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-10,2024,848,Auda,B36 Torshavn,D. Kos,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Stjarnan,Linfield,I. Griffith,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Valur Reykjavik,Vllaznia Shkodër,T. Marshall,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Shelbourne,St Joseph S Fc,Luis Teixeira,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Mornar,Dinamo Tbilisi,G. Ginchev,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,La Fiorita,FC Isloch Minsk R.,J. Šabotić,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Tikveš,Breidablik,J. Muller,3,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Partizani,Marsaxlokk,R. Jitari,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Bala Town,Paide,M. McDermid,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Caernarfon Town,Crusaders FC,R. Harvey,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Floriana,Tre Penne,F. Lata,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,UNA Strassen,KuPS,H. Jónasson,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Šiauliai,FC Levadia Tallinn,M. Bejtullahu,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,VPS,FK Zalgiris Vilnius,J. Ellefsen,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,FK Liepaja,Vikingur Gota,T. Owen,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Torpedo Kutaisi,Tirana,Z. Hovhannisyan,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Malisheva,Buducnost Podgorica,M. Matoša,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,FC Noah,Shkendija,V. Shimusik,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Aktobe,FK Sarajevo,I. Torres Rocha,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Magpies,Derry City,R. Jenkins,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Atlètic Club d'Escaldes,F91 Dudelange,P. McLaughlin,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Tallinna Kalev,FC Urartu,D. Kubriak,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Torpedo Zhodino,Milsami Orhei,M. Savović,2,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-11,2024,848,Bravo,GAP Connah S Quay FC,S. Amland,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-17,2024,848,B36 Torshavn,Auda,O. Reitala,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-17,2024,848,Crusaders FC,Caernarfon Town,H. Vidoy,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,Shkendija,FC Noah,D. Starý,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,Tirana,Torpedo Kutaisi,D. Černý,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,Vllaznia Shkodër,Valur Reykjavik,S. Sozza,0,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,Linfield,Stjarnan,G. Maqedonci,3,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,Paide,Bala Town,D. Nikolić,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,Tre Penne,Floriana,R. Omarov,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,Buducnost Podgorica,Malisheva,M. Káprály,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,FK Sarajevo,Aktobe,Z. Küçük,2,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,Breidablik,Tikveš,P. Simani,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,Vikingur Gota,FK Liepaja,J. Östling,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,Derry City,Magpies,Antoine Chiaramonti,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,FC Isloch Minsk R.,La Fiorita,J. Kachevski,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,Inter Club d'Escaldes,Velež,A. Kijas,5,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,Marsaxlokk,Partizani,I. Stojchevski,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,Dinamo Tbilisi,Mornar,I. Orlic,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,F91 Dudelange,Atlètic Club d'Escaldes,K. Sağlam,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,GAP Connah S Quay FC,Bravo,B. McMaster,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,FC Levadia Tallinn,Šiauliai,L. Kuźma,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,St Joseph S Fc,Shelbourne,L. Szikszay,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,Milsami Orhei,Torpedo Zhodino,B. Csonka,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,FK Zalgiris Vilnius,VPS,B. Şimşek,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,FC Urartu,Tallinna Kalev,P. Ilić,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-18,2024,848,KuPS,UNA Strassen,I. McNabb,5,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-23,2024,848,FC Differdange 03,Ordabasy,M. Aslam,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-23,2024,848,Virtus,Flora Tallinn,D. Draganov,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-23,2024,848,Ballkani,Hamrun Spartans,W. Altmann,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-24,2024,848,Struga,Pyunik Yerevan,Luis Teixeira,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-24,2024,848,Riga,Slask Wroclaw,C. Ciochirca,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-24,2024,848,Dinamo Batumi,Dečić,S. Karabayev,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-24,2024,848,AEK Athens FC,Inter Club d'Escaldes,L. D'hondt,4,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-24,2024,848,Cliftonville FC,Auda,H. Jónasson,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,FC ST. Gallen,FK Tobol Kostanay,R. Harvey,4,1,10,2,1,6,0,0,13,3,3,9,0.0,0.0
+2024-07-25,2024,848,CSKA 1948,Buducnost Podgorica,I. Kvirikashvili,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,CFR 1907 Cluj,Neman,M. Gigović,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Başakşehir,La Fiorita,M. Bošković,6,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,NK Osijek,FC Levadia Tallinn,J. Karlsen,5,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Maccabi Haifa,Sabah FA,N. Verboomen,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Gent,Vikingur Gota,V. Thórarinsson,4,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Paks,AEK Larnaca,D. Higler,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Zrinjski,Bravo,L. Tschudi,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Maribor,Universitatea Craiova,M. Kristoffersen,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Valur Reykjavik,ST Mirren,D. Kos,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Vikingur Reykjavik,Egnatia Rrogozhinë,J. Ellefsen,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Legia Warszawa,Caernarfon Town,J. Frischer,6,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,St Patrick's Athl.,FC Vaduz,T. Owen,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Stjarnan,Paide,J. Muller,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Floriana,Guimaraes,B. McMaster,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,HNK Hajduk Split,HB Torshavn,M. De Gabriele,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Radnicki 1923,Mornar,I. Papadopoulos,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Baník Ostrava,FC Urartu,M. Bejtullahu,5,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Omonia Nicosia,Torpedo Kutaisi,M. Matoša,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,FC Zurich,Shelbourne,V. Kastrati,3,0,9,1,0,1,0,0,8,1,1,5,0.0,0.0
+2024-07-25,2024,848,FK Sarajevo,Spartak Trnava,B. Van Driessche,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,KuPS,Tromso,I. Griffith,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,FK Zalgiris Vilnius,Pafos,K. Hagenes,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Mlada Boleslav,TransINVEST Vilnius,P. Kolarić,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Milsami Orhei,FC Astana,N. Popov,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Ilves,Austria Vienna,Alejandro Muñiz,2,1,1,11,2,4,0,0,5,4,3,3,0.0,0.0
+2024-07-25,2024,848,Saburtalo,Partizani,A. Chivulete,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,FC Noah,Sliema Wanderers,R. Jitari,7,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Dnipro-1,Puskas Academy,K. Athanasiou,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Sumqayıt,Fehérvár FC,F. Lata,1,2,2,4,6,3,1,0,3,7,5,2,0.0,0.0
+2024-07-25,2024,848,GO Ahead Eagles,Brann,D. Shurman,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Zira,Dunajska Streda,I. Torres Rocha,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Zimbru,Ararat-Armenia,F. Jović,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Djurgardens IF,Progres Niederkorn,A. Dudic,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Brondby,Llapi,D. Dickinson,6,0,7,2,2,3,0,0,7,0,0,1,0.0,0.0
+2024-07-25,2024,848,Hapoel Beer Sheva,Cherno More Varna,D. Sakhi,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,F91 Dudelange,BK Hacken,A. Bandić,2,6,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Olimpija Ljubljana,Polessya,Javier Alberola,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-25,2024,848,Magpies,FC Copenhagen,Cláudio Pereira,0,3,1,10,1,1,0,0,0,8,5,0,0.0,0.0
+2024-07-25,2024,848,Breidablik,Drita,J. Petřík,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-30,2024,848,Hamrun Spartans,Ballkani,M. Beltrano,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-30,2024,848,Pyunik Yerevan,Struga,S. Kringstad,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-30,2024,848,Dečić,Dinamo Batumi,J. Barcelo,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-30,2024,848,Drita,Breidablik,K. Umudlu,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-30,2024,848,Flora Tallinn,Virtus,S. Levi,5,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-31,2024,848,Auda,Cliftonville FC,D. Starý,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-31,2024,848,BK Hacken,F91 Dudelange,I. Stojchevski,6,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-31,2024,848,Fehérvár FC,Sumqayıt,K. Karlsson,0,0,10,5,2,2,0,0,3,1,1,3,0.0,0.0
+2024-07-31,2024,848,Austria Vienna,Ilves,I. McNabb,4,3,2,6,3,4,0,0,6,8,5,2,0.0,0.0
+2024-07-31,2024,848,Spartak Trnava,FK Sarajevo,S. Putros,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-07-31,2024,848,Mornar,Radnicki 1923,G. Laibuvitz,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Torpedo Kutaisi,Omonia Nicosia,I. Barbara,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Sliema Wanderers,FC Noah,R. Jenkins,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,FC Vaduz,St Patrick's Athl.,A. Ghaltakchyan,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Neman,CFR 1907 Cluj,A. Argyrou,0,5,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Vikingur Gota,Gent,M. Káprály,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Partizani,Saburtalo,J. Robinson,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Egnatia Rrogozhinë,Vikingur Reykjavik,Fábio Veríssimo,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Slask Wroclaw,Riga,G. Nuza,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,La Fiorita,Başakşehir,G. Maqedonci,0,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,ST Mirren,Valur Reykjavik,M. Redder,4,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Progres Niederkorn,Djurgardens IF,G. Kikacheishvili,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Shelbourne,FC Zurich,R. Valikonis,0,0,3,3,2,2,0,0,0,6,6,0,0.0,0.0
+2024-08-01,2024,848,Buducnost Podgorica,CSKA 1948,M. Očenáš,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Puskas Academy,Dnipro-1,Desconocido,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,HB Torshavn,HNK Hajduk Split,T. Marshall,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Guimaraes,Floriana,I. Orlic,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Dunajska Streda,Zira,J. Kachevski,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Universitatea Craiova,Maribor,J. Šabotić,3,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Cherno More Varna,Hapoel Beer Sheva,D. Nikolić,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Caernarfon Town,Legia Warszawa,I. Kristjánsson,0,5,4,6,5,1,1,0,0,7,2,0,0.0,0.0
+2024-08-01,2024,848,FC Astana,Milsami Orhei,R. Buquet,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,FC Copenhagen,Magpies,D. Muntean,5,1,8,0,1,3,0,0,9,1,0,3,0.0,0.0
+2024-08-01,2024,848,FC Urartu,Baník Ostrava,B. Saryev,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Ararat-Armenia,Zimbru,A. Diamantopoulos,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Bravo,Zrinjski,J. Jaanovits,1,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Llapi,Brondby,O. Reitala,2,2,6,8,3,0,0,0,5,6,3,4,0.0,0.0
+2024-08-01,2024,848,AEK Larnaca,Paks,L. Cibelli,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,FK Tobol Kostanay,FC ST. Gallen,J. Hyytiä,0,1,2,3,3,2,2,0,2,5,4,2,0.0,0.0
+2024-08-01,2024,848,FC Levadia Tallinn,NK Osijek,M. Antoniou,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Ordabasy,FC Differdange 03,M. Radina,4,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Polessya,Olimpija Ljubljana,M. Milanović,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Sabah FA,Maccabi Haifa,P. Kralovic,3,6,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,TransINVEST Vilnius,Mlada Boleslav,M. McDermid,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Pafos,FK Zalgiris Vilnius,S. Ebner,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Inter Club d'Escaldes,AEK Athens FC,O. Berka,0,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Paide,Stjarnan,Antoine Chiaramonti,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-01,2024,848,Brann,GO Ahead Eagles,E. Maļcevs,2,1,8,3,1,4,0,0,4,6,5,1,0.0,0.0
+2024-08-01,2024,848,Tromso,KuPS,J. Vergoote,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-06,2024,848,FC Noah,AEK Athens FC,V. Kastrati,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-07,2024,848,Paks,Mornar,D. Dmitriev,3,0,1,5,0,5,0,2,5,4,4,2,0.0,0.0
+2024-08-07,2024,848,FC ST. Gallen,Slask Wroclaw,J. Petřík,2,0,3,7,0,0,0,0,6,8,6,4,0.0,0.0
+2024-08-07,2024,848,BK Hacken,Paide,D. Sakhi,6,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-07,2024,848,FC Copenhagen,Baník Ostrava,N. Verboomen,1,0,4,0,0,2,0,0,2,6,6,1,0.0,0.0
+2024-08-08,2024,848,CSKA 1948,Pafos,D. Shurman,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,St Patrick's Athl.,Sabah FA,V. Thórarinsson,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,ST Mirren,Brann,M. De Gabriele,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,Spartak Trnava,Wisla Krakow,S. Karabayev,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,Vikingur Reykjavik,Flora Tallinn,A. Ghaltakchyan,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,Corvinul Hunedoara,FC Astana,I. Barbara,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,Ballkani,Larne,J. Sundberg,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,Maccabi Petah Tikva,CFR 1907 Cluj,P. Kolarić,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,Botev Plovdiv,Zrinjski,Fábio Veríssimo,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,NK Osijek,Zira,A. Diamantopoulos,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,Kilmarnock,Tromso,M. Antoniou,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,Omonia Nicosia,Fehérvár FC,L. Tschudi,1,0,8,1,1,3,0,0,7,3,3,6,0.0,0.0
+2024-08-08,2024,848,Maribor,Vojvodina,D. Stefanski,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,Olimpija Ljubljana,Sheriff Tiraspol,V. Fotias,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,Brondby,Legia Warszawa,M. Dohál,2,3,1,1,1,0,0,0,5,5,2,3,0.0,0.0
+2024-08-08,2024,848,Ružomberok,HNK Hajduk Split,César Soto,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,Silkeborg,Gent,C. Ciochirca,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,Saburtalo,Başakşehir,D. Dickinson,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,Ilves,Djurgardens IF,E. Maļcevs,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,HJK Helsinki,Dečić,S. Putros,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,Mlada Boleslav,Hapoel Beer Sheva,J. Hyytiä,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,FC Zurich,Guimaraes,M. Barbu,0,3,4,12,2,4,0,0,1,6,4,1,0.0,0.0
+2024-08-08,2024,848,Auda,Drita,D. Bel,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-08,2024,848,Ararat-Armenia,Puskas Academy,K. Hagenes,0,1,7,3,3,3,0,0,5,4,3,5,0.0,0.0
+2024-08-08,2024,848,Ordabasy,Pyunik Yerevan,O. Berka,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-13,2024,848,Mornar,Paks,J. Vergoote,2,2,7,4,1,2,0,0,3,1,0,2,0.0,0.0
+2024-08-13,2024,848,Paide,BK Hacken,V. Chinkov,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-14,2024,848,FC Astana,Corvinul Hunedoara,A. Karaoğlan,6,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-14,2024,848,Fehérvár FC,Omonia Nicosia,J. Kehlet,0,2,7,12,1,1,0,0,2,10,8,2,0.0,0.0
+2024-08-15,2024,848,Başakşehir,Saburtalo,P. Raczkowski,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,Larne,Ballkani,R. Valikonis,0,1,5,4,6,4,0,0,6,5,4,6,0.0,0.0
+2024-08-15,2024,848,Guimaraes,FC Zurich,O. Derevinskyi,2,0,3,2,2,2,0,0,5,1,1,3,0.0,0.0
+2024-08-15,2024,848,Puskas Academy,Ararat-Armenia,G. Nuza,3,3,2,5,3,3,0,1,5,5,2,2,0.0,0.0
+2024-08-15,2024,848,HNK Hajduk Split,Ružomberok,L. Pairetto,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,Gent,Silkeborg,José Munuera,3,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,Wisla Krakow,Spartak Trnava,D. Robertson,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,Slask Wroclaw,FC ST. Gallen,D. Strukan,3,2,2,7,8,4,3,0,3,4,2,0,0.0,0.0
+2024-08-15,2024,848,Drita,Auda,K. Karlsson,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,Vojvodina,Maribor,Gustavo Correia,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,Zrinjski,Botev Plovdiv,R. Hennessy,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,AEK Athens FC,FC Noah,R. Schröder,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,Dečić,HJK Helsinki,A. Ladebäck,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,Pafos,CSKA 1948,L. D'hondt,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,Baník Ostrava,FC Copenhagen,S. Attwell,1,0,7,7,3,5,0,0,4,1,1,3,0.0,0.0
+2024-08-15,2024,848,Legia Warszawa,Brondby,C. Theouli,1,1,1,8,3,3,0,0,1,7,6,0,0.0,0.0
+2024-08-15,2024,848,Flora Tallinn,Vikingur Reykjavik,M. Očenáš,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,Sabah FA,St Patrick's Athl.,M. Bîrsan,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,Zira,NK Osijek,J. Weinberger,2,2,7,4,2,6,0,0,11,4,2,9,0.0,0.0
+2024-08-15,2024,848,Pyunik Yerevan,Ordabasy,Miguel Nogueira,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,Tromso,Kilmarnock,A. Chivulete,0,1,9,3,1,5,0,0,4,1,0,4,0.0,0.0
+2024-08-15,2024,848,Djurgardens IF,Ilves,E. Məsiyev,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,Hapoel Beer Sheva,Mlada Boleslav,J. Jaanovits,2,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,Sheriff Tiraspol,Olimpija Ljubljana,M. Mariani,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,CFR 1907 Cluj,Maccabi Petah Tikva,T. Bognár,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-15,2024,848,Brann,ST Mirren,R. Gidzhenov,3,1,5,7,2,4,0,0,3,3,2,0,0.0,0.0
+2024-08-20,2024,848,FC Noah,Ružomberok,J. Kooij,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-21,2024,848,Guimaraes,Zrinjski,V. Fotias,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-22,2024,848,FK Partizan,Gent,E. Məsiyev,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-22,2024,848,HNK Rijeka,Olimpija Ljubljana,César Soto,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-22,2024,848,Kryvbas KR,Real Betis,A. Kardeşler,0,2,2,5,1,1,0,0,1,9,7,1,0.0,0.0
+2024-08-22,2024,848,Wisla Krakow,Cercle Brugge,P. Farrugia,1,6,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-22,2024,848,FC ST. Gallen,Trabzonspor,Miguel Nogueira,0,0,7,7,3,2,0,0,5,6,6,5,0.0,0.0
+2024-08-22,2024,848,St Patrick's Athl.,Başakşehir,M. Al Emara,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-22,2024,848,Chelsea,Servette FC,J. Pignard,2,0,4,8,1,1,0,0,7,6,6,5,0.0,0.0
+2024-08-22,2024,848,Lens,Panathinaikos,G. Bogár,2,1,2,3,3,3,1,0,6,3,2,4,0.0,0.0
+2024-08-22,2024,848,Lincoln Red Imps FC,Larne,I. Barbara,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-22,2024,848,KI Klaksvik,HJK Helsinki,L. Visser,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-22,2024,848,Fiorentina,Puskas Academy,W. Delajod,3,3,15,2,3,1,0,0,7,5,2,5,0.0,0.0
+2024-08-22,2024,848,CFR 1907 Cluj,Pafos,N. Simović,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-22,2024,848,Omonia Nicosia,Zira,J. Frischer,6,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-22,2024,848,FC Copenhagen,Kilmarnock,F. Maresca,2,0,12,4,3,3,0,0,4,2,2,2,0.0,0.0
+2024-08-22,2024,848,BK Hacken,1. FC Heidenheim,V. Kopiievskyi,1,2,5,1,1,3,0,0,6,3,1,5,0.0,0.0
+2024-08-22,2024,848,Djurgardens IF,Maribor,J. Vergoote,1,0,9,1,0,3,0,1,3,1,1,2,0.0,0.0
+2024-08-22,2024,848,Brann,FC Astana,D. Šmajc,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-22,2024,848,Panevėžys,The New Saints,E. Hamiti,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-22,2024,848,Pyunik Yerevan,Celje,L. Bilbija,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-22,2024,848,Mlada Boleslav,Paks,G. Kikacheishvili,2,2,5,5,0,4,0,1,2,4,2,1,0.0,0.0
+2024-08-22,2024,848,Legia Warszawa,Drita,C. Kavanagh,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-22,2024,848,Vikingur Reykjavik,UE Santa Coloma,A. Čulina,5,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-28,2024,848,Gent,FK Partizan,F. Glova,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-28,2024,848,Başakşehir,St Patrick's Athl.,B. Berke,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-29,2024,848,UE Santa Coloma,Vikingur Reykjavik,A. Karaoğlan,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-29,2024,848,Larne,Lincoln Red Imps FC,L. Fähndrich,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-29,2024,848,Puskas Academy,Fiorentina,António Nobre,1,1,9,3,5,6,0,2,9,3,2,8,0.0,0.0
+2024-08-29,2024,848,Real Betis,Kryvbas KR,I. Pajač,3,0,6,7,0,0,0,0,7,0,0,4,0.0,0.0
+2024-08-29,2024,848,Servette FC,Chelsea,M. Di Bello,2,1,6,6,3,3,0,0,3,7,6,1,0.0,0.0
+2024-08-29,2024,848,1. FC Heidenheim,BK Hacken,G. Kruashvili,3,2,8,4,4,5,0,0,5,4,2,2,0.0,0.0
+2024-08-29,2024,848,Celje,Pyunik Yerevan,C. Ciochirca,4,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-29,2024,848,Maribor,Djurgardens IF,M. Lukjančukas,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-29,2024,848,Drita,Legia Warszawa,D. Schlager,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-29,2024,848,Cercle Brugge,Wisla Krakow,H. Feșnic,1,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-29,2024,848,Panathinaikos,Lens,Juan Martínez,2,0,2,6,1,3,0,0,4,8,7,2,0.0,0.0
+2024-08-29,2024,848,Trabzonspor,FC ST. Gallen,A. Treimanis,1,1,9,3,0,4,0,0,7,6,6,6,0.0,0.0
+2024-08-29,2024,848,Kilmarnock,FC Copenhagen,R. Gidzhenov,1,1,1,11,1,1,0,0,5,4,4,4,0.0,0.0
+2024-08-29,2024,848,Zrinjski,Guimaraes,R. Jones,0,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-29,2024,848,FC Astana,Brann,A. Stavrev,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-29,2024,848,Zira,Omonia Nicosia,V. Spasjoņņikovs,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-29,2024,848,HJK Helsinki,KI Klaksvik,D. Fuxman,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-29,2024,848,Ružomberok,FC Noah,J. Beaton,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-29,2024,848,Olimpija Ljubljana,HNK Rijeka,U. Schnyder,5,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-29,2024,848,Paks,Mlada Boleslav,L. Visser,0,3,6,2,1,3,0,0,8,9,6,8,0.0,0.0
+2024-08-29,2024,848,Pafos,CFR 1907 Cluj,C. Pawson,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-08-29,2024,848,The New Saints,Panevėžys,J. Sundberg,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2024-10-02,2024,848,Guimaraes,Celje,L. D'hondt,3,1,5,5,0,2,0,0,10,2,1,6,3.03,0.16
+2024-10-02,2024,848,Başakşehir,Rapid Vienna,A. Ladebäck,1,2,5,5,0,3,0,0,4,5,3,3,0.77,1.39
+2024-10-03,2024,848,FC Copenhagen,Jagiellonia,R. Harvey,1,2,5,2,2,5,0,0,5,3,1,4,1.21,0.53
+2024-10-03,2024,848,Borac Banja Luka,Panathinaikos,E. Məsiyev,1,1,5,6,3,3,0,0,5,2,1,4,0.48,1.17
+2024-10-03,2024,848,Petrocub,Pafos,M. Redder,1,4,1,1,1,2,0,0,1,10,5,0,1.02,2.06
+2024-10-03,2024,848,Lask Linz,Djurgardens IF,B. Saryev,2,2,3,4,2,2,0,0,3,6,3,1,0.57,0.9
+2024-10-03,2024,848,Shamrock Rovers,Apoel Nicosia,J. Pignard,1,1,2,8,3,2,1,0,3,2,1,2,0.15,1.31
+2024-10-03,2024,848,FC Lugano,HJK Helsinki,D. Dickinson,3,0,5,2,1,0,0,0,8,4,4,4,2.77,0.37
+2024-10-03,2024,848,Fiorentina,The New Saints,S. Gishamer,2,0,12,0,1,1,0,0,10,1,1,8,3.7,0.21
+2024-10-03,2024,848,Chelsea,Gent,D. Schlager,4,2,10,4,1,1,0,0,5,3,1,1,2.26,0.99
+2024-10-03,2024,848,Omonia Nicosia,Vikingur Reykjavik,S. van der Eijk,4,0,6,3,1,1,0,0,6,4,4,2,2.63,0.53
+2024-10-03,2024,848,Cercle Brugge,FC ST. Gallen,A. Kardeşler,6,2,6,8,2,1,0,0,12,6,2,4,3.2,1.65
+2024-10-03,2024,848,FC Astana,TSC Backa Topola,O. Reitala,1,0,3,2,1,2,0,0,4,5,5,3,1.04,1.45
+2024-10-03,2024,848,Dinamo Minsk,Heart Of Midlothian,M. Al Hakim,1,2,0,7,1,1,0,0,4,5,3,3,0.68,0.89
+2024-10-03,2024,848,Legia Warszawa,Real Betis,L. Pairetto,1,0,6,6,4,4,0,0,2,3,3,1,1.34,0.7
+2024-10-03,2024,848,Molde,Larne,D. Bel,3,0,7,0,2,1,0,1,9,1,1,4,2.42,0.12
+2024-10-03,2024,848,1. FC Heidenheim,Olimpija Ljubljana,E. Jorgji,2,1,6,4,3,2,0,0,8,3,2,6,2.11,1.19
+2024-10-03,2024,848,FC Noah,Mlada Boleslav,R. Gidzhenov,2,0,7,6,1,2,0,0,8,7,6,7,1.5,0.44
+2024-10-24,2024,848,Mlada Boleslav,FC Lugano,C. Theouli,0,1,5,3,0,2,0,0,5,5,4,5,1.28,1.19
+2024-10-24,2024,848,Real Betis,FC Copenhagen,W. Delajod,1,1,4,1,3,3,0,0,5,2,1,4,1.09,1.37
+2024-10-24,2024,848,HJK Helsinki,Dinamo Minsk,H. Nalbandyan,1,0,4,11,2,3,0,1,6,3,3,5,2.88,1.49
+2024-10-24,2024,848,The New Saints,FC Astana,J. Frischer,2,0,5,2,0,0,0,0,7,3,3,4,2.45,1.06
+2024-10-24,2024,848,TSC Backa Topola,Legia Warszawa,J. Weinberger,0,3,6,2,4,3,0,0,2,7,3,2,0.62,3.39
+2024-10-24,2024,848,Pafos,1. FC Heidenheim,J. Vergoote,0,1,6,3,1,1,0,0,3,3,2,3,0.87,1.1
+2024-10-24,2024,848,Larne,Shamrock Rovers,V. Fotias,1,4,2,8,2,1,0,0,3,6,3,2,0.53,1.62
+2024-10-24,2024,848,Olimpija Ljubljana,Lask Linz,D. Chiffi,2,0,5,4,4,2,0,0,4,5,5,2,2.09,1.0
+2024-10-24,2024,848,Celje,Başakşehir,O. Derevinskyi,5,1,3,5,2,5,0,0,8,5,4,3,3.77,1.66
+2024-10-24,2024,848,FC ST. Gallen,Fiorentina,I. Frid,2,4,2,7,3,3,0,0,4,15,11,2,0.52,2.84
+2024-10-24,2024,848,Rapid Vienna,FC Noah,K. Tohver,1,0,6,2,1,2,0,0,7,2,2,6,2.5,0.32
+2024-10-24,2024,848,Gent,Molde,G. Kikacheishvili,2,1,5,2,2,3,0,0,5,3,2,2,0.92,0.72
+2024-10-24,2024,848,Panathinaikos,Chelsea,António Nobre,1,4,5,6,1,1,0,0,3,9,5,2,1.18,2.42
+2024-10-24,2024,848,Djurgardens IF,Guimaraes,G. Nuza,1,2,3,6,2,5,0,0,3,3,1,2,0.41,1.13
+2024-10-24,2024,848,Jagiellonia,Petrocub,D. Sakhi,2,0,5,1,1,2,0,0,6,0,0,4,2.64,0.11
+2024-10-24,2024,848,Heart Of Midlothian,Omonia Nicosia,M. Očenáš,2,0,4,4,3,2,0,0,3,1,1,1,1.24,0.49
+2024-10-24,2024,848,Vikingur Reykjavik,Cercle Brugge,V. Spasjoņņikovs,3,1,3,5,0,2,0,0,6,3,2,2,2.71,1.29
+2024-10-24,2024,848,Apoel Nicosia,Borac Banja Luka,R. Jones,0,1,6,1,1,5,0,0,3,2,1,3,1.21,0.31
+2024-11-07,2024,848,Apoel Nicosia,Fiorentina,F. Letexier,2,1,2,4,4,3,0,0,2,6,5,0,1.76,1.45
+2024-11-07,2024,848,Lask Linz,Cercle Brugge,R. Gidzhenov,0,0,5,3,1,4,0,1,2,2,2,2,1.16,0.17
+2024-11-07,2024,848,Real Betis,Celje,N. Simović,2,1,4,1,0,4,0,0,6,2,1,4,1.4,0.83
+2024-11-07,2024,848,FC Copenhagen,Başakşehir,J. Kooij,2,2,7,0,3,6,0,0,9,4,2,7,1.75,1.93
+2024-11-07,2024,848,Djurgardens IF,Panathinaikos,I. Pajač,2,1,3,3,3,4,0,0,6,1,0,4,1.66,0.49
+2024-11-07,2024,848,Jagiellonia,Molde,M. Milanović,3,0,2,3,0,0,0,0,5,2,1,1,1.99,0.23
+2024-11-07,2024,848,Heart Of Midlothian,1. FC Heidenheim,K. Hagenes,0,2,5,1,0,1,0,0,5,3,0,4,1.46,0.67
+2024-11-07,2024,848,Guimaraes,Mlada Boleslav,P. Raczkowski,2,1,11,4,1,1,0,0,12,5,4,10,2.02,0.95
+2024-11-07,2024,848,Shamrock Rovers,The New Saints,S. Levi,2,1,4,1,1,1,0,0,6,3,3,4,1.68,1.05
+2024-11-07,2024,848,Pafos,FC Astana,D. Robertson,1,0,12,2,0,2,0,0,13,0,0,13,3.61,0.06
+2024-11-07,2024,848,TSC Backa Topola,FC Lugano,J. Sundberg,4,1,2,3,4,2,0,1,9,3,1,4,1.98,0.86
+2024-11-07,2024,848,Petrocub,Rapid Vienna,A. Bandić,0,3,4,2,1,0,0,0,4,7,3,4,0.74,2.15
+2024-11-07,2024,848,HJK Helsinki,Olimpija Ljubljana,R. Jones,0,2,5,3,4,2,0,0,3,4,2,2,0.77,0.38
+2024-11-07,2024,848,Gent,Omonia Nicosia,T. Bognár,1,0,11,6,1,1,0,0,6,5,5,5,1.65,0.9
+2024-11-07,2024,848,Legia Warszawa,Dinamo Minsk,A. Karaoğlan,4,0,5,2,1,4,0,0,7,3,3,2,2.46,0.46
+2024-11-07,2024,848,Vikingur Reykjavik,Borac Banja Luka,J. Petřík,2,0,2,3,2,1,0,0,8,3,3,6,1.13,0.38
+2024-11-07,2024,848,Chelsea,FC Noah,C. Ciochirca,8,0,4,3,0,2,0,0,18,7,7,10,5.8,0.61
+2024-11-07,2024,848,Larne,FC ST. Gallen,I. Barbara,1,2,0,16,1,1,0,0,1,6,4,1,0.1,0.96
+2024-11-27,2024,848,Başakşehir,Petrocub,G. Nuza,1,1,5,1,3,2,0,0,5,2,1,4,2.38,0.43
+2024-11-28,2024,848,Omonia Nicosia,Legia Warszawa,R. Gidzhenov,0,3,5,5,2,2,0,0,3,4,1,3,1.35,1.56
+2024-11-28,2024,848,Rapid Vienna,Shamrock Rovers,G. Bogár,1,1,15,2,0,5,0,0,3,3,2,2,1.84,1.06
+2024-11-28,2024,848,Olimpija Ljubljana,Larne,S. van der Eijk,1,0,12,0,1,3,0,1,5,1,1,4,1.14,0.27
+2024-11-28,2024,848,Mlada Boleslav,Real Betis,D. Schlager,2,1,4,5,2,2,0,1,9,4,3,7,2.37,1.36
+2024-11-28,2024,848,FC Lugano,Gent,E. Jorgji,2,0,3,10,4,4,0,0,3,6,6,1,1.19,1.78
+2024-11-28,2024,848,Fiorentina,Pafos,E. Eskås,3,2,4,5,3,4,0,0,4,3,1,2,1.25,1.72
+2024-11-28,2024,848,Celje,Jagiellonia,A. Lindhout,3,3,9,3,2,2,0,0,6,7,3,3,2.37,2.99
+2024-11-28,2024,848,FC Noah,Vikingur Reykjavik,M. Antoniou,0,0,7,3,1,1,0,0,5,2,2,5,0.64,0.68
+2024-11-28,2024,848,Molde,Apoel Nicosia,D. Sylwestrzak,0,1,6,6,3,4,0,0,5,3,2,5,0.67,0.48
+2024-11-28,2024,848,FC ST. Gallen,TSC Backa Topola,J. Pignard,2,2,6,6,2,3,0,0,7,4,2,5,3.64,2.42
+2024-11-28,2024,848,Cercle Brugge,Heart Of Midlothian,E. Məsiyev,2,0,4,3,1,2,0,0,6,6,6,4,0.59,1.64
+2024-11-28,2024,848,Panathinaikos,HJK Helsinki,D. Rumšas,1,0,11,2,1,1,0,0,10,3,3,9,2.07,0.52
+2024-11-28,2024,848,Dinamo Minsk,FC Copenhagen,M. Očenáš,1,2,2,7,2,2,0,0,4,4,2,3,1.07,1.16
+2024-11-28,2024,848,The New Saints,Djurgardens IF,P. Farrugia,0,1,1,6,2,3,0,0,0,5,4,0,0.37,0.93
+2024-11-28,2024,848,Borac Banja Luka,Lask Linz,Gustavo Correia,2,1,7,2,3,6,0,1,8,2,1,7,0.99,0.43
+2024-11-28,2024,848,1. FC Heidenheim,Chelsea,S. Gözübüyük,0,2,3,6,2,5,0,1,11,9,7,11,1.97,2.9
+2024-11-28,2024,848,FC Astana,Guimaraes,N. Dabanović,1,1,1,11,5,4,0,0,4,7,6,3,0.6,2.28
+2024-12-12,2024,848,Pafos,Celje,P. Raczkowski,2,0,3,4,4,1,0,0,4,1,1,2,0.61,1.02
+2024-12-12,2024,848,Omonia Nicosia,Rapid Vienna,D. Stefanski,3,1,6,6,1,2,0,0,7,4,3,4,1.55,1.2
+2024-12-12,2024,848,FC ST. Gallen,Guimaraes,N. Walsh,1,4,2,8,5,4,0,0,4,16,12,3,1.38,3.22
+2024-12-12,2024,848,Shamrock Rovers,Borac Banja Luka,S. Ebner,3,0,4,2,3,1,0,0,6,3,3,3,2.44,0.27
+2024-12-12,2024,848,Mlada Boleslav,Jagiellonia,D. Dickinson,1,0,4,4,5,4,0,1,5,3,3,4,0.88,0.63
+2024-12-12,2024,848,Gent,TSC Backa Topola,A. Ghaltakchyan,3,0,2,4,1,3,0,0,6,6,6,3,3.04,1.16
+2024-12-12,2024,848,The New Saints,Panathinaikos,O. Reitala,0,2,4,7,2,1,0,0,4,8,5,4,0.5,2.57
+2024-12-12,2024,848,FC Noah,Apoel Nicosia,M. Milanović,1,3,5,4,2,0,0,0,7,5,2,6,1.01,1.49
+2024-12-12,2024,848,Petrocub,Real Betis,L. D'hondt,0,1,0,8,2,1,0,0,1,4,3,1,0.18,1.12
+2024-12-12,2024,848,Vikingur Reykjavik,Djurgardens IF,L. Bilbija,1,2,4,1,3,5,0,1,1,5,3,0,1.04,0.96
+2024-12-12,2024,848,HJK Helsinki,Molde,A. Karaoğlan,2,2,5,6,3,1,0,0,2,2,0,0,1.19,1.41
+2024-12-12,2024,848,Başakşehir,1. FC Heidenheim,M. Guida,3,1,9,6,1,3,0,0,6,4,3,3,1.51,2.01
+2024-12-12,2024,848,Fiorentina,Lask Linz,B. Berke,7,0,5,1,1,1,0,0,9,3,3,3,5.24,0.69
+2024-12-12,2024,848,FC Copenhagen,Heart Of Midlothian,A. Colombo,2,0,4,3,0,3,0,0,8,0,0,5,4.06,0.12
+2024-12-12,2024,848,Dinamo Minsk,Larne,S. Karabayev,2,0,9,2,2,5,0,1,4,2,2,2,2.16,0.55
+2024-12-12,2024,848,Legia Warszawa,FC Lugano,Juan Martínez,1,2,1,2,6,3,1,0,2,11,9,1,1.39,1.99
+2024-12-12,2024,848,FC Astana,Chelsea,S. Jablonski,1,3,2,4,1,0,0,0,3,13,9,2,0.27,1.52
+2024-12-12,2024,848,Olimpija Ljubljana,Cercle Brugge,A. Ladebäck,1,4,3,10,4,2,1,0,2,8,4,1,1.12,2.23
+2024-12-19,2024,848,Rapid Vienna,FC Copenhagen,J. Beaton,3,0,7,4,3,4,0,0,9,2,2,6,2.03,0.9
+2024-12-19,2024,848,Lask Linz,Vikingur Reykjavik,M. Al Emara,1,1,2,4,1,6,0,1,5,2,1,4,1.04,1.06
+2024-12-19,2024,848,Apoel Nicosia,FC Astana,S. Gishamer,1,1,2,5,5,5,1,1,2,3,2,1,0.96,1.1
+2024-12-19,2024,848,Cercle Brugge,Başakşehir,I. Vad II,1,1,4,3,1,3,0,0,9,4,3,7,2.27,1.41
+2024-12-19,2024,848,Borac Banja Luka,Omonia Nicosia,M. Al Hakim,0,0,6,4,0,2,0,0,2,2,2,2,0.73,0.56
+2024-12-19,2024,848,Larne,Gent,S. Kringstad,1,0,2,9,2,1,0,0,2,6,6,1,0.67,0.99
+2024-12-19,2024,848,Celje,The New Saints,L. Fähndrich,3,2,8,5,2,2,0,0,11,2,1,7,4.4,0.51
+2024-12-19,2024,848,TSC Backa Topola,FC Noah,M. Barbu,4,3,8,3,4,1,0,0,11,7,4,7,3.29,2.84
+2024-12-19,2024,848,Panathinaikos,Dinamo Minsk,R. Hennessy,4,0,8,4,3,3,0,0,8,1,1,4,2.86,0.45
+2024-12-19,2024,848,1. FC Heidenheim,FC ST. Gallen,Javier Alberola,1,1,9,6,2,3,0,0,5,2,1,3,1.37,0.57
+2024-12-19,2024,848,Real Betis,HJK Helsinki,P. Kolarić,1,0,6,1,1,3,0,0,8,2,2,7,2.37,0.05
+2024-12-19,2024,848,Djurgardens IF,Legia Warszawa,D. Šmajc,3,1,3,6,3,4,0,0,6,4,2,3,0.55,1.07
+2024-12-19,2024,848,Jagiellonia,Olimpija Ljubljana,Luís Godinho,0,0,2,8,3,4,0,0,2,3,3,2,0.61,0.48
+2024-12-19,2024,848,Molde,Mlada Boleslav,V. Kastrati,4,3,3,2,2,1,0,0,7,6,2,4,1.35,1.81
+2024-12-19,2024,848,Heart Of Midlothian,Petrocub,O. Berka,2,2,15,0,2,3,0,0,4,3,1,2,0.93,1.92
+2024-12-19,2024,848,Guimaraes,Fiorentina,J. Xhaja,1,1,2,7,4,1,0,0,5,2,1,4,2.05,1.44
+2024-12-19,2024,848,Chelsea,Shamrock Rovers,W. Delajod,5,1,7,3,0,2,0,0,10,4,3,4,2.07,0.21
+2024-12-19,2024,848,FC Lugano,Pafos,N. Minaković,2,2,2,4,5,4,0,0,5,3,2,3,2.42,0.77
+2025-02-13,2024,848,Omonia Nicosia,Pafos,S. Sozza,1,1,0,9,2,3,0,0,3,5,4,2,1.44,1.46
+2025-02-13,2024,848,Borac Banja Luka,Olimpija Ljubljana,R. Petrescu,1,0,9,1,1,2,0,1,4,2,2,3,2.44,0.71
+2025-02-13,2024,848,Gent,Real Betis,H. Feșnic,0,3,5,8,1,1,0,0,1,8,6,1,0.49,1.65
+2025-02-13,2024,848,FC Copenhagen,1. FC Heidenheim,A. Tsakalidis,1,2,5,4,3,1,0,0,7,7,5,5,1.77,1.96
+2025-02-13,2024,848,Molde,Shamrock Rovers,A. Treimanis,0,1,3,2,3,3,1,0,1,2,1,1,0.28,0.86
+2025-02-13,2024,848,TSC Backa Topola,Jagiellonia,António Nobre,1,3,4,1,1,0,0,0,1,6,3,0,0.23,2.17
+2025-02-13,2024,848,Vikingur Reykjavik,Panathinaikos,R. Saggi,2,1,2,6,3,1,0,0,4,6,5,2,1.39,1.78
+2025-02-13,2024,848,Celje,Apoel Nicosia,M. Balakin,2,2,2,2,1,5,0,1,5,5,2,3,1.11,0.42
+2025-02-20,2024,848,Panathinaikos,Vikingur Reykjavik,R. Obrenović,2,0,11,3,4,4,0,0,5,2,1,3,0.65,0.32
+2025-02-20,2024,848,Shamrock Rovers,Molde,A. Sidiropoulos,0,1,9,1,4,3,0,1,3,4,3,2,0.47,1.06
+2025-02-20,2024,848,Apoel Nicosia,Celje,J. Beaton,0,2,4,7,4,3,0,0,4,8,5,4,0.25,1.98
+2025-02-20,2024,848,Jagiellonia,TSC Backa Topola,A. Lindhout,3,1,6,6,2,3,0,0,7,2,1,4,1.03,0.63
+2025-02-20,2024,848,Olimpija Ljubljana,Borac Banja Luka,M. Lukjančukas,0,0,7,7,2,6,0,0,2,5,5,2,1.95,1.25
+2025-02-20,2024,848,Real Betis,Gent,D. Sylwestrzak,0,1,6,4,1,1,1,0,7,1,0,7,1.16,0.6
+2025-02-20,2024,848,1. FC Heidenheim,FC Copenhagen,N. Dabanović,1,3,2,5,3,3,0,0,6,6,3,4,1.85,2.34
+2025-02-20,2024,848,Pafos,Omonia Nicosia,C. Turpin,2,1,7,1,1,2,0,0,11,2,1,7,1.8,0.77
+2025-03-06,2024,848,Molde,Legia Warszawa,H. Feșnic,3,2,2,10,1,2,0,0,7,6,4,4,1.82,2.49
+2025-03-06,2024,848,FC Copenhagen,Chelsea,G. Kabakov,1,2,1,0,4,1,0,0,2,2,0,1,0.45,0.37
+2025-03-06,2024,848,Real Betis,Guimaraes,N. Dabanović,2,2,7,2,4,0,0,0,6,2,0,4,1.64,0.92
+2025-03-06,2024,848,Panathinaikos,Fiorentina,E. Lambrechts,3,2,4,6,1,2,0,0,6,5,3,3,1.46,1.86
+2025-03-06,2024,848,Jagiellonia,Cercle Brugge,A. Sidiropoulos,3,0,3,2,2,2,0,1,7,4,4,3,1.85,0.78
+2025-03-06,2024,848,Borac Banja Luka,Rapid Vienna,J. Brisard,1,1,4,4,1,3,0,0,5,4,3,4,1.17,1.29
+2025-03-06,2024,848,Pafos,Djurgardens IF,G. Kruashvili,1,0,6,2,2,1,0,0,6,3,3,6,1.85,1.16
+2025-03-06,2024,848,Celje,FC Lugano,António Nobre,1,0,6,5,2,2,0,1,3,5,5,2,0.34,1.68
+2025-03-13,2024,848,Fiorentina,Panathinaikos,J. Beaton,3,1,5,5,4,4,0,1,9,2,1,6,1.73,1.75
+2025-03-13,2024,848,Legia Warszawa,Molde,M. Jug,2,0,7,8,3,5,1,1,6,4,3,4,1.99,1.77
+2025-03-13,2024,848,Guimaraes,Real Betis,S. Gözübüyük,0,4,3,3,5,2,0,0,2,6,2,3,0.55,1.59
+2025-03-13,2024,848,Chelsea,FC Copenhagen,R. Petrescu,1,0,1,6,2,1,0,0,5,1,1,4,1.13,0.97
+2025-03-13,2024,848,Cercle Brugge,Jagiellonia,M. Krogh,2,0,17,2,0,4,0,0,7,2,2,6,1.48,0.38
+2025-03-13,2024,848,FC Lugano,Celje,A. Treimanis,5,4,5,2,5,3,1,0,8,7,3,2,2.84,2.44
+2025-03-13,2024,848,Djurgardens IF,Pafos,S. Gishamer,3,0,4,4,3,6,0,0,8,2,2,5,2.01,2.17
+2025-03-13,2024,848,Rapid Vienna,Borac Banja Luka,A. Lindhout,2,1,19,0,1,5,0,0,11,1,0,9,3.96,0.13
+2025-04-10,2024,848,Legia Warszawa,Chelsea,S. Gözübüyük,0,3,6,8,0,0,0,0,1,10,7,1,0.42,4.08
+2025-04-10,2024,848,Djurgardens IF,Rapid Vienna,T. Stieler,0,1,8,8,1,3,0,0,5,4,4,5,1.33,1.2
+2025-04-10,2024,848,Real Betis,Jagiellonia,A. Taylor,2,0,6,1,1,2,0,0,8,1,1,6,3.35,0.32
+2025-04-10,2024,848,Celje,Fiorentina,F. Zwayer,1,2,4,1,1,5,0,0,4,2,0,3,1.48,1.01
+2025-04-17,2024,848,Jagiellonia,Real Betis,C. Turpin,1,1,4,5,3,2,0,0,1,5,4,0,0.46,1.19
+2025-04-17,2024,848,Fiorentina,Celje,João Pedro Pinheiro,2,2,6,4,2,1,0,0,5,4,2,3,1.81,0.91
+2025-04-17,2024,848,Chelsea,Legia Warszawa,Alejandro Hernández,1,2,2,3,2,0,0,0,8,5,3,6,2.09,2.22
+2025-04-17,2024,848,Rapid Vienna,Djurgardens IF,A. Taylor,1,4,4,5,3,3,2,0,5,12,6,5,1.51,3.77
+2025-05-01,2024,848,Djurgardens IF,Chelsea,S. Schärer,1,4,3,4,1,2,0,0,5,7,3,4,1.52,2.17
+2025-05-01,2024,848,Real Betis,Fiorentina,M. Oliver,2,1,6,2,2,4,0,0,5,2,1,3,1.87,1.05
+2025-05-08,2024,848,Fiorentina,Real Betis,G. Nyberg,2,2,12,9,7,4,0,0,7,10,8,3,1.84,2.72
+2025-05-08,2024,848,Chelsea,Djurgardens IF,João Pedro Pinheiro,1,0,7,3,1,1,0,0,5,3,3,4,1.33,0.52
+2025-05-28,2024,848,Real Betis,Chelsea,I. Peljto,1,4,4,4,2,3,0,0,3,7,3,2,1.07,1.32
+2025-07-08,2025,848,Floriana,Haverfordwest County AFC,Szabolcs Kovacs,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-08,2025,848,St Joseph S Fc,Cliftonville FC,Daniel Higraff,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,NSI Runavik,HJK Helsinki,Karl Koppel,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Valur Reykjavik,Flora Tallinn,Marius Grotta,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Larne,Auda,Heini Ziskason Vidoy,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Borac Banja Luka,FC Santa Coloma,Giorgi Avazashvili,1,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Tre Fiori,Pyunik Yerevan,Igor Boșca,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,St Patrick's Athl.,Hegelmann Litauen,Simon Bourdeaud'hui,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Sutjeska,Dinamo Brest,Jakob Semler,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Zeljeznicar Sarajevo,Koper,Artem Gasparyan,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Vardar Skopje,La Fiorita,Antoine Paul Chiaramonti,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Dečić,Sileks,Zaven Hovhannisyan,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Malisheva,Vikingur Reykjavik,Patryk Gryckiewicz,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Birkirkara,Petrocub,Vlatko Ilioski,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Torpedo Zhodino,FK Rabotnicki,Aleko Aptsiauri,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Kalju Nomme,Partizani,Ross Hardie,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,FC Urartu,Neman,Mateo Erceg,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Racing FC Union Luxembourg,Dila,Seth Galia,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Kauno Žalgiris,Penybont,Peiman Simani,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,SJK,KI Klaksvik,Johann Ingi Jonsson,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Torpedo Kutaisi,Ordabasy,Anton Lashuk,4,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Magpies,Paide,Paul McLaughlin,2,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Atlètic Club d'Escaldes,F91 Dudelange,Constantinos Fellas,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-10,2025,848,Vllaznia Shkodër,BFC Daugavpils,Ashot Ghaltakhchyan,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-16,2025,848,Auda,Larne,Dmitriy Kubryak,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Koper,Zeljeznicar Sarajevo,Menelaos Antoniou,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Petrocub,Birkirkara,Oguzhan Cakir,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Sileks,Dečić,Viktor Shimusik,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Neman,FC Urartu,Milos Boskovic,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Haverfordwest County AFC,Floriana,Joao Antonio Ferreira Goncalves,2,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Dinamo Brest,Sutjeska,Mehmet Turkmen,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Vikingur Reykjavik,Malisheva,Robertas Valikonis,8,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Cliftonville FC,St Joseph S Fc,Sven Wolfensberger,2,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,La Fiorita,Vardar Skopje,Aaron Wyn Jones,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Partizani,Kalju Nomme,Trustin Farrugia Cann,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Penybont,Kauno Žalgiris,Marton Rusz,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,KI Klaksvik,SJK,Wojciech Myc,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Paide,Magpies,Klim Zabroda,4,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Hegelmann Litauen,St Patrick's Athl.,Mads Kristoffer Kristoffersen,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Dila,Racing FC Union Luxembourg,Milos Gigovic,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Pyunik Yerevan,Tre Fiori,Florjan Lata,5,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Ordabasy,Torpedo Kutaisi,Nikola Popov,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,Flora Tallinn,Valur Reykjavik,Oscar Johnson,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,FK Rabotnicki,Torpedo Zhodino,Ion Orlic,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,HJK Helsinki,NSI Runavik,Helgi Mikael Jonasson,5,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,F91 Dudelange,Atlètic Club d'Escaldes,Rares George Vidican,2,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,FC Santa Coloma,Borac Banja Luka,Jeremy Muller,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-17,2025,848,BFC Daugavpils,Vllaznia Shkodër,Karel Roucek,2,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-22,2025,848,Ballkani,Floriana,Gergo Bogar,4,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-23,2025,848,Buducnost Podgorica,Milsami Orhei,Denys Shurman,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-23,2025,848,Olimpija Ljubljana,Inter Club d'Escaldes,Marek Radina,4,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-23,2025,848,The New Saints,FC Differdange 03,Sandi Putros,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-23,2025,848,FC Levadia Tallinn,Saburtalo,Johan Hendrik Ellefsen,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-23,2025,848,Zira,HNK Hajduk Split,Christos Vergetis,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-23,2025,848,Silkeborg,KA Akureyri,Bram Van Driessche,1,1,3,5,3,0,0,0,8,2,1,7,0.0,0.0
+2025-07-24,2025,848,Vardar Skopje,Lausanne,Dominik Stary,2,1,6,3,2,2,0,0,6,2,1,4,0.0,0.0
+2025-07-24,2025,848,FC Vaduz,Dungannon Swifts,Peter Kralovic,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Riga,Dila,Donald Robertson,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,AEK Athens FC,Hapoel Beer Sheva,Luca Pairetto,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,NK Varazdin,Santa Clara,Luca Cibelli,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Paks,Maribor,Robert Harvey,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Radnicki 1923,KI Klaksvik,Bence Csonka,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,FK Košice,Neman,Lionel Tschudi,2,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Austria Vienna,Spaeri,Martin Dohál,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Raków Częstochowa,Žilina,Fabio Jose Costa Verissimo,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Vllaznia Shkodër,Vikingur Reykjavik,Alexandros Tsakalidis,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Dinamo Minsk,Egnatia Rrogozhinë,Ioannis Papadopoulos,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Dundee Utd,UNA Strassen,Marc Nagtegaal,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,St Patrick's Athl.,Kalju Nomme,Ladislav Szikszay,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,HB Torshavn,Brondby,Joakim Ostling,1,1,2,6,1,1,0,0,4,5,4,3,0.0,0.0
+2025-07-24,2025,848,FK Sarajevo,Universitatea Craiova,Dmytro Panchyshyn,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Polessya,FC Santa Coloma,Jacob Karlsen,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Dečić,Rapid Vienna,Kadir Saglam,0,2,7,10,3,3,0,0,1,3,2,1,0.0,0.0
+2025-07-24,2025,848,Larne,Prishtina,Iwan Griffith,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Sutjeska,Beitar Jerusalem,Georgi Ginchev,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Oleksandria,FK Partizan,Joonas Jaanovits,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Torpedo Zhodino,Maccabi Haifa,Jakob Semler,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Novi Pazar,Jagiellonia,Matthew Degabriele,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,FC Astana,Zimbru,Tim Marshall,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Atlètic Club d'Escaldes,Dinamo Tirana,Tim Marshall,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Paide,AIK Stockholm,Joni Hyytia,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Rosenborg,Banga,Ian McNabb,5,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,FK Zalgiris Vilnius,Linfield,Dumitru Muntean,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,St Joseph S Fc,Shamrock Rovers,Matthew MacDermid,0,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Pyunik Yerevan,Gyori ETO FC,Jasmin Šabotić,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Ilves,AZ Alkmaar,Matteo Marcenaro,4,3,4,9,0,2,0,0,7,8,5,3,0.0,0.0
+2025-07-24,2025,848,Arda Kardzhali,HJK Helsinki,Bulat Sariyev,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Aris,Puskas Academy,David Smajc,3,2,1,2,3,3,0,0,5,4,2,2,0.0,0.0
+2025-07-24,2025,848,Ararat-Armenia,Universitatea Cluj,Dzmitry Dzmitryieu,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Kauno Žalgiris,Valur Reykjavik,Jamie Robinson,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Hibernians,Spartak Trnava,Visar Kastrati,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Aktobe,Sparta Praha,Kristoffer Hagenes,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Araz,Aris Thessalonikis,Andrei Florin Chivulete,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Hammarby FF,Charleroi,Mathieu Vernice,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Viking,Koper,Samuel Barrott,7,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Cherno More Varna,Başakşehir,Luka Bilbija,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Petrocub,Sabah FA,Gal Leibovitz,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-24,2025,848,Omonia Nicosia,Torpedo Kutaisi,Lukas Fahndrich,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-29,2025,848,FC Differdange 03,The New Saints,Sigurd Smehus Kringstad,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-29,2025,848,Inter Club d'Escaldes,Olimpija Ljubljana,Lukasz Kuzma,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-29,2025,848,Saburtalo,FC Levadia Tallinn,Kamal Umudlu,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Sparta Praha,Aktobe,Daniele Chiffi,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Prishtina,Larne,Kyriakos Athanasiou,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Charleroi,Hammarby FF,Vitalijs Spasjonnikovs,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Puskas Academy,Aris,Robertas Valikonis,0,2,4,7,4,1,1,0,1,9,7,1,0.0,0.0
+2025-07-31,2025,848,Maccabi Haifa,Torpedo Zhodino,Samuel Barrott,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Koper,Viking,Claudio Filipe Ruivo Pereira,3,5,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Jagiellonia,Novi Pazar,Atilla Karaoglan,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Lausanne,Vardar Skopje,Snir Levy,5,0,4,3,2,1,0,0,9,3,3,4,0.0,0.0
+2025-07-31,2025,848,Aris Thessalonikis,Araz,David Dickinson,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Valur Reykjavik,Kauno Žalgiris,Dalibor Cerny,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Rapid Vienna,Dečić,Dumitru Muntean,4,2,6,5,0,1,0,0,7,3,1,3,0.0,0.0
+2025-07-31,2025,848,Žilina,Raków Częstochowa,Genc Nuza,1,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Linfield,FK Zalgiris Vilnius,Edgars Malcevs,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,KI Klaksvik,Radnicki 1923,Roman Jitari,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Dinamo Tirana,Atlètic Club d'Escaldes,Jasmin Šabotić,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Floriana,Ballkani,Dario Bel,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Dungannon Swifts,FC Vaduz,Kristoffer Karlsson,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,FK Partizan,Oleksandria,Henrik Nalbandyan,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,HNK Hajduk Split,Zira,Luca Pairetto,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Shamrock Rovers,St Joseph S Fc,Granit Maqedonci,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Egnatia Rrogozhinë,Dinamo Minsk,Kevin O'Sullivan,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Vikingur Reykjavik,Vllaznia Shkodër,Mihaly Kapraly,4,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Hapoel Beer Sheva,AEK Athens FC,Urs Schnyder,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Dila,Riga,Mohammad Usman Aslam,3,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Neman,FK Košice,Walter Altmann,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Spartak Trnava,Hibernians,Pavle Ilic,5,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,FC Santa Coloma,Polessya,Ben McMaster,1,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,HJK Helsinki,Arda Kardzhali,Iwan Griffith,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Gyori ETO FC,Pyunik Yerevan,Mervan Bejtullahu,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Banga,Rosenborg,Jovan Kachevski,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Sabah FA,Petrocub,Danilo Nikolic,4,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Spaeri,Austria Vienna,Ashot Ghaltakchyan,0,5,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,AZ Alkmaar,Ilves,Ivar Orri Kristjansson,5,0,9,1,3,2,0,0,16,2,2,9,0.0,0.0
+2025-07-31,2025,848,Kalju Nomme,St Patrick's Athl.,Menelaos Antoniou,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,AIK Stockholm,Paide,Helgi Mikael Jonasson,6,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Maribor,Paks,Dennis Higler,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Milsami Orhei,Buducnost Podgorica,Alessandro Dudic,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Torpedo Kutaisi,Omonia Nicosia,Mikkel Redder,0,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,KA Akureyri,Silkeborg,Peiman Simani,2,3,5,5,3,1,0,0,7,7,4,5,0.0,0.0
+2025-07-31,2025,848,Santa Clara,NK Varazdin,Jasper Vergoote,2,0,11,3,2,4,0,0,6,3,0,0,0.0,0.0
+2025-07-31,2025,848,Beitar Jerusalem,Sutjeska,Ishmael Barbara,5,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Başakşehir,Cherno More Varna,Viktor Kopievskiy,4,0,4,8,0,3,0,0,6,4,4,2,0.0,0.0
+2025-07-31,2025,848,Brondby,HB Torshavn,Robert Hennessy,1,0,12,1,0,2,0,0,5,2,2,5,0.0,0.0
+2025-07-31,2025,848,Zimbru,FC Astana,Bram Van Driessche,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Universitatea Cluj,Ararat-Armenia,David Fuxman,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,UNA Strassen,Dundee Utd,Vilhjalmur Alvar Thorarinsson,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-07-31,2025,848,Universitatea Craiova,FK Sarajevo,Daniyar Sakhi,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-05,2025,848,KI Klaksvik,Neman,Claudio Filipe Ruivo Pereira,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-07,2025,848,Polessya,Paks,Joakim Ostling,3,0,5,6,2,1,1,0,8,2,2,5,0.0,0.0
+2025-08-07,2025,848,Ballkani,Shamrock Rovers,Dmytro Panchyshyn,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-07,2025,848,Lausanne,FC Astana,Lukasz Kuzma,3,1,3,5,2,2,0,0,6,4,3,3,0.0,0.0
+2025-08-07,2025,848,FC Lugano,Celje,Sander van der Eijk,0,5,2,2,2,0,0,0,4,10,5,4,0.0,0.0
+2025-08-07,2025,848,Universitatea Craiova,Spartak Trnava,Joonas Jaanovits,3,0,3,3,1,1,0,1,8,1,2,5,0.0,0.0
+2025-08-07,2025,848,Vikingur Reykjavik,Brondby,Atilla Karaoglan,3,0,5,6,1,2,0,0,4,5,5,0,0.0,0.0
+2025-08-07,2025,848,Larne,Santa Clara,Adam Ladeback,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-07,2025,848,FK Partizan,Hibernian,Philip Farrugia,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-07,2025,848,HNK Hajduk Split,Dinamo Tirana,Sayat Karabaev,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-07,2025,848,Rapid Vienna,Dundee Utd,Luís Godinho,2,2,10,3,1,0,0,0,7,3,1,5,0.0,0.0
+2025-08-07,2025,848,Raków Częstochowa,Maccabi Haifa,Robert Harvey,0,1,8,2,0,6,0,0,4,5,4,4,0.0,0.0
+2025-08-07,2025,848,FC Differdange 03,FC Levadia Tallinn,Alessandro Dudic,2,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-07,2025,848,St Patrick's Athl.,Beşiktaş,David Smajc,1,4,2,3,1,1,0,0,3,8,4,2,0.0,0.0
+2025-08-07,2025,848,Olimpija Ljubljana,Egnatia Rrogozhinë,John Beaton,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-07,2025,848,Riga,Beitar Jerusalem,Lionel Tschudi,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-07,2025,848,Sparta Praha,Ararat-Armenia,Matthew MacDermid,4,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-07,2025,848,Vikingur Gota,Linfield,Luka Bilbija,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-07,2025,848,Anderlecht,Sheriff Tiraspol,Nenad Minaković,3,0,6,5,2,1,0,0,6,2,2,3,0.0,0.0
+2025-08-07,2025,848,AZ Alkmaar,FC Vaduz,Bastien Dechepy,3,0,6,2,3,1,0,0,8,0,0,4,0.0,0.0
+2025-08-07,2025,848,Levski Sofia,Sabah FA,Duje Strukan,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-07,2025,848,Silkeborg,Jagiellonia,Jamie Robinson,0,1,7,6,2,3,0,0,4,4,3,4,0.0,0.0
+2025-08-07,2025,848,Viking,Başakşehir,Miguel Nogueira,1,3,10,2,1,1,0,0,4,3,0,2,0.0,0.0
+2025-08-07,2025,848,AIK Stockholm,Gyori ETO FC,Daniel Schlager,2,1,5,6,1,0,0,0,7,4,3,5,0.0,0.0
+2025-08-07,2025,848,Baník Ostrava,Austria Vienna,Mohammed Al-Hakim,4,3,4,9,1,3,0,0,7,7,4,3,0.0,0.0
+2025-08-07,2025,848,Araz,Omonia Nicosia,Ondrej Berka,0,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-07,2025,848,Kauno Žalgiris,Arda Kardzhali,Jeremy Muller,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-07,2025,848,Aris,AEK Athens FC,Goga Kikacheishvili,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-07,2025,848,Milsami Orhei,Virtus,Edgars Malcevs,3,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-07,2025,848,Rosenborg,Hammarby FF,Zorbay Kucuk,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-13,2025,848,Başakşehir,Viking,Milos Milanovic,1,1,2,3,5,3,0,0,3,4,4,2,0.0,0.0
+2025-08-14,2025,848,Egnatia Rrogozhinë,Olimpija Ljubljana,Urs Schnyder,2,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,Shamrock Rovers,Ballkani,Mohammad Al-Emara,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,Austria Vienna,Baník Ostrava,Juxhin Xhaja,1,1,5,4,4,4,0,0,5,2,1,4,0.0,0.0
+2025-08-14,2025,848,Hibernian,FK Partizan,Radoslav Gidzhenov,2,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,Santa Clara,Larne,Jacob A. Sundberg,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,Virtus,Milsami Orhei,Damian Kos,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,Dinamo Tirana,HNK Hajduk Split,Denys Shurman,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,Dundee Utd,Rapid Vienna,Anastasios Sidiropoulos,2,2,3,11,2,5,0,0,6,7,6,4,0.0,0.0
+2025-08-14,2025,848,Linfield,Vikingur Gota,Marek Radina,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,Spartak Trnava,Universitatea Craiova,Stuart Attwell,4,3,10,6,2,4,0,0,9,6,3,4,0.0,0.0
+2025-08-14,2025,848,Jagiellonia,Silkeborg,Eric Wattellier,2,2,5,1,2,1,0,0,6,4,2,4,0.0,0.0
+2025-08-14,2025,848,Celje,FC Lugano,Juan Martinez Munuera,2,4,2,2,1,3,0,0,5,6,2,3,0.0,0.0
+2025-08-14,2025,848,Maccabi Haifa,Raków Częstochowa,Jérôme Brisard,0,2,3,4,6,1,1,0,4,6,4,4,0.0,0.0
+2025-08-14,2025,848,AEK Athens FC,Aris,Allard Lindhout,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,Sheriff Tiraspol,Anderlecht,Halil Umut Meler,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,Neman,KI Klaksvik,Donald Robertson,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,Beşiktaş,St Patrick's Athl.,Antonio Nobre,3,2,1,1,1,1,0,0,7,2,0,4,0.0,0.0
+2025-08-14,2025,848,Ararat-Armenia,Sparta Praha,Jovan Kachevski,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,Sabah FA,Levski Sofia,Mykola Balakin,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,FC Levadia Tallinn,FC Differdange 03,Antoni Bandić,1,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,Hammarby FF,Rosenborg,Vassilis Fotias,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,Paks,Polessya,Daniel Schlager,2,1,13,5,2,3,0,0,4,9,8,2,0.0,0.0
+2025-08-14,2025,848,FC Astana,Lausanne,Martin Matoša,0,2,6,4,5,1,1,0,5,7,6,5,0.0,0.0
+2025-08-14,2025,848,Omonia Nicosia,Araz,Jakob Kehlet,5,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,Brondby,Vikingur Reykjavik,Guillermo Cuadra Fernandez,4,0,3,2,3,2,1,0,7,1,1,3,0.0,0.0
+2025-08-14,2025,848,Beitar Jerusalem,Riga,Paweł Raczkowski,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,FC Vaduz,AZ Alkmaar,Snir Levy,0,1,6,1,5,3,0,1,5,1,0,5,0.0,0.0
+2025-08-14,2025,848,Arda Kardzhali,Kauno Žalgiris,Ante Culina,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-14,2025,848,Gyori ETO FC,AIK Stockholm,Lawrence Visser,2,0,7,8,4,2,0,0,5,6,6,4,0.0,0.0
+2025-08-21,2025,848,Olimpija Ljubljana,FC Noah,Allard Lindhout,1,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-21,2025,848,Celje,Baník Ostrava,Elcin Masiyev,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-21,2025,848,Polessya,Fiorentina,Aliyar Aghayev,0,3,5,3,1,1,0,1,3,3,1,3,0.0,0.0
+2025-08-21,2025,848,Drita,FC Differdange 03,Mohammed Al-Hakim,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-21,2025,848,Jagiellonia,Dinamo Tirana,Marian Alexandru Barbu,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-21,2025,848,Crystal Palace,Fredrikstad,Anastasios Papapetrou,1,0,7,3,0,2,0,0,5,0,0,4,0.0,0.0
+2025-08-21,2025,848,Shelbourne,Linfield,Vassilis Fotias,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-21,2025,848,Santa Clara,Shamrock Rovers,Stefan Ebner,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-21,2025,848,Hibernian,Legia Warszawa,Mohammad Al-Emara,1,2,5,3,4,3,0,0,2,4,2,2,0.0,0.0
+2025-08-21,2025,848,Raków Częstochowa,Arda Kardzhali,Michal Očenáš,1,0,1,0,0,0,0,0,6,2,2,5,0.0,0.0
+2025-08-21,2025,848,Lausanne,Beşiktaş,Sigurd Smehus Kringstad,1,1,6,2,0,3,0,0,6,2,1,5,0.0,0.0
+2025-08-21,2025,848,Levski Sofia,AZ Alkmaar,Tamas Bognar,0,2,9,2,2,3,0,0,2,5,3,3,0.0,0.0
+2025-08-21,2025,848,Anderlecht,AEK Athens FC,Jérôme Brisard,1,1,7,0,2,3,0,1,10,5,4,10,0.0,0.0
+2025-08-21,2025,848,Shakhtar Donetsk,Servette FC,Nick Walsh,1,1,14,4,1,1,0,0,6,2,1,5,0.0,0.0
+2025-08-21,2025,848,Neman,Rayo Vallecano,Arda Kardesler,0,1,3,10,2,0,0,0,4,6,5,4,0.0,0.0
+2025-08-21,2025,848,Breidablik,Virtus,Mikkel Redder,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-21,2025,848,Strasbourg,Brondby,Genc Nuza,0,0,9,4,1,2,0,0,8,0,0,7,0.0,0.0
+2025-08-21,2025,848,Başakşehir,Universitatea Craiova,Juxhin Xhaja,1,2,7,6,2,4,0,0,3,5,3,2,0.0,0.0
+2025-08-21,2025,848,Hamrun Spartans,Rīgas FS,Ashot Ghaltakhchyan,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-21,2025,848,Gyori ETO FC,Rapid Vienna,Igor Stojchevski,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-21,2025,848,Wolfsberger AC,Omonia Nicosia,Antonio Nobre,2,1,7,5,2,2,0,0,6,6,5,4,0.0,0.0
+2025-08-21,2025,848,BK Hacken,CFR 1907 Cluj,Lukas Fahndrich,7,2,8,3,0,1,0,0,9,6,4,2,0.0,0.0
+2025-08-21,2025,848,Rosenborg,FSV Mainz 05,Oleksiy Derevinskyi,2,1,5,5,0,2,0,0,8,4,3,6,0.0,0.0
+2025-08-21,2025,848,Sparta Praha,Riga,Enea Jorgji,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-27,2025,848,Riga,Sparta Praha,Willy Delajod,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-28,2025,848,Servette FC,Shakhtar Donetsk,Guillermo Cuadra Fernandez,1,2,3,6,4,3,0,0,3,7,5,2,0.0,0.0
+2025-08-28,2025,848,Shamrock Rovers,Santa Clara,Matej Jug,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-28,2025,848,Legia Warszawa,Hibernian,Lawrence Visser,3,3,5,8,6,6,1,0,7,11,8,4,0.0,0.0
+2025-08-28,2025,848,FSV Mainz 05,Rosenborg,Sander van der Eijk,4,1,9,2,1,1,0,0,8,2,1,4,0.0,0.0
+2025-08-28,2025,848,Dinamo Tirana,Jagiellonia,Goga Kikacheishvili,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-28,2025,848,Linfield,Shelbourne,Julian Weinberger,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-28,2025,848,Baník Ostrava,Celje,Anastasios Sidiropoulos,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-28,2025,848,Arda Kardzhali,Raków Częstochowa,Igor Pajač,1,2,3,2,4,3,2,0,3,7,5,2,0.0,0.0
+2025-08-28,2025,848,Virtus,Breidablik,Mykola Balakin,1,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-28,2025,848,Rayo Vallecano,Neman,Jeremie Pignard,4,0,7,0,1,2,0,0,7,0,0,2,0.0,0.0
+2025-08-28,2025,848,FC Differdange 03,Drita,Andrea Colombo,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-28,2025,848,CFR 1907 Cluj,BK Hacken,Sebastian Gishamer,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-28,2025,848,Fiorentina,Polessya,Ricardo De Burgos Bengoetxea,3,2,6,1,0,2,0,0,6,5,3,3,0.0,0.0
+2025-08-28,2025,848,AEK Athens FC,Anderlecht,Rohit Saggi,2,0,7,4,1,5,0,0,6,4,4,4,0.0,0.0
+2025-08-28,2025,848,Omonia Nicosia,Wolfsberger AC,Daniele Chiffi,1,0,9,5,2,3,1,0,6,6,6,5,0.0,0.0
+2025-08-28,2025,848,FC Noah,Olimpija Ljubljana,Andris Treimanis,3,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-28,2025,848,Beşiktaş,Lausanne,Jakob Kehlet,0,1,4,8,4,2,1,0,3,8,6,2,0.0,0.0
+2025-08-28,2025,848,Fredrikstad,Crystal Palace,Kristo Tohver,0,0,2,3,3,2,0,0,1,4,4,0,0.0,0.0
+2025-08-28,2025,848,Rīgas FS,Hamrun Spartans,Horatiu Fesnic,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-08-28,2025,848,AZ Alkmaar,Levski Sofia,Damian Sylwestrzak,4,1,3,4,1,3,0,0,8,4,3,4,0.0,0.0
+2025-08-28,2025,848,Universitatea Craiova,Başakşehir,Daniel Schlager,3,1,4,5,3,6,0,1,6,3,2,3,0.0,0.0
+2025-08-28,2025,848,Brondby,Strasbourg,Nenad Minaković,2,3,5,3,5,6,0,0,3,4,1,1,0.0,0.0
+2025-08-28,2025,848,Rapid Vienna,Gyori ETO FC,Manfredas Lukjančukas,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2025-10-02,2025,848,Legia Warszawa,Samsunspor,Jeremie Pignard,0,1,8,2,3,4,0,0,2,2,0,2,1.13,0.76
+2025-10-02,2025,848,Celje,AEK Athens FC,Oleksiy Derevinskyi,3,1,9,4,3,4,0,0,9,5,4,7,2.94,1.1
+2025-10-02,2025,848,Shelbourne,BK Hacken,Paweł Raczkowski,0,0,3,5,1,2,0,0,1,3,3,1,0.32,0.94
+2025-10-02,2025,848,Raków Częstochowa,Universitatea Craiova,Ishmael Barbara,2,0,10,1,0,2,0,1,10,0,0,8,1.6,0.14
+2025-10-02,2025,848,Slovan Bratislava,Strasbourg,Andrea Colombo,1,2,5,1,1,3,0,0,6,4,3,4,2.13,1.14
+2025-10-02,2025,848,Sparta Praha,Shamrock Rovers,Atilla Karaoglan,4,1,7,2,3,4,0,0,8,1,1,4,3.21,0.09
+2025-10-02,2025,848,AEK Larnaca,AZ Alkmaar,Daniel Schlager,4,0,6,2,2,3,0,1,10,2,2,6,2.9,0.48
+2025-10-02,2025,848,Fiorentina,Sigma Olomouc,Florian Badstubner,2,0,8,0,3,1,0,0,4,4,4,2,1.77,0.36
+2025-10-02,2025,848,Aberdeen,Shakhtar Donetsk,Duje Strukan,2,3,4,6,4,4,0,0,5,4,1,3,1.97,1.32
+2025-10-02,2025,848,Omonia Nicosia,FSV Mainz 05,Milos Milanovic,0,1,4,8,1,1,0,0,3,2,1,3,0.24,1.59
+2025-10-02,2025,848,KuPS,Drita,Michal Očenáš,1,1,1,2,4,0,0,0,3,4,3,2,0.64,0.9
+2025-10-02,2025,848,Lausanne,Breidablik,Genc Nuza,3,0,2,7,1,1,0,0,8,2,2,5,1.93,0.97
+2025-10-02,2025,848,Rayo Vallecano,Shkendija,Mohammad Al-Emara,2,0,12,0,1,2,0,0,10,1,1,8,2.01,0.02
+2025-10-02,2025,848,Zrinjski,Lincoln Red Imps FC,Sigurd Smehus Kringstad,5,0,4,4,3,2,0,0,10,0,0,5,3.37,0.46
+2025-10-02,2025,848,Dynamo Kyiv,Crystal Palace,Lothar D'hondt,0,2,3,4,1,3,0,1,1,7,5,1,0.53,1.96
+2025-10-02,2025,848,Lech Poznan,Rapid Vienna,Robert Hennessy,4,1,2,4,3,1,0,0,9,2,1,5,2.85,0.66
+2025-10-02,2025,848,Jagiellonia,Hamrun Spartans,Igor Stojcevski,1,0,7,5,2,2,0,1,7,3,3,6,1.56,0.58
+2025-10-02,2025,848,FC Noah,HNK Rijeka,Radoslav Gidzhenov,1,0,1,1,2,3,0,1,3,1,1,2,1.18,0.15
+2025-10-23,2025,848,FSV Mainz 05,Zrinjski,Jamie Robinson,1,0,7,2,1,4,0,1,4,0,0,1,2.62,0.05
+2025-10-23,2025,848,Hamrun Spartans,Lausanne,Henrik Nalbandyan,0,1,6,4,3,4,0,0,1,5,4,1,1.83,1.03
+2025-10-23,2025,848,Samsunspor,Dynamo Kyiv,Ivar Orri Kristjansson,3,0,4,6,0,2,0,0,5,0,0,2,2.5,0.73
+2025-10-23,2025,848,Sigma Olomouc,Raków Częstochowa,Pavle Ilic,1,1,3,2,3,3,0,0,1,6,5,0,0.28,1.19
+2025-10-23,2025,848,Lincoln Red Imps FC,Lech Poznan,Chrysovalantis Theouli,2,1,4,6,2,1,0,0,3,5,4,1,1.03,2.89
+2025-10-23,2025,848,Shamrock Rovers,Celje,Ondrej Berka,0,2,4,3,3,2,0,0,3,4,2,3,0.83,2.08
+2025-10-23,2025,848,Universitatea Craiova,FC Noah,Gal Leibovitz,1,1,2,4,2,1,0,0,2,4,3,1,0.64,1.37
+2025-10-23,2025,848,Crystal Palace,AEK Larnaca,Damian Kos,0,1,8,2,2,2,0,0,1,2,1,1,1.66,0.17
+2025-10-23,2025,848,Rapid Vienna,Fiorentina,Yigal Frid,0,3,2,5,2,1,0,0,3,7,2,3,0.66,1.64
+2025-10-23,2025,848,Drita,Omonia Nicosia,Robert Harvey,1,1,2,8,3,4,0,0,2,5,4,1,0.24,1.15
+2025-10-23,2025,848,Shkendija,Shelbourne,Stefan Ebner,1,0,4,1,3,2,0,0,1,2,2,1,0.46,0.51
+2025-10-23,2025,848,AEK Athens FC,Aberdeen,Jasper Vergoote,6,0,5,2,1,1,0,0,10,2,2,4,5.13,0.45
+2025-10-23,2025,848,Shakhtar Donetsk,Legia Warszawa,Gustavo Correia,1,2,3,3,3,1,0,0,3,3,1,2,0.49,0.97
+2025-10-23,2025,848,BK Hacken,Rayo Vallecano,Antoni Bandić,2,2,10,5,5,5,0,1,4,4,2,2,1.97,1.66
+2025-10-23,2025,848,Breidablik,KuPS,Sandi Putros,0,0,10,6,1,0,0,1,3,2,2,3,1.86,1.05
+2025-10-23,2025,848,AZ Alkmaar,Slovan Bratislava,Tobias Stieler,1,0,12,0,1,4,0,1,11,1,1,9,3.34,0.17
+2025-10-23,2025,848,Strasbourg,Jagiellonia,Dario Bel,1,1,8,0,3,4,0,0,7,2,1,5,2.57,0.85
+2025-10-24,2025,848,HNK Rijeka,Sparta Praha,Robert Jones,1,0,4,3,2,5,0,0,2,3,2,1,0.6,0.72
+2025-11-06,2025,848,Shelbourne,Drita,O. Reitala,0,1,6,3,1,0,1,0,2,5,4,2,1.06,1.31
+2025-11-06,2025,848,Lausanne,Omonia Nicosia,E. Malcevs,1,1,6,4,2,3,0,0,6,3,2,5,1.77,1.24
+2025-11-06,2025,848,Rapid Vienna,Universitatea Craiova,M. Matosa,0,1,3,3,5,3,0,0,1,8,7,1,0.83,1.76
+2025-11-06,2025,848,Rayo Vallecano,Lech Poznan,V. Kopiyevsky,3,2,7,6,4,1,0,0,6,3,1,3,3.24,0.37
+2025-11-06,2025,848,Lincoln Red Imps FC,HNK Rijeka,P. Farrugia,1,1,4,2,3,3,0,0,5,5,4,3,2.17,0.69
+2025-11-06,2025,848,Shkendija,Jagiellonia,M. Kapraly,1,1,2,4,3,3,0,1,3,3,2,2,0.56,0.39
+2025-11-06,2025,848,Dynamo Kyiv,Zrinjski,M. Nagtegaal,6,0,4,6,0,1,0,0,7,3,3,1,2.28,0.32
+2025-11-06,2025,848,BK Hacken,Strasbourg,L. Pairetto,1,2,6,3,2,1,0,0,5,6,4,4,1.61,0.94
+2025-11-06,2025,848,Celje,Legia Warszawa,J. Alberola,2,1,3,6,1,3,0,0,5,9,8,4,0.75,1.65
+2025-11-06,2025,848,KuPS,Slovan Bratislava,C. Vergetis,3,1,6,0,1,3,0,0,6,2,1,3,1.08,0.96
+2025-11-06,2025,848,FC Noah,Sigma Olomouc,Mohammad Usman Aslam,1,2,0,4,3,2,0,0,2,3,1,1,0.29,1.91
+2025-11-06,2025,848,Samsunspor,Hamrun Spartans,Bulat Sariyev,3,0,3,1,0,1,0,0,8,1,1,4,2.69,0.26
+2025-11-06,2025,848,Sparta Praha,Raków Częstochowa,J. Jaanovits,0,0,7,2,0,1,0,0,5,1,1,5,0.82,0.32
+2025-11-06,2025,848,AEK Larnaca,Aberdeen,Dalibor Cerny,0,0,5,5,1,0,0,0,2,0,0,2,0.56,0.83
+2025-11-06,2025,848,AEK Athens FC,Shamrock Rovers,José Luis Munuera Montero,1,1,10,0,2,4,0,0,8,1,0,7,3.2,0.79
+2025-11-06,2025,848,Shakhtar Donetsk,Breidablik,A. Chivulete,2,0,8,2,0,2,0,0,4,0,0,2,1.21,0.45
+2025-11-06,2025,848,FSV Mainz 05,Fiorentina,L. Visser,2,1,3,2,3,3,0,0,4,4,3,2,1.97,1.76
+2025-11-06,2025,848,Crystal Palace,AZ Alkmaar,D. Chiffi,3,1,2,1,2,2,0,0,7,4,3,4,3.82,1.18
+2025-11-27,2025,848,Jagiellonia,KuPS,G. Correia,1,0,7,5,1,1,0,0,9,0,0,7,1.26,0.72
+2025-11-27,2025,848,Breidablik,Samsunspor,D. Shurman,2,2,5,7,1,0,0,0,4,6,4,2,0.94,1.06
+2025-11-27,2025,848,Legia Warszawa,Sparta Praha,A. Sidiropoulos,0,1,3,10,4,1,0,0,5,2,1,5,0.84,0.56
+2025-11-27,2025,848,Aberdeen,FC Noah,P. Raczkowski,1,1,1,7,4,1,0,0,3,3,2,2,0.92,0.68
+2025-11-27,2025,848,HNK Rijeka,AEK Larnaca,R. Hennessey,0,0,7,1,1,7,0,0,5,1,1,5,1.07,0.38
+2025-11-27,2025,848,Shamrock Rovers,Shakhtar Donetsk,F. Glova,1,2,4,8,1,0,0,0,3,8,4,1,0.56,1.84
+2025-11-27,2025,848,Drita,Shkendija,M. Redder,1,0,2,10,2,4,0,0,2,3,3,1,0.59,0.71
+2025-11-27,2025,848,Fiorentina,AEK Athens FC,R. Jones,0,1,7,3,3,2,0,0,3,4,3,3,1.43,1.95
+2025-11-27,2025,848,Strasbourg,Crystal Palace,J. Alberola,2,1,4,5,1,2,0,0,6,4,3,4,2.37,2.08
+2025-11-27,2025,848,Slovan Bratislava,Rayo Vallecano,L. Visser,2,1,10,5,5,5,0,0,3,6,5,1,0.97,1.97
+2025-11-27,2025,848,Raków Częstochowa,Rapid Vienna,D. Strukan,4,1,8,2,1,2,0,0,5,3,2,1,2.19,0.62
+2025-11-27,2025,848,Omonia Nicosia,Dynamo Kyiv,R. Gidzhenov,2,0,4,8,2,5,0,0,5,4,4,3,3.03,0.88
+2025-11-27,2025,848,Sigma Olomouc,Celje,G. Nuza,2,1,3,5,2,2,0,0,7,4,3,5,1.74,1.73
+2025-11-27,2025,848,Hamrun Spartans,Lincoln Red Imps FC,J. Kachevski,3,1,8,1,6,4,1,1,11,4,3,8,2.25,1.11
+2025-11-27,2025,848,Universitatea Craiova,FSV Mainz 05,D. Bel,1,0,1,6,4,2,0,0,2,1,1,1,1.1,0.38
+2025-11-27,2025,848,Zrinjski,BK Hacken,P. Ciochirca,2,1,3,7,2,3,0,0,6,3,2,4,1.37,1.52
+2025-11-27,2025,848,Lech Poznan,Lausanne,S. Kringstad,2,0,3,7,1,3,0,0,3,5,6,1,1.27,1.17
+2025-11-27,2025,848,AZ Alkmaar,Shelbourne,M. Ocenas,2,0,8,6,2,4,0,0,9,2,2,7,1.8,0.27
+2025-12-11,2025,848,Hamrun Spartans,Shakhtar Donetsk,F. Badstubner,0,2,3,4,2,3,0,0,2,9,6,2,0.23,2.79
+2025-12-11,2025,848,Shelbourne,Crystal Palace,M. Matosa,0,3,2,9,2,0,0,0,1,10,7,1,0.4,3.89
+2025-12-11,2025,848,Raków Częstochowa,Zrinjski,O. Berka,1,0,7,3,0,3,0,0,3,7,7,2,1.66,0.78
+2025-12-11,2025,848,KuPS,Lausanne,O. Derevinskyi,0,0,4,4,0,2,0,0,1,2,2,1,0.63,1.77
+2025-12-11,2025,848,Rapid Vienna,Omonia Nicosia,J. Kooij,0,1,3,1,2,2,0,0,7,2,1,6,1.52,0.26
+2025-12-11,2025,848,Lincoln Red Imps FC,Sigma Olomouc,B. Csonka,2,1,1,3,3,2,0,0,3,3,2,2,0.52,2.13
+2025-12-11,2025,848,HNK Rijeka,Celje,A. Colombo,3,0,5,2,2,1,0,1,10,3,2,7,1.9,1.68
+2025-12-11,2025,848,Lech Poznan,FSV Mainz 05,A. Chivulete,1,1,2,5,2,4,0,1,8,5,4,7,2.89,1.23
+2025-12-11,2025,848,Aberdeen,Strasbourg,R. Schroder,0,1,9,7,2,5,0,0,2,6,5,2,0.88,2.55
+2025-12-11,2025,848,Breidablik,Shamrock Rovers,E. Jorgji,3,1,5,5,2,0,0,0,4,2,1,1,1.5,0.35
+2025-12-11,2025,848,FC Noah,Legia Warszawa,B. Sariev,2,1,6,5,1,1,0,0,5,3,2,3,1.32,2.05
+2025-12-11,2025,848,Samsunspor,AEK Athens FC,J. Pignard,1,2,7,4,1,4,0,0,4,3,1,3,0.75,0.6
+2025-12-11,2025,848,Universitatea Craiova,Sparta Praha,J. Vergoote,1,2,0,8,1,3,0,0,4,3,1,3,1.05,1.55
+2025-12-11,2025,848,Shkendija,Slovan Bratislava,I. O. Kristjansson,2,0,2,4,4,2,0,0,5,0,0,4,1.36,0.22
+2025-12-11,2025,848,Fiorentina,Dynamo Kyiv,M. Milanovic,2,1,5,5,3,3,0,0,8,2,2,7,2.88,0.57
+2025-12-11,2025,848,BK Hacken,AEK Larnaca,I. Frid,1,1,3,4,1,4,0,0,4,4,3,3,1.11,0.8
+2025-12-11,2025,848,Jagiellonia,Rayo Vallecano,E. Malcevs,1,2,2,8,2,4,0,0,2,3,1,1,1.16,1.4
+2025-12-11,2025,848,Drita,AZ Alkmaar,D. Cerny,0,3,4,6,3,2,0,0,1,9,5,1,0.18,2.85
+2025-12-18,2025,848,Shamrock Rovers,Hamrun Spartans,M. Radina,3,1,7,4,4,1,0,1,14,3,2,11,5.14,0.76
+2025-12-18,2025,848,Celje,Shelbourne,S. Putros,0,0,8,5,2,6,0,0,7,4,4,7,1.87,0.96
+2025-12-18,2025,848,Slovan Bratislava,BK Hacken,F. Lata,1,0,8,7,1,3,0,0,10,1,1,9,1.85,0.95
+2025-12-18,2025,848,Sparta Praha,Aberdeen,D. Smajc,3,0,6,1,0,2,0,0,6,0,0,3,1.09,0.1
+2025-12-18,2025,848,Lausanne,Fiorentina,Lothar D'hondt,1,0,6,7,1,2,0,0,5,4,4,4,1.42,0.58
+2025-12-18,2025,848,Sigma Olomouc,Lech Poznan,P. Kolaric,1,2,4,0,2,1,0,0,2,4,2,1,0.99,2.56
+2025-12-18,2025,848,Omonia Nicosia,Raków Częstochowa,S. Scharer,0,1,1,1,4,1,0,0,2,6,5,2,0.83,1.6
+2025-12-18,2025,848,Rayo Vallecano,Drita,U. Schnyder,3,0,3,4,1,1,0,0,5,2,2,2,0.87,0.42
+2025-12-18,2025,848,AEK Larnaca,Shkendija,M. Lukjancukas,1,0,5,4,1,2,0,1,3,1,1,3,2.36,0.19
+2025-12-18,2025,848,Shakhtar Donetsk,HNK Rijeka,A. Taylor,0,0,2,2,1,3,0,0,5,1,1,5,0.43,0.43
+2025-12-18,2025,848,AEK Athens FC,Universitatea Craiova,G. Kruashvili,3,2,7,4,3,5,0,0,5,5,3,2,3.41,1.34
+2025-12-18,2025,848,Dynamo Kyiv,FC Noah,J. Xhaja,2,0,5,4,3,2,0,0,4,2,2,2,1.36,0.61
+2025-12-18,2025,848,Legia Warszawa,Lincoln Red Imps FC,D. Nikolic,4,1,10,1,1,1,0,0,9,2,1,5,3.28,0.63
+2025-12-18,2025,848,AZ Alkmaar,Jagiellonia,S. Ebner,0,0,8,5,4,1,0,1,2,1,1,2,1.18,0.12
+2025-12-18,2025,848,FSV Mainz 05,Samsunspor,M. Al-Emara,2,0,5,3,0,3,0,0,5,2,2,2,1.7,0.73
+2025-12-18,2025,848,Strasbourg,Breidablik,O. Berka,3,1,8,3,0,2,0,0,11,2,1,8,3.56,0.71
+2025-12-18,2025,848,Crystal Palace,KuPS,I. Frid,2,2,10,1,3,0,0,1,6,2,0,4,1.57,0.26
+2025-12-18,2025,848,Zrinjski,Rapid Vienna,I. Barbara,1,1,6,2,1,2,0,0,5,4,2,5,1.35,0.51
+2026-02-19,2025,848,Drita,Celje,C. Kavanagh,2,3,7,3,2,3,0,0,5,6,3,3,1.7,2.03
+2026-02-19,2025,848,Omonia Nicosia,HNK Rijeka,J. Xhaja,0,1,7,2,4,4,0,1,4,4,3,4,1.83,0.56
+2026-02-19,2025,848,Jagiellonia,Fiorentina,S. Gishamer,0,3,3,4,1,3,0,0,0,6,3,0,0.73,2.41
+2026-02-19,2025,848,Shkendija,Samsunspor,R. Saggi,0,1,0,2,0,3,0,0,1,7,6,1,0.24,2.55
+2026-02-19,2025,848,Sigma Olomouc,Lausanne,S. van der Eijk,1,1,8,3,2,3,0,0,6,2,1,6,2.67,0.46
+2026-02-19,2025,848,KuPS,Lech Poznan,A. Aghayev,0,2,1,8,1,1,1,0,0,12,10,0,0.06,3.23
+2026-02-19,2025,848,Zrinjski,Crystal Palace,M. Lukjancukas,1,1,0,3,2,1,0,0,3,5,4,2,1.24,0.8
+2026-02-19,2025,848,FC Noah,AZ Alkmaar,O. Grinfeld,1,0,1,5,2,1,0,0,4,3,4,3,1.04,0.66
+2026-02-26,2025,848,Fiorentina,Jagiellonia,S. Jovanovic,2,4,6,3,3,6,0,1,8,10,6,7,1.39,2.46
+2026-02-26,2025,848,HNK Rijeka,Omonia Nicosia,M. Balakin,3,1,1,7,1,4,0,0,5,6,5,2,1.11,1.46
+2026-02-26,2025,848,Samsunspor,Shkendija,S. Sozza,4,0,6,1,0,3,0,0,9,0,1,6,3.69,0.37
+2026-02-26,2025,848,Celje,Drita,D. Sylwestrzak,3,2,4,5,3,4,0,0,9,7,5,5,2.81,1.54
+2026-02-26,2025,848,Crystal Palace,Zrinjski,L. M. Branco Godinho,2,0,5,3,3,3,0,0,5,0,0,3,2.36,0.33
+2026-02-26,2025,848,AZ Alkmaar,FC Noah,N. Dabanovic,4,0,7,1,3,1,0,0,7,1,1,3,1.53,0.13
+2026-02-26,2025,848,Lech Poznan,KuPS,V. Fotias,1,0,6,1,2,0,0,0,5,1,1,5,1.59,0.67
+2026-02-26,2025,848,Lausanne,Sigma Olomouc,N. Minakovic,1,2,7,5,1,3,0,0,3,3,2,2,1.04,1.14
+2026-03-12,2025,848,Fiorentina,Raków Częstochowa,G. Kabakov,2,1,8,3,3,3,0,0,6,3,2,4,1.77,0.78
+2026-03-12,2025,848,Celje,AEK Athens FC,L. M. Branco Godinho,0,4,8,5,2,2,0,0,1,11,6,1,0.28,2.81
+2026-03-12,2025,848,Sigma Olomouc,FSV Mainz 05,M. Al-Emara,0,0,1,2,1,1,0,0,1,2,2,1,0.34,0.86
+2026-03-12,2025,848,Crystal Palace,AEK Larnaca,I. Pajac,0,0,6,3,1,0,0,0,4,0,0,4,1.98,0.23
+2026-03-12,2025,848,AZ Alkmaar,Sparta Praha,S. Gishamer,2,1,8,2,1,3,0,0,7,3,1,5,4.04,0.97
+2026-03-12,2025,848,HNK Rijeka,Strasbourg,V. Fotias,1,2,9,3,2,3,0,0,8,6,4,7,1.39,2.5
+2026-03-12,2025,848,Lech Poznan,Shakhtar Donetsk,R. Saggi,1,3,0,1,2,4,0,0,3,7,4,2,1.45,1.27
+2026-03-12,2025,848,Samsunspor,Rayo Vallecano,M. Barbu,1,3,2,2,4,2,0,0,5,5,2,4,0.58,0.55
+2026-03-19,2025,848,Rayo Vallecano,Samsunspor,S. Stegemann,0,1,13,1,2,6,0,1,6,2,1,7,1.26,0.93
+2026-03-19,2025,848,Shakhtar Donetsk,Lech Poznan,S. van der Eijk,1,2,4,5,2,1,1,0,1,7,5,1,0.43,2.22
+2026-03-19,2025,848,Strasbourg,HNK Rijeka,M. Balakin,1,1,4,8,0,3,0,0,4,2,1,3,1.11,1.11
+2026-03-19,2025,848,Sparta Praha,AZ Alkmaar,S. Jovanovic,0,4,5,7,2,2,0,0,1,5,1,1,0.72,1.97
+2026-03-19,2025,848,AEK Larnaca,Crystal Palace,A. Aghayev,1,2,1,10,3,3,2,0,3,7,4,2,0.28,3.18
+2026-03-19,2025,848,AEK Athens FC,Celje,S. Sozza,0,2,11,1,1,1,0,0,5,3,1,5,0.92,1.21
+2026-03-19,2025,848,FSV Mainz 05,Sigma Olomouc,A. Treimanis,2,0,5,1,2,5,0,1,6,1,1,4,1.53,0.47
+2026-03-19,2025,848,Raków Częstochowa,Fiorentina,J. Martinez,1,2,2,5,2,3,0,0,1,7,5,0,0.79,2.17
+2026-04-09,2025,848,Rayo Vallecano,AEK Athens FC,B. Bastien,3,0,1,8,1,3,0,0,4,2,1,1,2.31,1.11
+2026-04-09,2025,848,Crystal Palace,Fiorentina,D. Rumsas,3,0,3,1,1,2,0,0,6,2,2,2,3.05,0.45
+2026-04-09,2025,848,FSV Mainz 05,Strasbourg,R. Obrenovic,2,0,8,4,2,2,0,0,6,2,2,4,1.61,1.0
+2026-04-09,2025,848,Shakhtar Donetsk,AZ Alkmaar,N. Walsh,3,0,4,7,1,2,0,0,6,3,3,3,0.78,0.49
+2026-04-16,2025,848,AEK Athens FC,Rayo Vallecano,E. Eskas,3,1,8,2,2,3,0,0,9,4,3,5,2.78,1.8
+2026-04-16,2025,848,AZ Alkmaar,Shakhtar Donetsk,S. Jablonski,2,2,3,3,4,4,0,0,3,6,4,1,0.85,1.51
+2026-04-16,2025,848,Strasbourg,FSV Mainz 05,J. Pinheiro,4,0,5,4,5,4,0,1,7,1,1,3,2.89,0.24
+2026-04-16,2025,848,Fiorentina,Crystal Palace,J. Manzano,2,1,6,1,5,3,0,0,6,3,2,4,1.92,1.34
+2026-04-30,2025,848,Rayo Vallecano,Strasbourg,D. Rumsas,1,0,5,1,4,5,0,0,8,0,0,7,1.29,0.21
+2026-04-30,2025,848,Shakhtar Donetsk,Crystal Palace,F. Zwayer,1,3,13,1,3,2,0,0,1,7,3,1,1.06,2.31
+2026-05-07,2025,848,Crystal Palace,Shakhtar Donetsk,A. Hernandez,2,1,1,5,0,1,0,0,5,6,5,4,1.37,1.04
+2026-05-07,2025,848,Strasbourg,Rayo Vallecano,I. Kruzliak,0,1,5,6,2,3,0,0,3,8,7,3,1.6,1.73
+2026-05-27,2025,848,Crystal Palace,Rayo Vallecano,M. Mariani,1,0,4,1,3,6,0,0,3,1,1,2,2.57,0.52
+2026-07-07,2026,848,UNA Strassen,La Fiorita,I. Shumilov,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-07,2026,848,AF Elbasani,Bate Borisov,I. Orlic,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-08,2026,848,Zira,Torpedo Kutaisi,J. Hyytia,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-08,2026,848,GAP Connah S Quay FC,Ballkani,J. I. Jonsson,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-08,2026,848,FC Differdange 03,Ilves,I. Bosca,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Vllaznia Shkodër,Malisheva,G. Avazashvili,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Glentoran,Rīgas FS,R. Hardie,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,NSI Runavik,Hamrun Spartans,Desconocido,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Penybont,FC Santa Coloma,M. Beltrano,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,FK Sarajevo,Inter Turku,F. Polychronis,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Dinamo Tirana,FC Astana,L. Dzivjak,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Stjarnan,Vikingur Gota,U. Aslam,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Europa,Shkendija,K. Fellas,0,5,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Petrovac,FK Zalgiris Vilnius,D. Kubryak,1,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Caernarfon Town,FC Levadia Tallinn,D. Svegzda,0,5,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,FK Liepaja,Dečić,B. McMaster,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Marsaxlokk,Pyunik Yerevan,M. Gigovic,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Bohemians,St Joseph S Fc,L. Graagaard,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Velež,Milsami Orhei,I. Christodoulou,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Dinamo Minsk,Sileks,J. H. Ellefsen,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Hegelmann Litauen,Paide,C. Aydin,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Dila,Virtus,M. Boskovic,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Kalju Nomme,Linfield,A. Simarro,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Alashkert,Yelimay Semey,V. Ilioski,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,Atlètic Club d'Escaldes,Mornar,B. Kiss,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-09,2026,848,US Mondorf-les-bains,Dinamo Tbilisi,H. Ziskason,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-14,2026,848,La Fiorita,UNA Strassen,S. Galia,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-15,2026,848,Dečić,FK Liepaja,T. Kurbanov,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-15,2026,848,Malisheva,Vllaznia Shkodër,T. Owen,5,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Mornar,Atlètic Club d'Escaldes,A. Jones,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Linfield,Kalju Nomme,J. Karlsen,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Ballkani,GAP Connah S Quay FC,A. Ghaltakhchyan,3,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Sileks,Dinamo Minsk,M. Grotta,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Shkendija,Europa,A. Lashuk,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Hamrun Spartans,NSI Runavik,J. Muller,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Dinamo Tbilisi,US Mondorf-les-bains,G. Levi,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Milsami Orhei,Velež,D. Nicolson,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,FC Santa Coloma,Penybont,M. Stofringshaug,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Virtus,Dila,M. Bejtullahu,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Vikingur Gota,Stjarnan,K. Koppel,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,FK Zalgiris Vilnius,Petrovac,I. McNabb,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Rīgas FS,Glentoran,P. Simani,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,FC Levadia Tallinn,Caernarfon Town,R. Lee,5,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Paide,Hegelmann Litauen,S. Trpchevski,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Ilves,FC Differdange 03,J. Sundberg,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Pyunik Yerevan,Marsaxlokk,Aaron O’Dowd,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,St Joseph S Fc,Bohemians,K. Ratnieks,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Torpedo Kutaisi,Zira,M. Kapraly,0,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Yelimay Semey,Alashkert,A. Aptsiauri,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Inter Turku,FK Sarajevo,K. Roucek,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,FC Astana,Dinamo Tirana,O. Johnson,1,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-16,2026,848,Bate Borisov,AF Elbasani,D. Sakhi,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-21,2026,848,IFK Goteborg,FC Levadia Tallinn,D. Panchyshyn,1,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-21,2026,848,Floriana,Drita,M. Grotta,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-21,2026,848,Atert Bissen,Gyori ETO FC,I. A. Griffith,2,6,5,4,1,1,0,0,10,10,4,8,0.0,0.0
+2026-07-22,2026,848,Spartak Trnava,CSKA 1948,M. Vernice,0,0,7,6,1,5,0,0,3,1,0,0,0.0,0.0
+2026-07-22,2026,848,Vardar Skopje,Riga,P. Farrugia,2,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-22,2026,848,Železničar Pančevo,SC Braga,M. Turkmen,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-22,2026,848,Bohemians,Ballkani,J. Semler,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-22,2026,848,Neftchi Baku,Dinamo Minsk,K. Fellas,2,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-22,2026,848,Başakşehir,Inter Turku,J. Martinez,1,1,8,1,1,2,0,0,9,5,3,8,0.0,0.0
+2026-07-23,2026,848,Vojvodina,Ajax,M. Nogueira,1,4,1,10,3,0,0,0,4,10,6,3,0.0,0.0
+2026-07-23,2026,848,NK Varazdin,FK Jablonec,M. Marchetti,3,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Paks,Panathinaikos,L. Bilbija,1,2,5,4,0,3,0,0,2,6,5,1,0.0,0.0
+2026-07-23,2026,848,Aluminij,Dinamo Tirana,I. O. Kristjansson,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Valur Reykjavik,Zrinjski,A. Kourgheli,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Polessya,FC Copenhagen,D. Silva,3,3,2,3,2,2,0,0,7,7,4,4,0.0,0.0
+2026-07-23,2026,848,FC Lugano,Dukagjini,V. Shimusik,1,0,7,3,2,2,0,1,7,3,3,4,0.0,0.0
+2026-07-23,2026,848,Borac Banja Luka,Petrocub,J. Sundberg,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Žilina,GKS Katowice,S. Wolfensberger,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Hapoel Tel Aviv,Ludogorets,A. Dudic,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Motherwell,HB Torshavn,P. Gryckiewicz,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,HNK Rijeka,Derry City,J. Munuera,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,NSI Runavik,Koper,I. Bosca,0,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Shelbourne,Kalju Nomme,K. Szabolcs,5,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Bravo,Shkendija,J. Hyytia,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Stjarnan,Ilves,O. Johnson,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,FK Partizan,UNA Strassen,D. Sakhi,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,FCSB,Auda,D. Fuxman,2,3,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,LNZ Cherkasy,Gent,G. Maqedonci,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,FC Vaduz,Atlètic Club d'Escaldes,D. Muntean,4,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Bate Borisov,FC Sion,M. Savovic,1,1,1,8,2,1,0,0,2,8,7,1,0.0,0.0
+2026-07-23,2026,848,Zimbru,FC Noah,K. Koppel,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Malisheva,Hibernian,R. Lissorgue,2,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Alashkert,CFR 1907 Cluj,E. Hamiti,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,FK Liepaja,Austria Vienna,H. M. Jonasson,0,2,6,3,2,1,0,0,2,3,0,2,0.0,0.0
+2026-07-23,2026,848,Panevėžys,FK Tobol Kostanay,U. Aslam,1,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,HJK Helsinki,Coleraine FC,N. Simovic,5,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,ML Vitebsk,Sutjeska,J. Muller,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Debreceni VSC,Pyunik Yerevan,J. Karlsen,1,0,4,4,1,3,0,0,1,3,3,0,0.0,0.0
+2026-07-23,2026,848,Dila,Apollon Limassol,D. Higraff,0,4,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Flora Tallinn,The New Saints,K. Karlsson,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,AEK Larnaca,Beitar Jerusalem,E. Wattellier,0,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Dunajska Streda,Velež,S. Ebner,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Raków Częstochowa,Valletta FC,K. Saglam,3,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Rīgas FS,Vestri,A. Jones,4,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,FC Santa Coloma,Rapid Vienna,M. MacDermid,1,3,2,7,0,0,0,0,2,8,5,1,0.0,0.0
+2026-07-23,2026,848,Gais,FC Nordsjaelland,P. Simani,1,0,8,6,1,0,0,0,4,1,1,3,0.0,0.0
+2026-07-23,2026,848,Dinamo Tbilisi,FK Zalgiris Vilnius,R. Hensgens,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Universitatea Cluj,Brann,H. Nalbandyan,2,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-23,2026,848,Paide,Zira,R. Jitari,1,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-28,2026,848,Apollon Limassol,Dila,K. Zabroda,3,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-28,2026,848,Riga,Vardar Skopje,G. Kikacheishvili,5,2,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-28,2026,848,CSKA 1948,Spartak Trnava,W. Altmann,0,0,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-28,2026,848,Drita,Floriana,H. Fesnic,2,1,0,0,0,0,0,0,0,0,0,0,0.0,0.0
+2026-07-29,2026,848,FC Copenhagen,Polessya,Marek Radina,2,1,2,14,1,1,1,0,2,4,3,0,0.0,0.0
+2026-07-29,2026,848,Dukagjini,FC Lugano,Karel Roucek,1,5,1,5,0,0,0,0,4,7,3,3,0.0,0.0
+2026-07-29,2026,848,Rapid Vienna,FC Santa Coloma,Visar Kastrati,6,2,2,3,1,3,0,0,10,2,0,4,0.0,0.0
