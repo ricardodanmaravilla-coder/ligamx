@@ -1,0 +1,25 @@
+name: Buscar ID Leagues Cup
+on: workflow_dispatch
+
+jobs:
+  buscar-id:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Instalar requests
+        run: pip install requests
+      - name: Ejecutar script en línea
+        env:
+          API_SPORTS_KEY: ${{ secrets.API_SPORTS_KEY }}
+        run: |
+          python -c '
+          import os, requests
+          API_KEY = os.environ.get("API_SPORTS_KEY")
+          url = "https://v3.football.api-sports.io/leagues"
+          res = requests.get(url, headers={"x-apisports-key": API_KEY}, params={"search": "Leagues Cup"})
+          for liga in res.json().get("response", []):
+              print(f"👉 ID: {liga[\"league\"][\"id\"]} | {liga[\"league\"][\"name\"]} | {liga[\"country\"][\"name\"]}")
+          '
