@@ -407,7 +407,7 @@ with tab1:
 
 
 # ==========================================
-# PESTAÑA 2: LEAGUES CUP
+# PESTAÑA 2: LEAGUES CUP (BLINDADA)
 # ==========================================
 with tab2:
     st.markdown("### 1. Selecciona el Encuentro (Leagues Cup)")
@@ -425,124 +425,135 @@ with tab2:
                     df_hist_lc = cargar_historico_lc()
                     
                     if df_hist_lc.empty:
-                        st.warning("⚠️ Aún no tienes el archivo histórico de Leagues Cup. Se usarán valores base ELO 1500.")
-                        e_loc_lc, e_vis_lc = 1500.0, 1500.0
+                        st.error("🚨 **Error Crítico de Datos:** El archivo `historico_leaguescup.csv` está vacío o no se pudo leer. Por eso las probabilidades se repiten en todos los partidos. Se requieren datos históricos para que Montecarlo calcule la varianza.")
                     else:
+                        # Verificación de nombres de equipos en el histórico
+                        equipos_historicos = set(df_hist_lc['Local'].unique()).union(set(df_hist_lc['Visitante'].unique()))
+                        loc_actual = datos_partido_lc['local']
+                        vis_actual = datos_partido_lc['visita']
+                        
+                        alerta_nombres = []
+                        if loc_actual not in equipos_historicos:
+                            alerta_nombres.append(f"El equipo local **'{loc_actual}'** no existe con ese nombre exacto en tu CSV histórico de Leagues Cup.")
+                        if vis_actual not in equipos_historicos:
+                            alerta_nombres.append(f"El equipo visitante **'{vis_actual}'** no existe con ese nombre exacto en tu CSV histórico de Leagues Cup.")
+                            
+                        if alerta_nombres:
+                            st.warning(f"⚠️ **Advertencia de Nombres:** {(' '.join(alerta_nombres))} El sistema usará un ELO base de 1500, lo que genera probabilidades genéricas repetidas.")
+
                         motor_elo_lc = SistemaEloLigaMX()
                         tabla_elo_lc = motor_elo_lc.calcular_historico(df_hist_lc)
                         try:
-                            e_loc_lc = float(tabla_elo_lc.loc[tabla_elo_lc['Equipo'] == datos_partido_lc['local'], 'ELO_Rating'].values[0])
+                            e_loc_lc = float(tabla_elo_lc.loc[tabla_elo_lc['Equipo'] == loc_actual, 'ELO_Rating'].values[0])
                         except:
                             e_loc_lc = 1500.0
                         try:
-                            e_vis_lc = float(tabla_elo_lc.loc[tabla_elo_lc['Equipo'] == datos_partido_lc['visita'], 'ELO_Rating'].values[0])
+                            e_vis_lc = float(tabla_elo_lc.loc[tabla_elo_lc['Equipo'] == vis_actual, 'ELO_Rating'].values[0])
                         except:
                             e_vis_lc = 1500.0
 
-                    resultados_lc = simular_partido_montecarlo(
-                        datos_partido_lc["local"], 
-                        datos_partido_lc["visita"],
-                        df_historico=df_hist_lc if not df_hist_lc.empty else None,
-                        elo_local=e_loc_lc,
-                        elo_visita=e_vis_lc
-                    )
-                    
-                    if isinstance(resultados_lc, str):
-                        st.error(f"🚨 Problema con los datos: {resultados_lc}")
-                    else:
-                        st.subheader("📊 Probabilidades Reales (Montecarlo) - Leagues Cup")
-                        st.markdown("**🏆 Resultado del Encuentro (1X2)**")
+                        resultados_lc = simular_partido_montecarlo(
+                            loc_actual, 
+                            vis_actual,
+                            df_historico=df_hist_lc,
+                            elo_local=e_loc_lc,
+                            elo_visita=e_vis_lc
+                        )
                         
-                        c1, c2, c3 = st.columns(3)
-                        c1.metric(f"Victoria {datos_partido_lc['local']}", f"{resultados_lc['Resultado_1X2']['Gana Local']}%")
-                        c2.metric("Empate (Va a Penales)", f"{resultados_lc['Resultado_1X2']['Empate']}%")
-                        c3.metric(f"Victoria {datos_partido_lc['visita']}", f"{resultados_lc['Resultado_1X2']['Gana Visita']}%")
-                        
-                        st.markdown("---")
-                        st.markdown("🎯 **Goles, Corners y Tarjetas Más Probables**")
-                        c4, c5, c6 = st.columns(3)
-                        
-                        over_g_lc = resultados_lc['Goles_Over_Under']['Over 2.5']
-                        c4.metric("Más de 2.5 Goles", f"{over_g_lc}%", f"Under: {round(100-over_g_lc, 2)}%")
-                        
-                        over_c_lc = resultados_lc['Corners_Totales']['Over 9.5 Corners']
-                        c5.metric("Más de 9.5 Corners", f"{over_c_lc}%", f"Under: {round(100-over_c_lc, 2)}%")
-                        
-                        over_t_lc = resultados_lc['Tarjetas_Totales']['Over 4.5 Tarjetas']
-                        c6.metric("Más de 4.5 Tarjetas", f"{over_t_lc}%", f"Under: {round(100-over_t_lc, 2)}%")
-                        
-                        st.markdown("---")
-                        st.markdown("📈 **Pronósticos Detallados por Equipo**")
-                        
-                        gl_ind_lc = round(resultados_lc['Goles_Individuales'][datos_partido_lc['local']]['goles'])
-                        gv_ind_lc = round(resultados_lc['Goles_Individuales'][datos_partido_lc['visita']]['goles'])
-                        cl_ind_lc = round(resultados_lc['Corners_Individuales'][datos_partido_lc['local']]['corners'])
-                        cv_ind_lc = round(resultados_lc['Corners_Individuales'][datos_partido_lc['visita']]['corners'])
-                        
-                        ic1, ic2 = st.columns(2)
-                        with ic1:
-                            st.markdown(f"⚽ **Goles Esperados**")
-                            st.write(f"- {datos_partido_lc['local']}: **{gl_ind_lc}** goles")
-                            st.write(f"- {datos_partido_lc['visita']}: **{gv_ind_lc}** goles")
-                        with ic2:
-                            st.markdown(f"🚩 **Córners Esperados**")
-                            st.write(f"- {datos_partido_lc['local']}: **{cl_ind_lc}** córners")
-                            st.write(f"- {datos_partido_lc['visita']}: **{cv_ind_lc}** córners")
-                        
-                        st.markdown("---")
-                        
-                        # --- EXTRACCIÓN DE CUOTAS REALES PARA LEAGUES CUP ---
-                        cuotas_automaticas_lc = obtener_cuotas_partido(datos_partido_lc["fixture_id"])
-                        
-                        with st.container():
-                            st.markdown("⚙️ **Gestión de Cuotas (Automáticas / Manuales) - Leagues Cup**")
-                            mercados_keys_lc = {
-                                "Gana Local": "1", 
-                                "Empate": "X",
-                                "Gana Visita": "2", 
-                                "Over 2.5 Goles": "Over 2.5", 
-                                "Under 2.5 Goles": "Under 2.5",
-                                "Over 9.5 Corners": "Over 9.5 Corners",
-                                "Under 9.5 Corners": "Under 9.5 Corners",
-                                "Over 4.5 Tarjetas": "Over 4.5 Tarjetas",
-                                "Under 4.5 Tarjetas": "Under 4.5 Tarjetas"
-                            }
+                        if isinstance(resultados_lc, str):
+                            st.error(f"🚨 Problema con la simulación: {resultados_lc}")
+                        else:
+                            st.subheader("📊 Probabilidades Reales (Montecarlo) - Leagues Cup")
+                            st.markdown("**🏆 Resultado del Encuentro (1X2)**")
                             
-                            cuotas_usuario_lc = {}
-                            cols_lc = st.columns(3)
+                            c1, c2, c3 = st.columns(3)
+                            c1.metric(f"Victoria {loc_actual}", f"{resultados_lc['Resultado_1X2']['Gana Local']}%")
+                            c2.metric("Empate (Va a Penales)", f"{resultados_lc['Resultado_1X2']['Empate']}%")
+                            c3.metric(f"Victoria {vis_actual}", f"{resultados_lc['Resultado_1X2']['Gana Visita']}%")
                             
-                            for i, (nombre_m, llave) in enumerate(mercados_keys_lc.items()):
-                                val_default_lc = cuotas_automaticas_lc.get(llave) if cuotas_automaticas_lc and cuotas_automaticas_lc.get(llave) else 0.0
-                                with cols_lc[i % 3]:
-                                    cuotas_usuario_lc[llave] = st.number_input(
-                                        f"{nombre_m}", 
-                                        min_value=0.0, 
-                                        value=float(val_default_lc), 
-                                        step=0.05,
-                                        format="%.2f",
-                                        key=f"input_cuota_lc_{llave}"
-                                    )
-
-                        df_apuestas_lc = analizar_apuestas(resultados_lc, datos_partido_lc["fixture_id"], cuotas_personalizadas=cuotas_usuario_lc)
-                        
-                        if not df_apuestas_lc.empty:
-                            def color_veredicto_lc(val):
-                                if '🔥' in str(val): return 'color: #00ff00; font-weight: bold'
-                                elif '✅' in str(val): return 'color: #adff2f'
-                                elif '⚠️' in str(val): return 'color: #ffa500'
-                                elif '❌' in str(val): return 'color: #ff4d4d'
-                                return ''
+                            st.markdown("---")
+                            st.markdown("🎯 **Goles, Corners y Tarjetas Más Probables**")
+                            c4, c5, c6 = st.columns(3)
+                            
+                            over_g_lc = resultados_lc['Goles_Over_Under']['Over 2.5']
+                            c4.metric("Más de 2.5 Goles", f"{over_g_lc}%", f"Under: {round(100-over_g_lc, 2)}%")
+                            
+                            over_c_lc = resultados_lc['Corners_Totales']['Over 9.5 Corners']
+                            c5.metric("Más de 9.5 Corners", f"{over_c_lc}%", f"Under: {round(100-over_c_lc, 2)}%")
+                            
+                            over_t_lc = resultados_lc['Tarjetas_Totales']['Over 4.5 Tarjetas']
+                            c6.metric("Más de 4.5 Tarjetas", f"{over_t_lc}%", f"Under: {round(100-over_t_lc, 2)}%")
+                            
+                            st.markdown("---")
+                            st.markdown("📈 **Pronósticos Detallados por Equipo**")
+                            
+                            gl_ind_lc = round(resultados_lc['Goles_Individuales'][loc_actual]['goles'])
+                            gv_ind_lc = round(resultados_lc['Goles_Individuales'][vis_actual]['goles'])
+                            cl_ind_lc = round(resultados_lc['Corners_Individuales'][loc_actual]['corners'])
+                            cv_ind_lc = round(resultados_lc['Corners_Individuales'][vis_actual]['corners'])
+                            
+                            ic1, ic2 = st.columns(2)
+                            with ic1:
+                                st.markdown(f"⚽ **Goles Esperados**")
+                                st.write(f"- {loc_actual}: **{gl_ind_lc}** goles")
+                                st.write(f"- {vis_actual}: **{gv_ind_lc}** goles")
+                            with ic2:
+                                st.markdown(f"🚩 **Córners Esperados**")
+                                st.write(f"- {loc_actual}: **{cl_ind_lc}** córners")
+                                st.write(f"- {vis_actual}: **{cv_ind_lc}** córners")
+                            
+                            st.markdown("---")
+                            
+                            # --- EXTRACCIÓN DE CUOTAS REALES PARA LEAGUES CUP ---
+                            cuotas_automaticas_lc = obtener_cuotas_partido(datos_partido_lc["fixture_id"])
+                            
+                            with st.container():
+                                st.markdown("⚙️ **Gestión de Cuotas (Automáticas / Manuales) - Leagues Cup**")
+                                mercados_keys_lc = {
+                                    "Gana Local": "1", 
+                                    "Empate": "X",
+                                    "Gana Visita": "2", 
+                                    "Over 2.5 Goles": "Over 2.5", 
+                                    "Under 2.5 Goles": "Under 2.5",
+                                    "Over 9.5 Corners": "Over 9.5 Corners",
+                                    "Under 9.5 Corners": "Under 9.5 Corners",
+                                    "Over 4.5 Tarjetas": "Over 4.5 Tarjetas",
+                                    "Under 4.5 Tarjetas": "Under 4.5 Tarjetas"
+                                }
                                 
-                            st.dataframe(
-                                df_apuestas_lc.style.map(color_veredicto_lc, subset=['Veredicto']), 
-                                use_container_width=True,
-                                hide_index=True
-                            )
+                                cuotas_usuario_lc = {}
+                                cols_lc = st.columns(3)
+                                
+                                for i, (nombre_m, llave) in enumerate(mercados_keys_lc.items()):
+                                    val_default_lc = cuotas_automaticas_lc.get(llave) if cuotas_automaticas_lc and cuotas_automaticas_lc.get(llave) else 0.0
+                                    with cols_lc[i % 3]:
+                                        cuotas_usuario_lc[llave] = st.number_input(
+                                            f"{nombre_m}", 
+                                            min_value=0.0, 
+                                            value=float(val_default_lc), 
+                                            step=0.05,
+                                            format="%.2f",
+                                            key=f"input_cuota_lc_{llave}"
+                                        )
+
+                            df_apuestas_lc = analizar_apuestas(resultados_lc, datos_partido_lc["fixture_id"], cuotas_personalizadas=cuotas_usuario_lc)
+                            
+                            if not df_apuestas_lc.empty:
+                                def color_veredicto_lc(val):
+                                    if '🔥' in str(val): return 'color: #00ff00; font-weight: bold'
+                                    elif '✅' in str(val): return 'color: #adff2f'
+                                    elif '⚠️' in str(val): return 'color: #ffa500'
+                                    elif '❌' in str(val): return 'color: #ff4d4d'
+                                    return ''
+                                    
+                                st.dataframe(
+                                    df_apuestas_lc.style.map(color_veredicto_lc, subset=['Veredicto']), 
+                                    use_container_width=True,
+                                    hide_index=True
+                                )
                         
                 except Exception as e:
                     st.error(f"Ocurrió un error inesperado durante la simulación: {e}")
-
-    st.markdown("---")
 
     # --- ESCÁNER AUTOMÁTICO PARA LEAGUES CUP ---
     with st.expander("🚨 Escáner Automático de Oportunidades (Jornada Leagues Cup)", expanded=False):
