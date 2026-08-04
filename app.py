@@ -126,7 +126,7 @@ st.write("Simulador Montecarlo (Goles, Corners, Tarjetas) + Criterio de Kelly")
 tab1, tab2 = st.tabs(["🇲🇽 Liga MX", "🏆 Leagues Cup"])
 
 # ==========================================
-# PESTAÑA 1: LIGA MX (Tu código exacto intacto)
+# PESTAÑA 1: LIGA MX
 # ==========================================
 with tab1:
     st.markdown("### 1. Selecciona el Encuentro")
@@ -141,7 +141,7 @@ with tab1:
         if st.button("Ejecutar Simulación y Buscar Cuotas", type="primary") or st.session_state.get('simulacion_activa', False):
             st.session_state['simulacion_activa'] = True
 
-            with st.spinner('Procesando simulación y cuotas...'):
+            with st.spinner('Procesando simulación y cuotas en tiempo real...'):
                 try:
                     df_hist_base = cargar_historico_seguro()
                     
@@ -216,6 +216,7 @@ with tab1:
 
                         st.markdown("---")
                         
+                        # --- EXTRACCIÓN DE CUOTAS REALES DESDE LA API-SPORTS ---
                         cuotas_automaticas = obtener_cuotas_partido(datos_partido["fixture_id"])
                         
                         with st.container():
@@ -419,7 +420,7 @@ with tab2:
         datos_partido_lc = partidos_lc[seleccion_lc]
 
         if st.button("Ejecutar Simulación Leagues Cup", type="primary", key="btn_lc"):
-            with st.spinner('Procesando simulación internacional...'):
+            with st.spinner('Procesando simulación internacional y cuotas...'):
                 try:
                     df_hist_lc = cargar_historico_lc()
                     
@@ -487,7 +488,57 @@ with tab2:
                             st.markdown(f"🚩 **Córners Esperados**")
                             st.write(f"- {datos_partido_lc['local']}: **{cl_ind_lc}** córners")
                             st.write(f"- {datos_partido_lc['visita']}: **{cv_ind_lc}** córners")
+                        
+                        st.markdown("---")
+                        
+                        # --- EXTRACCIÓN DE CUOTAS REALES PARA LEAGUES CUP ---
+                        cuotas_automaticas_lc = obtener_cuotas_partido(datos_partido_lc["fixture_id"])
+                        
+                        with st.container():
+                            st.markdown("⚙️ **Gestión de Cuotas (Automáticas / Manuales) - Leagues Cup**")
+                            mercados_keys_lc = {
+                                "Gana Local": "1", 
+                                "Empate": "X",
+                                "Gana Visita": "2", 
+                                "Over 2.5 Goles": "Over 2.5", 
+                                "Under 2.5 Goles": "Under 2.5",
+                                "Over 9.5 Corners": "Over 9.5 Corners",
+                                "Under 9.5 Corners": "Under 9.5 Corners",
+                                "Over 4.5 Tarjetas": "Over 4.5 Tarjetas",
+                                "Under 4.5 Tarjetas": "Under 4.5 Tarjetas"
+                            }
                             
+                            cuotas_usuario_lc = {}
+                            cols_lc = st.columns(3)
+                            
+                            for i, (nombre_m, llave) in enumerate(mercados_keys_lc.items()):
+                                val_default_lc = cuotas_automaticas_lc.get(llave) if cuotas_automaticas_lc and cuotas_automaticas_lc.get(llave) else 0.0
+                                with cols_lc[i % 3]:
+                                    cuotas_usuario_lc[llave] = st.number_input(
+                                        f"{nombre_m}", 
+                                        min_value=0.0, 
+                                        value=float(val_default_lc), 
+                                        step=0.05,
+                                        format="%.2f",
+                                        key=f"input_cuota_lc_{llave}"
+                                    )
+
+                        df_apuestas_lc = analizar_apuestas(resultados_lc, datos_partido_lc["fixture_id"], cuotas_personalizadas=cuotas_usuario_lc)
+                        
+                        if not df_apuestas_lc.empty:
+                            def color_veredicto_lc(val):
+                                if '🔥' in str(val): return 'color: #00ff00; font-weight: bold'
+                                elif '✅' in str(val): return 'color: #adff2f'
+                                elif '⚠️' in str(val): return 'color: #ffa500'
+                                elif '❌' in str(val): return 'color: #ff4d4d'
+                                return ''
+                                
+                            st.dataframe(
+                                df_apuestas_lc.style.map(color_veredicto_lc, subset=['Veredicto']), 
+                                use_container_width=True,
+                                hide_index=True
+                            )
+                        
                 except Exception as e:
                     st.error(f"Ocurrió un error inesperado durante la simulación: {e}")
 
@@ -501,7 +552,6 @@ with tab2:
             with st.spinner("Analizando la jornada internacional con Montecarlo... Esto puede tomar unos segundos."):
                 from modules.scanner_engine import escanear_jornada_personalizada
                 
-                # Usamos una función adaptada o el escáner apuntando al histórico y liga de Leagues Cup
                 df_oro_lc = pd.DataFrame(escanear_jornada_personalizada(LEAGUES_CUP_ID, 'data/historico_leaguescup.csv'))
                 
                 if not df_oro_lc.empty:
