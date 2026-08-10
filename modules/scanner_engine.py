@@ -134,6 +134,7 @@ def escanear_jornada_personalizada(league_id, ruta_csv, temporada_actual=2026):
     st.write(f"🔎 **Escaneando partidos oficiales (Liga ID: {league_id}) y validando modelos...**")
 
     for p in fixtures:
+        # ... (dentro de escanear_jornada_personalizada, justo debajo de `for p in fixtures:`)
         try:
             fix_id = p["fixture"]["id"]
             local = p["teams"]["home"]["name"]
@@ -147,10 +148,14 @@ def escanear_jornada_personalizada(league_id, ruta_csv, temporada_actual=2026):
                 st.write(f"⚠️ *Sin cuotas disponibles en este momento.*")
                 continue
                 
+            linea_goles = cuotas.get("Linea_Goles", 2.5)
+            linea_corners = cuotas.get("Linea_Corners", 9.5)
+            linea_tarjetas = cuotas.get("Linea_Tarjetas", 4.5)
+                
             elo_loc = obtener_ultimo_elo(df_historico_ml, local)
             elo_vis = obtener_ultimo_elo(df_historico_ml, visita)
             
-            resultados = simular_partido_montecarlo(local, visita, df_historico=df_historico_ml, elo_local=elo_loc, elo_visita=elo_vis)
+            resultados = simular_partido_montecarlo(local, visita, df_historico=df_historico_ml, elo_local=elo_loc, elo_visita=elo_vis, linea_goles=linea_goles, linea_corners=linea_corners, linea_tarjetas=linea_tarjetas)
             if isinstance(resultados, str): 
                 continue
 
@@ -164,7 +169,7 @@ def escanear_jornada_personalizada(league_id, ruta_csv, temporada_actual=2026):
                 g_v_sim = resultados.get('Goles_Individuales', {}).get(visita, {}).get('goles', 1.0)
                 
                 preds_ml = ml_escanner.predecir_mercados_completos(
-                    df_historico_ml, local, visita, g_l_sim, g_v_sim, elo_loc, elo_vis
+                    df_historico_ml, local, visita, g_l_sim, g_v_sim, elo_loc, elo_vis, linea_goles=linea_goles, linea_corners=linea_corners, linea_tarjetas=linea_tarjetas
                 )
                 
                 if "Resultado_1X2" in preds_ml:
@@ -172,50 +177,51 @@ def escanear_jornada_personalizada(league_id, ruta_csv, temporada_actual=2026):
                     prob_ml_empate = preds_ml['Resultado_1X2']['Empate']
                     prob_ml_visita = preds_ml['Resultado_1X2']['Gana Visita']
                     
-                    prob_ml_over_g = preds_ml['Goles_Over_Under']['Over 2.5']
-                    prob_ml_under_g = preds_ml['Goles_Over_Under']['Under 2.5']
+                    prob_ml_over_g = preds_ml['Goles_Over_Under'][f'Over {linea_goles}']
+                    prob_ml_under_g = preds_ml['Goles_Over_Under'][f'Under {linea_goles}']
                     
-                    prob_ml_over_c = preds_ml['Corners_Totales']['Over 9.5 Corners']
-                    prob_ml_under_c = preds_ml['Corners_Totales']['Under 9.5 Corners']
+                    prob_ml_over_c = preds_ml['Corners_Totales'][f'Over {linea_corners} Corners']
+                    prob_ml_under_c = preds_ml['Corners_Totales'][f'Under {linea_corners} Corners']
                     
-                    prob_ml_over_t = preds_ml['Tarjetas_Totales']['Over 4.5 Tarjetas']
-                    prob_ml_under_t = preds_ml['Tarjetas_Totales']['Under 4.5 Tarjetas']
+                    prob_ml_over_t = preds_ml['Tarjetas_Totales'][f'Over {linea_tarjetas} Tarjetas']
+                    prob_ml_under_t = preds_ml['Tarjetas_Totales'][f'Under {linea_tarjetas} Tarjetas']
 
             prob_mc_dict = {
                 "Gana Local": resultados.get('Resultado_1X2', {}).get('Gana Local', 0.0),
                 "Empate": resultados.get('Resultado_1X2', {}).get('Empate', 0.0),
                 "Gana Visita": resultados.get('Resultado_1X2', {}).get('Gana Visita', 0.0),
-                "Over 2.5 Goles": resultados.get('Goles_Over_Under', {}).get('Over 2.5', 0.0),
-                "Under 2.5 Goles": resultados.get('Goles_Over_Under', {}).get('Under 2.5', 0.0),
-                "Over 9.5 Corners": resultados.get('Corners_Totales', {}).get('Over 9.5 Corners', 0.0),
-                "Under 9.5 Corners": resultados.get('Corners_Totales', {}).get('Under 9.5 Corners', 0.0),
-                "Over 4.5 Tarjetas": resultados.get('Tarjetas_Totales', {}).get('Over 4.5 Tarjetas', 0.0),
-                "Under 4.5 Tarjetas": resultados.get('Tarjetas_Totales', {}).get('Under 4.5 Tarjetas', 0.0)
+                f"Over {linea_goles} Goles": resultados.get('Goles_Over_Under', {}).get(f'Over {linea_goles}', 0.0),
+                f"Under {linea_goles} Goles": resultados.get('Goles_Over_Under', {}).get(f'Under {linea_goles}', 0.0),
+                f"Over {linea_corners} Corners": resultados.get('Corners_Totales', {}).get(f'Over {linea_corners} Corners', 0.0),
+                f"Under {linea_corners} Corners": resultados.get('Corners_Totales', {}).get(f'Under {linea_corners} Corners', 0.0),
+                f"Over {linea_tarjetas} Tarjetas": resultados.get('Tarjetas_Totales', {}).get(f'Over {linea_tarjetas} Tarjetas', 0.0),
+                f"Under {linea_tarjetas} Tarjetas": resultados.get('Tarjetas_Totales', {}).get(f'Under {linea_tarjetas} Tarjetas', 0.0)
             }
 
             prob_ml_dict = {
                 "Gana Local": prob_ml_local,
                 "Empate": prob_ml_empate,
                 "Gana Visita": prob_ml_visita,
-                "Over 2.5 Goles": prob_ml_over_g,
-                "Under 2.5 Goles": prob_ml_under_g,
-                "Over 9.5 Corners": prob_ml_over_c,
-                "Under 9.5 Corners": prob_ml_under_c,
-                "Over 4.5 Tarjetas": prob_ml_over_t,
-                "Under 4.5 Tarjetas": prob_ml_under_t
+                f"Over {linea_goles} Goles": prob_ml_over_g,
+                f"Under {linea_goles} Goles": prob_ml_under_g,
+                f"Over {linea_corners} Corners": prob_ml_over_c,
+                f"Under {linea_corners} Corners": prob_ml_under_c,
+                f"Over {linea_tarjetas} Tarjetas": prob_ml_over_t,
+                f"Under {linea_tarjetas} Tarjetas": prob_ml_under_t
             }
 
             mercados_a_mapear = [
                 ("Gana Local", "1"),
                 ("Empate", "X"),
                 ("Gana Visita", "2"),
-                ("Over 2.5 Goles", "Over 2.5"),
-                ("Under 2.5 Goles", "Under 2.5"),
-                ("Over 9.5 Corners", "Over 9.5 Corners"),
-                ("Under 9.5 Corners", "Under 9.5 Corners"),
-                ("Over 4.5 Tarjetas", "Over 4.5 Tarjetas"),
-                ("Under 4.5 Tarjetas", "Under 4.5 Tarjetas")
+                (f"Over {linea_goles} Goles", "Over_Goles"),
+                (f"Under {linea_goles} Goles", "Under_Goles"),
+                (f"Over {linea_corners} Corners", "Over_Corners"),
+                (f"Under {linea_corners} Corners", "Under_Corners"),
+                (f"Over {linea_tarjetas} Tarjetas", "Over_Tarjetas"),
+                (f"Under {linea_tarjetas} Tarjetas", "Under_Tarjetas")
             ]
+# ... (el resto del código evalúa como siempre)
 
             for nombre_m, llave_api in mercados_a_mapear:
                 try:
