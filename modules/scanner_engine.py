@@ -143,7 +143,7 @@ def escanear_jornada_personalizada(league_id, ruta_csv, temporada_actual=2026):
             
             st.write(f"⚙️ Analizando: **{local} vs {visita}**")
             
-            cuotas = obtener_cuotas_partido(fix_id)
+            cuotas = obtener_cuotas_partido(local, visita, league_id)
             if not cuotas: 
                 st.write(f"⚠️ *Sin cuotas disponibles en este momento.*")
                 continue
