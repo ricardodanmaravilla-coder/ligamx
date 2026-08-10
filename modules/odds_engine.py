@@ -28,7 +28,7 @@ def obtener_cuotas_partido(local, visita, league_id=262):
     url = f"https://api.the-odds-api.com/v4/sports/{sport_key}/odds/"
     params = {
         "apiKey": THE_ODDS_API_KEY,
-        "regions": "us,eu", 
+        "regions": "us,eu,uk,au", # Ampliamos las regiones para buscar más casas de apuestas
         "markets": "h2h,totals", 
         "oddsFormat": "decimal"
     }
@@ -42,15 +42,60 @@ def obtener_cuotas_partido(local, visita, league_id=262):
     try:
         res = requests.get(url, params=params, timeout=10)
         
-        if res.status_code == 401:
-            st.error("❌ The Odds API (401): API Key inválida o expirada.")
+        if res.status_code != 200: 
             return cuotas_limpias
-        elif res.status_code == 429:
-            st.error("❌ The Odds API (429): Límite de consultas agotado.")
+        
+        datos = res.json()
+        if not datos:
             return cuotas_limpias
-        elif res.status_code != 200: 
-            st.error(f"⚠️ The Odds API ({res.status_code}): Error de servidor.")
-            return cuotas_limpias
+            
+        for partido in datos:
+            home_api = partido.get("home_team", "")
+            away_api = partido.get("away_team", "")
+            
+            if son_similares(local, home_api) or son_similares(visita, away_api):
+                bookmakers = partido.get("bookmakers", [])
+                
+                if not bookmakers: 
+                    continue
+                
+                # Buscamos en las casas de apuestas hasta encontrar una que tenga tanto 1X2 como Totales
+                for bookmaker in bookmakers:
+                    mercados = bookmaker.get("markets", [])
+                    encontro_goles = False
+                    
+                    for m in mercados:
+                        key = m.get("key")
+                        outcomes = m.get("outcomes", [])
+                        
+                        if key == "h2h" and "1" not in cuotas_limpias:
+                            for out in outcomes:
+                                name = out.get("name")
+                                if name == home_api: cuotas_limpias["1"] = float(out.get("price"))
+                                elif name == "Draw": cuotas_limpias["X"] = float(out.get("price"))
+                                else: cuotas_limpias["2"] = float(out.get("price"))
+                                
+                        elif key == "totals":
+                            for out in outcomes:
+                                if "point" in out:
+                                    cuotas_limpias["Linea_Goles"] = float(out["point"])
+                                name = out.get("name")
+                                if name == "Over": 
+                                    cuotas_limpias["Over_Goles"] = float(out.get("price"))
+                                    encontro_goles = True
+                                elif name == "Under": 
+                                    cuotas_limpias["Under_Goles"] = float(out.get("price"))
+                                    encontro_goles = True
+                                    
+                    # Si ya logramos capturar al menos el ganador y los goles, podemos detener la búsqueda en esta casa
+                    if "1" in cuotas_limpias and encontro_goles:
+                        break
+                break 
+                
+    except Exception as e:
+        st.error(f"⚠️ Error procesando The Odds API: {e}")
+        
+    return cuotas_limpias
         
         datos = res.json()
         if not datos:
