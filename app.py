@@ -255,7 +255,7 @@ with tab1:
                                     )
 
                         lineas_default = {"Linea_Goles": linea_goles, "Linea_Corners": linea_corners, "Linea_Tarjetas": linea_tarjetas}
-                        df_apuestas = analizar_apuestas(resultados, datos_partido["fixture_id"], cuotas_personalizadas=cuotas_usuario, lineas_default=lineas_default)
+                        df_apuestas = analizar_apuestas(resultados, datos_partido["local"], datos_partido["visita"], cuotas_personalizadas=cuotas_usuario, lineas_default=lineas_default)
                         
                         if not df_apuestas.empty:
                             def color_veredicto(val):
