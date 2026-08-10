@@ -338,6 +338,7 @@ with tab1:
                 except (IndexError, KeyError):
                     puntos_visita = 1500.0
                 
+                # (Dentro de la sección de Machine Learning)
                 preds_ml = ml_predictor.predecir_mercados_completos(
                     df_historico, 
                     datos_partido['local'], 
@@ -345,7 +346,10 @@ with tab1:
                     g_l_sim, 
                     g_v_sim,
                     puntos_local,  
-                    puntos_visita  
+                    puntos_visita,
+                    linea_goles=linea_goles,
+                    linea_corners=linea_corners,
+                    linea_tarjetas=linea_tarjetas 
                 )
                 
                 st.markdown("---")
@@ -364,16 +368,16 @@ with tab1:
                     ml_col4, ml_col5, ml_col6 = st.columns(3)
                     
                     with ml_col4:
-                        st.metric("Over 2.5 Goles", f"{preds_ml['Goles_Over_Under']['Over 2.5']}%")
-                        st.metric("Under 2.5 Goles", f"{preds_ml['Goles_Over_Under']['Under 2.5']}%")
+                        st.metric(f"Over {linea_goles} Goles", f"{preds_ml['Goles_Over_Under'][f'Over {linea_goles}']}%")
+                        st.metric(f"Under {linea_goles} Goles", f"{preds_ml['Goles_Over_Under'][f'Under {linea_goles}']}%")
                         
                     with ml_col5:
-                        st.metric("Over 9.5 Córners", f"{preds_ml['Corners_Totales']['Over 9.5 Corners']}%")
-                        st.metric("Under 9.5 Córners", f"{preds_ml['Corners_Totales']['Under 9.5 Corners']}%")
+                        st.metric(f"Over {linea_corners} Córners", f"{preds_ml['Corners_Totales'][f'Over {linea_corners} Corners']}%")
+                        st.metric(f"Under {linea_corners} Córners", f"{preds_ml['Corners_Totales'][f'Under {linea_corners} Corners']}%")
                         
                     with ml_col6:
-                        st.metric("Over 4.5 Tarjetas", f"{preds_ml['Tarjetas_Totales']['Over 4.5 Tarjetas']}%")
-                        st.metric("Under 4.5 Tarjetas", f"{preds_ml['Tarjetas_Totales']['Under 4.5 Tarjetas']}%")
+                        st.metric(f"Over {linea_tarjetas} Tarjetas", f"{preds_ml['Tarjetas_Totales'][f'Over {linea_tarjetas} Tarjetas']}%")
+                        st.metric(f"Under {linea_tarjetas} Tarjetas", f"{preds_ml['Tarjetas_Totales'][f'Under {linea_tarjetas} Tarjetas']}%")
                 else:
                     st.warning("⚠️ El modelo ML no pudo generar predicciones. Revisa los datos históricos.")
         
