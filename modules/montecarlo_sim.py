@@ -28,7 +28,9 @@ def normalizar_nombre_equipo(nombre):
     if "ATLANTE" in n: return "Atlante"
     return nombre
 
-def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_local=None, elo_visita=None, num_simulaciones=10000000, arbitro=None):
+# ... (mantén las importaciones y funciones superiores igual)
+
+def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_local=None, elo_visita=None, num_simulaciones=10000000, arbitro=None, linea_goles=2.5, linea_corners=9.5, linea_tarjetas=4.5):
     local = normalizar_nombre_equipo(local_raw)
     visita = normalizar_nombre_equipo(visita_raw)
     
@@ -85,14 +87,14 @@ def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_loc
     prob_visita = round((wins_visita / num_simulaciones) * 100, 1)
     prob_empate = round((empates / num_simulaciones) * 100, 1)
 
-    over_25_goles = round((np.sum((goles_loc_sim + goles_vis_sim) > 2.5) / num_simulaciones) * 100, 1)
-    under_25_goles = round(100.0 - over_25_goles, 1)
+    over_goles_sim = round((np.sum((goles_loc_sim + goles_vis_sim) > linea_goles) / num_simulaciones) * 100, 1)
+    under_goles_sim = round(100.0 - over_goles_sim, 1)
 
-    over_95_corners = round((np.sum(corners_totales_sim > 9.5) / num_simulaciones) * 100, 1)
-    under_95_corners = round(100.0 - over_95_corners, 1)
+    over_corners_sim = round((np.sum(corners_totales_sim > linea_corners) / num_simulaciones) * 100, 1)
+    under_corners_sim = round(100.0 - over_corners_sim, 1)
 
-    over_45_tarjetas = round((np.sum(tarjetas_totales_sim > 4.5) / num_simulaciones) * 100, 1)
-    under_45_tarjetas = round(100.0 - over_45_tarjetas, 1)
+    over_tarjetas_sim = round((np.sum(tarjetas_totales_sim > linea_tarjetas) / num_simulaciones) * 100, 1)
+    under_tarjetas_sim = round(100.0 - over_tarjetas_sim, 1)
 
     return {
         "Resultado_1X2": {
@@ -101,16 +103,16 @@ def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_loc
             "Gana Visita": prob_visita
         },
         "Goles_Over_Under": {
-            "Over 2.5": over_25_goles,
-            "Under 2.5": under_25_goles
+            f"Over {linea_goles}": over_goles_sim,
+            f"Under {linea_goles}": under_goles_sim
         },
         "Corners_Totales": {
-            "Over 9.5 Corners": over_95_corners,
-            "Under 9.5 Corners": under_95_corners
+            f"Over {linea_corners} Corners": over_corners_sim,
+            f"Under {linea_corners} Corners": under_corners_sim
         },
         "Tarjetas_Totales": {
-            "Over 4.5 Tarjetas": over_45_tarjetas,
-            "Under 4.5 Tarjetas": under_45_tarjetas
+            f"Over {linea_tarjetas} Tarjetas": over_tarjetas_sim,
+            f"Under {linea_tarjetas} Tarjetas": under_tarjetas_sim
         },
         "Goles_Individuales": {
             local_raw: {"goles": round(goles_l_exp, 2)},
