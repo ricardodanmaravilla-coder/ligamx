@@ -5,67 +5,79 @@ import unicodedata
 from difflib import SequenceMatcher
 import streamlit as st
 
-# --- NUEVA LÓGICA DE DETECCIÓN DE API KEY PARA STREAMLIT CLOUD ---
+# Extrae la API Key desde los Secrets de Streamlit o las variables locales
 try:
-    # Intenta leerla de los secretos de Streamlit Cloud primero
     THE_ODDS_API_KEY = st.secrets["THE_ODDS_API_KEY"]
 except Exception:
-    # Si falla, intenta buscarla en las variables de entorno locales
-    THE_ODDS_API_KEY = os.environ.get("THE_ODDS_API_KEY", "de66554a17bce1149445b1a883056607")
+    THE_ODDS_API_KEY = os.environ.get("THE_ODDS_API_KEY", "")
 
 def limpiar_nombre(texto):
-    """Limpia el texto quitando acentos, espacios extra y pasándolo a minúsculas."""
+    if not texto: return ""
+    texto = unicodedata.normalize('NFKD', str(texto)).encode('ASCII', 'ignore').decode('utf-8')
+    return texto.lower().strip()
 
-def son_similares(a, b, umbral=0.55):
-    """Ayuda a emparejar los nombres de API-Sports con los nombres de The Odds API"""
+def son_similares(a, b, umbral=0.45):
     if not a or not b: return False
-    return SequenceMatcher(None, a.lower(), b.lower()).ratio() > umbral
+    a_limpio = limpiar_nombre(a)
+    b_limpio = limpiar_nombre(b)
+    if a_limpio in b_limpio or b_limpio in a_limpio: return True
+    return SequenceMatcher(None, a_limpio, b_limpio).ratio() > umbral
 
 def obtener_cuotas_partido(local, visita, league_id=262):
-    """Descarga las cuotas directamente desde The Odds API."""
-    
-    # Mapeo de liga a sport_key de The Odds API
     sport_key = "soccer_mexico_ligamx" if league_id == 262 else "soccer_usa_mls"
-        
     url = f"https://api.the-odds-api.com/v4/sports/{sport_key}/odds/"
     params = {
         "apiKey": THE_ODDS_API_KEY,
-        "regions": "us,eu", # Busca en casas de USA y Europa
-        "markets": "h2h,totals", # h2h = Ganador, totals = Over/Under Goles
+        "regions": "us,eu", 
+        "markets": "h2h,totals", 
         "oddsFormat": "decimal"
     }
     
-    # Líneas y cuotas por defecto en caso de que The Odds API no las tenga
     cuotas_limpias = {"Linea_Goles": 2.5, "Linea_Corners": 9.5, "Linea_Tarjetas": 4.5}
     
-    if THE_ODDS_API_KEY == "de66554a17bce1149445b1a883056607" or not THE_ODDS_API_KEY:
-        print("Falta THE_ODDS_API_KEY")
+    if not THE_ODDS_API_KEY:
+        st.error("❌ THE_ODDS_API_KEY no detectada en los Secrets. Las cuotas automáticas no funcionarán.")
         return cuotas_limpias
         
     try:
         res = requests.get(url, params=params, timeout=10)
-        if res.status_code != 200: 
+        
+        if res.status_code == 401:
+            st.error("❌ The Odds API (401): API Key inválida o expirada.")
+            return cuotas_limpias
+        elif res.status_code == 429:
+            st.error("❌ The Odds API (429): Límite de consultas agotado.")
+            return cuotas_limpias
+        elif res.status_code != 200: 
+            st.error(f"⚠️ The Odds API ({res.status_code}): Error de servidor.")
             return cuotas_limpias
         
         datos = res.json()
+        if not datos:
+            st.info("ℹ️ The Odds API NO tiene partidos publicados para la Liga MX en este momento (los casinos aún no abren las líneas).")
+            return cuotas_limpias
+            
+        match_encontrado = False
         
         for partido in datos:
             home_api = partido.get("home_team", "")
             away_api = partido.get("away_team", "")
             
-            # Cruzamos los nombres de los equipos
             if son_similares(local, home_api) or son_similares(visita, away_api):
+                match_encontrado = True
                 bookmakers = partido.get("bookmakers", [])
-                if not bookmakers: continue
                 
-                # Tomamos la primera casa de apuestas disponible (suelen ser las más precisas de Las Vegas/Pinnacle)
+                if not bookmakers: 
+                    st.warning(f"⚠️ Partido encontrado ({home_api} vs {away_api}), pero los casinos aún no suben las cuotas.")
+                    continue
+                
+                st.success(f"✅ ¡Cuotas obtenidas con éxito para {local} vs {visita}!")
                 mercados = bookmakers[0].get("markets", [])
                 
                 for m in mercados:
                     key = m.get("key")
                     outcomes = m.get("outcomes", [])
                     
-                    # --- 1. GANADOR DEL PARTIDO (1X2) ---
                     if key == "h2h":
                         for out in outcomes:
                             name = out.get("name")
@@ -73,7 +85,6 @@ def obtener_cuotas_partido(local, visita, league_id=262):
                             elif name == "Draw": cuotas_limpias["X"] = float(out.get("price"))
                             else: cuotas_limpias["2"] = float(out.get("price"))
                             
-                    # --- 2. GOLES OVER/UNDER Y LÍNEA DE CASINO ---
                     elif key == "totals":
                         for out in outcomes:
                             if "point" in out:
@@ -81,10 +92,16 @@ def obtener_cuotas_partido(local, visita, league_id=262):
                             name = out.get("name")
                             if name == "Over": cuotas_limpias["Over_Goles"] = float(out.get("price"))
                             elif name == "Under": cuotas_limpias["Under_Goles"] = float(out.get("price"))
-                break # Rompemos el ciclo si ya encontramos el partido
+                break 
+                
+        if not match_encontrado:
+            st.warning(f"🔍 The Odds API tiene {len(datos)} partidos, pero ninguno coincide con: {local} vs {visita}.")
+            with st.expander("Ver los partidos que The Odds API sí encontró (Para diagnóstico):"):
+                for d in datos:
+                    st.write(f"- {d.get('home_team')} vs {d.get('away_team')}")
                 
     except Exception as e:
-        print(f"Error consultando The Odds API: {e}")
+        st.error(f"⚠️ Error procesando The Odds API: {e}")
         
     return cuotas_limpias
 
@@ -121,14 +138,14 @@ def evaluar_mercado_avanzado(probabilidad_modelo_pct, cuota_casa):
 
     return cuota_casa, ev_pct, veredicto, stake_recomendado, riesgo
 
-def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=None, lineas_default=None):
+def analizar_apuestas(resultados_montecarlo, local, visita, cuotas_personalizadas=None, lineas_default=None):
     if cuotas_personalizadas and len(cuotas_personalizadas) > 0:
         cuotas = cuotas_personalizadas
         l_goles = lineas_default.get("Linea_Goles", 2.5) if lineas_default else 2.5
         l_corners = lineas_default.get("Linea_Corners", 9.5) if lineas_default else 9.5
         l_tarjetas = lineas_default.get("Linea_Tarjetas", 4.5) if lineas_default else 4.5
     else:
-        cuotas = obtener_cuotas_partido(fixture_id) # En The Odds API, el fixture_id aquí es ignorado si se pasa el diccionario directo
+        cuotas = obtener_cuotas_partido(local, visita)
         if not cuotas: return pd.DataFrame() 
         l_goles = cuotas.get("Linea_Goles", 2.5)
         l_corners = cuotas.get("Linea_Corners", 9.5)
