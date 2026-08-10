@@ -157,12 +157,21 @@ with tab1:
                     except:
                         e_vis = 1500.0
 
+                    # --- EXTRACCIÓN DE LÍNEAS REALES PREVIA A LA SIMULACIÓN ---
+                    cuotas_automaticas = obtener_cuotas_partido(datos_partido["fixture_id"])
+                    linea_goles = cuotas_automaticas.get("Linea_Goles", 2.5) if cuotas_automaticas else 2.5
+                    linea_corners = cuotas_automaticas.get("Linea_Corners", 9.5) if cuotas_automaticas else 9.5
+                    linea_tarjetas = cuotas_automaticas.get("Linea_Tarjetas", 4.5) if cuotas_automaticas else 4.5
+
                     resultados = simular_partido_montecarlo(
                         datos_partido["local"], 
                         datos_partido["visita"],
                         df_historico=df_hist_base,
                         elo_local=e_loc,
-                        elo_visita=e_vis
+                        elo_visita=e_vis,
+                        linea_goles=linea_goles,
+                        linea_corners=linea_corners,
+                        linea_tarjetas=linea_tarjetas
                     )
                     
                     if isinstance(resultados, str):
@@ -181,14 +190,14 @@ with tab1:
                         st.markdown("🎯 **Goles, Corners y Tarjetas Más Probables del Partido**")
                         col4, col5, col6 = st.columns(3)
                         
-                        over_goles = resultados['Goles_Over_Under']['Over 2.5']
-                        col4.metric("Más de 2.5 Goles", f"{over_goles}%", f"Under: {round(100-over_goles, 2)}%")
+                        over_goles = resultados['Goles_Over_Under'][f'Over {linea_goles}']
+                        col4.metric(f"Más de {linea_goles} Goles", f"{over_goles}%", f"Under: {round(100-over_goles, 2)}%")
                         
-                        over_corners = resultados['Corners_Totales']['Over 9.5 Corners']
-                        col5.metric("Más de 9.5 Corners", f"{over_corners}%", f"Under: {round(100-over_corners, 2)}%")
+                        over_corners = resultados['Corners_Totales'][f'Over {linea_corners} Corners']
+                        col5.metric(f"Más de {linea_corners} Corners", f"{over_corners}%", f"Under: {round(100-over_corners, 2)}%")
                         
-                        over_tarjetas = resultados['Tarjetas_Totales']['Over 4.5 Tarjetas']
-                        col6.metric("Más de 4.5 Tarjetas", f"{over_tarjetas}%", f"Under: {round(100-over_tarjetas, 2)}%")
+                        over_tarjetas = resultados['Tarjetas_Totales'][f'Over {linea_tarjetas} Tarjetas']
+                        col6.metric(f"Más de {linea_tarjetas} Tarjetas", f"{over_tarjetas}%", f"Under: {round(100-over_tarjetas, 2)}%")
                         
                         st.markdown("---")
                         st.markdown("📈 **Pronósticos Detallados por Equipo (Expectativa Matemática)**")
@@ -216,21 +225,18 @@ with tab1:
 
                         st.markdown("---")
                         
-                        # --- EXTRACCIÓN DE CUOTAS REALES DESDE LA API-SPORTS ---
-                        cuotas_automaticas = obtener_cuotas_partido(datos_partido["fixture_id"])
-                        
                         with st.container():
                             st.markdown("⚙️ **Gestión de Cuotas (Automáticas / Manuales)**")
                             mercados_keys = {
                                 "Gana Local": "1", 
                                 "Empate": "X",
                                 "Gana Visita": "2", 
-                                "Over 2.5 Goles": "Over 2.5", 
-                                "Under 2.5 Goles": "Under 2.5",
-                                "Over 9.5 Corners": "Over 9.5 Corners",
-                                "Under 9.5 Corners": "Under 9.5 Corners",
-                                "Over 4.5 Tarjetas": "Over 4.5 Tarjetas",
-                                "Under 4.5 Tarjetas": "Under 4.5 Tarjetas"
+                                f"Over {linea_goles} Goles": "Over_Goles", 
+                                f"Under {linea_goles} Goles": "Under_Goles",
+                                f"Over {linea_corners} Corners": "Over_Corners",
+                                f"Under {linea_corners} Corners": "Under_Corners",
+                                f"Over {linea_tarjetas} Tarjetas": "Over_Tarjetas",
+                                f"Under {linea_tarjetas} Tarjetas": "Under_Tarjetas"
                             }
                             
                             cuotas_usuario = {}
@@ -248,7 +254,8 @@ with tab1:
                                         key=f"input_cuota_mx_{llave}"
                                     )
 
-                        df_apuestas = analizar_apuestas(resultados, datos_partido["fixture_id"], cuotas_personalizadas=cuotas_usuario)
+                        lineas_default = {"Linea_Goles": linea_goles, "Linea_Corners": linea_corners, "Linea_Tarjetas": linea_tarjetas}
+                        df_apuestas = analizar_apuestas(resultados, datos_partido["fixture_id"], cuotas_personalizadas=cuotas_usuario, lineas_default=lineas_default)
                         
                         if not df_apuestas.empty:
                             def color_veredicto(val):
