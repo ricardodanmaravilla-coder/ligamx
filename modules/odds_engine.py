@@ -1,10 +1,20 @@
 import os
 import requests
 import pandas as pd
+import unicodedata
 from difflib import SequenceMatcher
+import streamlit as st
 
-# Nueva variable de entorno para The Odds API
-THE_ODDS_API_KEY = os.environ.get("THE_ODDS_API_KEY", "de66554a17bce1149445b1a883056607")
+# --- NUEVA LÓGICA DE DETECCIÓN DE API KEY PARA STREAMLIT CLOUD ---
+try:
+    # Intenta leerla de los secretos de Streamlit Cloud primero
+    THE_ODDS_API_KEY = st.secrets["THE_ODDS_API_KEY"]
+except Exception:
+    # Si falla, intenta buscarla en las variables de entorno locales
+    THE_ODDS_API_KEY = os.environ.get("THE_ODDS_API_KEY", "de66554a17bce1149445b1a883056607")
+
+def limpiar_nombre(texto):
+    """Limpia el texto quitando acentos, espacios extra y pasándolo a minúsculas."""
 
 def son_similares(a, b, umbral=0.55):
     """Ayuda a emparejar los nombres de API-Sports con los nombres de The Odds API"""
