@@ -158,7 +158,7 @@ with tab1:
                         e_vis = 1500.0
 
                     # --- EXTRACCIÓN DE LÍNEAS REALES PREVIA A LA SIMULACIÓN ---
-                    cuotas_automaticas = obtener_cuotas_partido(datos_partido["fixture_id"])
+                    cuotas_automaticas = obtener_cuotas_partido(datos_partido["local"], datos_partido["visita"])
                     linea_goles = cuotas_automaticas.get("Linea_Goles", 2.5) if cuotas_automaticas else 2.5
                     linea_corners = cuotas_automaticas.get("Linea_Corners", 9.5) if cuotas_automaticas else 9.5
                     linea_tarjetas = cuotas_automaticas.get("Linea_Tarjetas", 4.5) if cuotas_automaticas else 4.5
