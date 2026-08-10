@@ -7,7 +7,7 @@ BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {'x-apisports-key': API_KEY}
 
 def obtener_cuotas_partido(fixture_id, bookmaker_id=8):
-    """Descarga las cuotas de Playdoit (Proxy Bet365) para un partido."""
+    """Descarga las cuotas de Playdoit (Proxy Bet365) para un partido y detecta las líneas dinámicas."""
     url = f"{BASE_URL}/odds"
     response = requests.get(url, headers=HEADERS, params={"fixture": fixture_id, "bookmaker": bookmaker_id})
     if response.status_code != 200: return None
@@ -16,7 +16,7 @@ def obtener_cuotas_partido(fixture_id, bookmaker_id=8):
     if not datos: return None
         
     mercados = datos[0]["bookmakers"][0]["bets"]
-    cuotas_limpias = {}
+    cuotas_limpias = {"Linea_Goles": 2.5, "Linea_Corners": 9.5, "Linea_Tarjetas": 4.5}
     
     for mercado in mercados:
         nombre = mercado["name"]
@@ -29,22 +29,40 @@ def obtener_cuotas_partido(fixture_id, bookmaker_id=8):
                 if val["value"] == "Away": cuotas_limpias["2"] = float(val["odd"])
                 
         # --- 2. GOLES (Over/Under) ---
-        elif nombre == "Goals Over/Under":
+        elif nombre == "Goals Over/Under" and "Over_Goles" not in cuotas_limpias:
+            linea = 2.5
             for val in mercado["values"]:
-                if val["value"] == "Over 2.5": cuotas_limpias["Over 2.5"] = float(val["odd"])
-                if val["value"] == "Under 2.5": cuotas_limpias["Under 2.5"] = float(val["odd"])
+                if "Over" in val["value"]:
+                    linea = float(val["value"].replace("Over ", ""))
+                    break
+            cuotas_limpias["Linea_Goles"] = linea
+            for val in mercado["values"]:
+                if val["value"] == f"Over {linea}": cuotas_limpias["Over_Goles"] = float(val["odd"])
+                if val["value"] == f"Under {linea}": cuotas_limpias["Under_Goles"] = float(val["odd"])
                 
         # --- 3. CORNERS ---
-        elif nombre in ["Corners Over Under", "Corners"]:
+        elif nombre in ["Corners Over Under", "Corners"] and "Over_Corners" not in cuotas_limpias:
+            linea = 9.5
             for val in mercado["values"]:
-                if val["value"] == "Over 9.5": cuotas_limpias["Over 9.5 Corners"] = float(val["odd"])
-                if val["value"] == "Under 9.5": cuotas_limpias["Under 9.5 Corners"] = float(val["odd"])
+                if "Over" in val["value"]:
+                    linea = float(val["value"].replace("Over ", ""))
+                    break
+            cuotas_limpias["Linea_Corners"] = linea
+            for val in mercado["values"]:
+                if val["value"] == f"Over {linea}": cuotas_limpias["Over_Corners"] = float(val["odd"])
+                if val["value"] == f"Under {linea}": cuotas_limpias["Under_Corners"] = float(val["odd"])
         
         # --- 4. TARJETAS ---
-        elif nombre in ["Cards Over/Under", "Cards"]:
+        elif nombre in ["Cards Over/Under", "Cards"] and "Over_Tarjetas" not in cuotas_limpias:
+            linea = 4.5
             for val in mercado["values"]:
-                if val["value"] == "Over 4.5": cuotas_limpias["Over 4.5 Tarjetas"] = float(val["odd"])
-                if val["value"] == "Under 4.5": cuotas_limpias["Under 4.5 Tarjetas"] = float(val["odd"])
+                if "Over" in val["value"]:
+                    linea = float(val["value"].replace("Over ", ""))
+                    break
+            cuotas_limpias["Linea_Tarjetas"] = linea
+            for val in mercado["values"]:
+                if val["value"] == f"Over {linea}": cuotas_limpias["Over_Tarjetas"] = float(val["odd"])
+                if val["value"] == f"Under {linea}": cuotas_limpias["Under_Tarjetas"] = float(val["odd"])
                     
     return cuotas_limpias
 
@@ -82,26 +100,31 @@ def evaluar_mercado_avanzado(probabilidad_modelo_pct, cuota_casa):
 
     return cuota_casa, ev_pct, veredicto, stake_recomendado, riesgo
 
-def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=None):
-    """Une las predicciones con cuotas automáticas o inyectadas manualmente."""
+def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=None, lineas_default=None):
+    """Une las predicciones con cuotas automáticas o inyectadas manualmente y usa líneas dinámicas."""
     if cuotas_personalizadas and len(cuotas_personalizadas) > 0:
         cuotas = cuotas_personalizadas
+        l_goles = lineas_default.get("Linea_Goles", 2.5) if lineas_default else 2.5
+        l_corners = lineas_default.get("Linea_Corners", 9.5) if lineas_default else 9.5
+        l_tarjetas = lineas_default.get("Linea_Tarjetas", 4.5) if lineas_default else 4.5
     else:
         cuotas = obtener_cuotas_partido(fixture_id)
-        
-    if not cuotas: return pd.DataFrame() 
+        if not cuotas: return pd.DataFrame() 
+        l_goles = cuotas.get("Linea_Goles", 2.5)
+        l_corners = cuotas.get("Linea_Corners", 9.5)
+        l_tarjetas = cuotas.get("Linea_Tarjetas", 4.5)
         
     analisis = []
     mercados_a_evaluar = [
         ("Gana Local", resultados_montecarlo["Resultado_1X2"]["Gana Local"], "1"),
         ("Empate", resultados_montecarlo["Resultado_1X2"]["Empate"], "X"),
         ("Gana Visita", resultados_montecarlo["Resultado_1X2"]["Gana Visita"], "2"),
-        ("Over 2.5 Goles", resultados_montecarlo["Goles_Over_Under"]["Over 2.5"], "Over 2.5"),
-        ("Under 2.5 Goles", resultados_montecarlo["Goles_Over_Under"]["Under 2.5"], "Under 2.5"),
-        ("Over 9.5 Corners", resultados_montecarlo["Corners_Totales"]["Over 9.5 Corners"], "Over 9.5 Corners"),
-        ("Under 9.5 Corners", resultados_montecarlo["Corners_Totales"]["Under 9.5 Corners"], "Under 9.5 Corners"),
-        ("Over 4.5 Tarjetas", resultados_montecarlo["Tarjetas_Totales"]["Over 4.5 Tarjetas"], "Over 4.5 Tarjetas"),
-        ("Under 4.5 Tarjetas", resultados_montecarlo["Tarjetas_Totales"]["Under 4.5 Tarjetas"], "Under 4.5 Tarjetas")
+        (f"Over {l_goles} Goles", resultados_montecarlo["Goles_Over_Under"][f"Over {l_goles}"], "Over_Goles"),
+        (f"Under {l_goles} Goles", resultados_montecarlo["Goles_Over_Under"][f"Under {l_goles}"], "Under_Goles"),
+        (f"Over {l_corners} Corners", resultados_montecarlo["Corners_Totales"][f"Over {l_corners} Corners"], "Over_Corners"),
+        (f"Under {l_corners} Corners", resultados_montecarlo["Corners_Totales"][f"Under {l_corners} Corners"], "Under_Corners"),
+        (f"Over {l_tarjetas} Tarjetas", resultados_montecarlo["Tarjetas_Totales"][f"Over {l_tarjetas} Tarjetas"], "Over_Tarjetas"),
+        (f"Under {l_tarjetas} Tarjetas", resultados_montecarlo["Tarjetas_Totales"][f"Under {l_tarjetas} Tarjetas"], "Under_Tarjetas")
     ]
     
     for nombre_m, prob, llave_cuota in mercados_a_evaluar:
