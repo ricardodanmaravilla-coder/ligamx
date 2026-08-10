@@ -5,7 +5,6 @@ import unicodedata
 from difflib import SequenceMatcher
 import streamlit as st
 
-# Extrae la API Key desde los Secrets de Streamlit o las variables locales
 try:
     THE_ODDS_API_KEY = st.secrets["THE_ODDS_API_KEY"]
 except Exception:
@@ -28,7 +27,7 @@ def obtener_cuotas_partido(local, visita, league_id=262):
     url = f"https://api.the-odds-api.com/v4/sports/{sport_key}/odds/"
     params = {
         "apiKey": THE_ODDS_API_KEY,
-        "regions": "us,eu,uk,au", # Ampliamos las regiones para buscar más casas de apuestas
+        "regions": "us,eu,uk,au", 
         "markets": "h2h,totals", 
         "oddsFormat": "decimal"
     }
@@ -36,12 +35,10 @@ def obtener_cuotas_partido(local, visita, league_id=262):
     cuotas_limpias = {"Linea_Goles": 2.5, "Linea_Corners": 9.5, "Linea_Tarjetas": 4.5}
     
     if not THE_ODDS_API_KEY:
-        st.error("❌ THE_ODDS_API_KEY no detectada en los Secrets. Las cuotas automáticas no funcionarán.")
         return cuotas_limpias
         
     try:
         res = requests.get(url, params=params, timeout=10)
-        
         if res.status_code != 200: 
             return cuotas_limpias
         
@@ -55,11 +52,8 @@ def obtener_cuotas_partido(local, visita, league_id=262):
             
             if son_similares(local, home_api) or son_similares(visita, away_api):
                 bookmakers = partido.get("bookmakers", [])
+                if not bookmakers: continue
                 
-                if not bookmakers: 
-                    continue
-                
-                # Buscamos en las casas de apuestas hasta encontrar una que tenga tanto 1X2 como Totales
                 for bookmaker in bookmakers:
                     mercados = bookmaker.get("markets", [])
                     encontro_goles = False
@@ -87,66 +81,11 @@ def obtener_cuotas_partido(local, visita, league_id=262):
                                     cuotas_limpias["Under_Goles"] = float(out.get("price"))
                                     encontro_goles = True
                                     
-                    # Si ya logramos capturar al menos el ganador y los goles, podemos detener la búsqueda en esta casa
                     if "1" in cuotas_limpias and encontro_goles:
                         break
                 break 
-                
-    except Exception as e:
-        st.error(f"⚠️ Error procesando The Odds API: {e}")
-        
-    return cuotas_limpias
-        
-        datos = res.json()
-        if not datos:
-            st.info("ℹ️ The Odds API NO tiene partidos publicados para la Liga MX en este momento (los casinos aún no abren las líneas).")
-            return cuotas_limpias
-            
-        match_encontrado = False
-        
-        for partido in datos:
-            home_api = partido.get("home_team", "")
-            away_api = partido.get("away_team", "")
-            
-            if son_similares(local, home_api) or son_similares(visita, away_api):
-                match_encontrado = True
-                bookmakers = partido.get("bookmakers", [])
-                
-                if not bookmakers: 
-                    st.warning(f"⚠️ Partido encontrado ({home_api} vs {away_api}), pero los casinos aún no suben las cuotas.")
-                    continue
-                
-                st.success(f"✅ ¡Cuotas obtenidas con éxito para {local} vs {visita}!")
-                mercados = bookmakers[0].get("markets", [])
-                
-                for m in mercados:
-                    key = m.get("key")
-                    outcomes = m.get("outcomes", [])
-                    
-                    if key == "h2h":
-                        for out in outcomes:
-                            name = out.get("name")
-                            if name == home_api: cuotas_limpias["1"] = float(out.get("price"))
-                            elif name == "Draw": cuotas_limpias["X"] = float(out.get("price"))
-                            else: cuotas_limpias["2"] = float(out.get("price"))
-                            
-                    elif key == "totals":
-                        for out in outcomes:
-                            if "point" in out:
-                                cuotas_limpias["Linea_Goles"] = float(out["point"])
-                            name = out.get("name")
-                            if name == "Over": cuotas_limpias["Over_Goles"] = float(out.get("price"))
-                            elif name == "Under": cuotas_limpias["Under_Goles"] = float(out.get("price"))
-                break 
-                
-        if not match_encontrado:
-            st.warning(f"🔍 The Odds API tiene {len(datos)} partidos, pero ninguno coincide con: {local} vs {visita}.")
-            with st.expander("Ver los partidos que The Odds API sí encontró (Para diagnóstico):"):
-                for d in datos:
-                    st.write(f"- {d.get('home_team')} vs {d.get('away_team')}")
-                
-    except Exception as e:
-        st.error(f"⚠️ Error procesando The Odds API: {e}")
+    except Exception:
+        pass
         
     return cuotas_limpias
 
@@ -201,12 +140,12 @@ def analizar_apuestas(resultados_montecarlo, local, visita, cuotas_personalizada
         ("Gana Local", resultados_montecarlo["Resultado_1X2"]["Gana Local"], "1"),
         ("Empate", resultados_montecarlo["Resultado_1X2"]["Empate"], "X"),
         ("Gana Visita", resultados_montecarlo["Resultado_1X2"]["Gana Visita"], "2"),
-        (f"Over {l_goles} Goles", resultados_montecarlo["Goles_Over_Under"][f"Over {l_goles}"], "Over_Goles"),
-        (f"Under {l_goles} Goles", resultados_montecarlo["Goles_Over_Under"][f"Under {l_goles}"], "Under_Goles"),
-        (f"Over {l_corners} Corners", resultados_montecarlo["Corners_Totales"][f"Over {l_corners} Corners"], "Over_Corners"),
-        (f"Under {l_corners} Corners", resultados_montecarlo["Corners_Totales"][f"Under {l_corners} Corners"], "Under_Corners"),
-        (f"Over {l_tarjetas} Tarjetas", resultados_montecarlo["Tarjetas_Totales"][f"Over {l_tarjetas} Tarjetas"], "Over_Tarjetas"),
-        (f"Under {l_tarjetas} Tarjetas", resultados_montecarlo["Tarjetas_Totales"][f"Under {l_tarjetas} Tarjetas"], "Under_Tarjetas")
+        (f"Over {l_goles} Goles", resultados_montecarlo["Goles_Over_Under"].get(f"Over {l_goles}", 50.0), "Over_Goles"),
+        (f"Under {l_goles} Goles", resultados_montecarlo["Goles_Over_Under"].get(f"Under {l_goles}", 50.0), "Under_Goles"),
+        (f"Over {l_corners} Corners", resultados_montecarlo["Corners_Totales"].get(f"Over {l_corners} Corners", 50.0), "Over_Corners"),
+        (f"Under {l_corners} Corners", resultados_montecarlo["Corners_Totales"].get(f"Under {l_corners} Corners", 50.0), "Under_Corners"),
+        (f"Over {l_tarjetas} Tarjetas", resultados_montecarlo["Tarjetas_Totales"].get(f"Over {l_tarjetas} Tarjetas", 50.0), "Over_Tarjetas"),
+        (f"Under {l_tarjetas} Tarjetas", resultados_montecarlo["Tarjetas_Totales"].get(f"Under {l_tarjetas} Tarjetas", 50.0), "Under_Tarjetas")
     ]
     
     for nombre_m, prob, llave_cuota in mercados_a_evaluar:
