@@ -25,10 +25,12 @@ def son_similares(a, b, umbral=0.45):
 def obtener_cuotas_partido(local, visita, league_id=262):
     sport_key = "soccer_mexico_ligamx" if league_id == 262 else "soccer_usa_mls"
     url = f"https://api.the-odds-api.com/v4/sports/{sport_key}/odds/"
+    
+    # Añadimos corners y cards a los mercados solicitados
     params = {
         "apiKey": THE_ODDS_API_KEY,
         "regions": "us,eu,uk,au", 
-        "markets": "h2h,totals", 
+        "markets": "h2h,totals,corners,cards", 
         "oddsFormat": "decimal"
     }
     
@@ -56,12 +58,12 @@ def obtener_cuotas_partido(local, visita, league_id=262):
                 
                 for bookmaker in bookmakers:
                     mercados = bookmaker.get("markets", [])
-                    encontro_goles = False
                     
                     for m in mercados:
                         key = m.get("key")
                         outcomes = m.get("outcomes", [])
                         
+                        # 1. Ganador (1X2)
                         if key == "h2h" and "1" not in cuotas_limpias:
                             for out in outcomes:
                                 name = out.get("name")
@@ -69,20 +71,30 @@ def obtener_cuotas_partido(local, visita, league_id=262):
                                 elif name == "Draw": cuotas_limpias["X"] = float(out.get("price"))
                                 else: cuotas_limpias["2"] = float(out.get("price"))
                                 
-                        elif key == "totals":
+                        # 2. Goles (Totals)
+                        elif key == "totals" and "Over_Goles" not in cuotas_limpias:
                             for out in outcomes:
-                                if "point" in out:
-                                    cuotas_limpias["Linea_Goles"] = float(out["point"])
+                                if "point" in out: cuotas_limpias["Linea_Goles"] = float(out["point"])
                                 name = out.get("name")
-                                if name == "Over": 
-                                    cuotas_limpias["Over_Goles"] = float(out.get("price"))
-                                    encontro_goles = True
-                                elif name == "Under": 
-                                    cuotas_limpias["Under_Goles"] = float(out.get("price"))
-                                    encontro_goles = True
-                                    
-                    if "1" in cuotas_limpias and encontro_goles:
-                        break
+                                if name == "Over": cuotas_limpias["Over_Goles"] = float(out.get("price"))
+                                elif name == "Under": cuotas_limpias["Under_Goles"] = float(out.get("price"))
+
+                        # 3. Córners (Corners)
+                        elif "corner" in key.lower() and "Over_Corners" not in cuotas_limpias:
+                            for out in outcomes:
+                                if "point" in out: cuotas_limpias["Linea_Corners"] = float(out["point"])
+                                name = out.get("name")
+                                if name == "Over": cuotas_limpias["Over_Corners"] = float(out.get("price"))
+                                elif name == "Under": cuotas_limpias["Under_Corners"] = float(out.get("price"))
+
+                        # 4. Tarjetas (Cards)
+                        elif "card" in key.lower() and "Over_Tarjetas" not in cuotas_limpias:
+                            for out in outcomes:
+                                if "point" in out: cuotas_limpias["Linea_Tarjetas"] = float(out["point"])
+                                name = out.get("name")
+                                if name == "Over": cuotas_limpias["Over_Tarjetas"] = float(out.get("price"))
+                                elif name == "Under": cuotas_limpias["Under_Tarjetas"] = float(out.get("price"))
+                                
                 break 
     except Exception:
         pass
