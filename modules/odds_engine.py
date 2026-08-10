@@ -1,73 +1,84 @@
 import os
 import requests
 import pandas as pd
+from difflib import SequenceMatcher
 
-API_KEY = os.environ.get("API_SPORTS_KEY")
-BASE_URL = "https://v3.football.api-sports.io"
-HEADERS = {'x-apisports-key': API_KEY}
+# Nueva variable de entorno para The Odds API
+THE_ODDS_API_KEY = os.environ.get("THE_ODDS_API_KEY", "de66554a17bce1149445b1a883056607")
 
-def obtener_cuotas_partido(fixture_id, bookmaker_id=8):
-    """Descarga las cuotas de Playdoit (Proxy Bet365) para un partido y detecta las líneas dinámicas."""
-    url = f"{BASE_URL}/odds"
-    response = requests.get(url, headers=HEADERS, params={"fixture": fixture_id, "bookmaker": bookmaker_id})
-    if response.status_code != 200: return None
+def son_similares(a, b, umbral=0.55):
+    """Ayuda a emparejar los nombres de API-Sports con los nombres de The Odds API"""
+    if not a or not b: return False
+    return SequenceMatcher(None, a.lower(), b.lower()).ratio() > umbral
+
+def obtener_cuotas_partido(local, visita, league_id=262):
+    """Descarga las cuotas directamente desde The Odds API."""
     
-    datos = response.json().get("response", [])
-    if not datos: return None
+    # Mapeo de liga a sport_key de The Odds API
+    sport_key = "soccer_mexico_ligamx" if league_id == 262 else "soccer_usa_mls"
         
-    mercados = datos[0]["bookmakers"][0]["bets"]
+    url = f"https://api.the-odds-api.com/v4/sports/{sport_key}/odds/"
+    params = {
+        "apiKey": THE_ODDS_API_KEY,
+        "regions": "us,eu", # Busca en casas de USA y Europa
+        "markets": "h2h,totals", # h2h = Ganador, totals = Over/Under Goles
+        "oddsFormat": "decimal"
+    }
+    
+    # Líneas y cuotas por defecto en caso de que The Odds API no las tenga
     cuotas_limpias = {"Linea_Goles": 2.5, "Linea_Corners": 9.5, "Linea_Tarjetas": 4.5}
     
-    for mercado in mercados:
-        nombre = mercado["name"]
+    if THE_ODDS_API_KEY == "de66554a17bce1149445b1a883056607" or not THE_ODDS_API_KEY:
+        print("Falta THE_ODDS_API_KEY")
+        return cuotas_limpias
         
-        # --- 1. GANADOR DEL PARTIDO (1X2) ---
-        if nombre == "Match Winner":
-            for val in mercado["values"]:
-                if val["value"] == "Home": cuotas_limpias["1"] = float(val["odd"])
-                if val["value"] == "Draw": cuotas_limpias["X"] = float(val["odd"])
-                if val["value"] == "Away": cuotas_limpias["2"] = float(val["odd"])
-                
-        # --- 2. GOLES (Over/Under) ---
-        elif nombre == "Goals Over/Under" and "Over_Goles" not in cuotas_limpias:
-            linea = 2.5
-            for val in mercado["values"]:
-                if "Over" in val["value"]:
-                    linea = float(val["value"].replace("Over ", ""))
-                    break
-            cuotas_limpias["Linea_Goles"] = linea
-            for val in mercado["values"]:
-                if val["value"] == f"Over {linea}": cuotas_limpias["Over_Goles"] = float(val["odd"])
-                if val["value"] == f"Under {linea}": cuotas_limpias["Under_Goles"] = float(val["odd"])
-                
-        # --- 3. CORNERS ---
-        elif nombre in ["Corners Over Under", "Corners"] and "Over_Corners" not in cuotas_limpias:
-            linea = 9.5
-            for val in mercado["values"]:
-                if "Over" in val["value"]:
-                    linea = float(val["value"].replace("Over ", ""))
-                    break
-            cuotas_limpias["Linea_Corners"] = linea
-            for val in mercado["values"]:
-                if val["value"] == f"Over {linea}": cuotas_limpias["Over_Corners"] = float(val["odd"])
-                if val["value"] == f"Under {linea}": cuotas_limpias["Under_Corners"] = float(val["odd"])
+    try:
+        res = requests.get(url, params=params, timeout=10)
+        if res.status_code != 200: 
+            return cuotas_limpias
         
-        # --- 4. TARJETAS ---
-        elif nombre in ["Cards Over/Under", "Cards"] and "Over_Tarjetas" not in cuotas_limpias:
-            linea = 4.5
-            for val in mercado["values"]:
-                if "Over" in val["value"]:
-                    linea = float(val["value"].replace("Over ", ""))
-                    break
-            cuotas_limpias["Linea_Tarjetas"] = linea
-            for val in mercado["values"]:
-                if val["value"] == f"Over {linea}": cuotas_limpias["Over_Tarjetas"] = float(val["odd"])
-                if val["value"] == f"Under {linea}": cuotas_limpias["Under_Tarjetas"] = float(val["odd"])
+        datos = res.json()
+        
+        for partido in datos:
+            home_api = partido.get("home_team", "")
+            away_api = partido.get("away_team", "")
+            
+            # Cruzamos los nombres de los equipos
+            if son_similares(local, home_api) or son_similares(visita, away_api):
+                bookmakers = partido.get("bookmakers", [])
+                if not bookmakers: continue
+                
+                # Tomamos la primera casa de apuestas disponible (suelen ser las más precisas de Las Vegas/Pinnacle)
+                mercados = bookmakers[0].get("markets", [])
+                
+                for m in mercados:
+                    key = m.get("key")
+                    outcomes = m.get("outcomes", [])
                     
+                    # --- 1. GANADOR DEL PARTIDO (1X2) ---
+                    if key == "h2h":
+                        for out in outcomes:
+                            name = out.get("name")
+                            if name == home_api: cuotas_limpias["1"] = float(out.get("price"))
+                            elif name == "Draw": cuotas_limpias["X"] = float(out.get("price"))
+                            else: cuotas_limpias["2"] = float(out.get("price"))
+                            
+                    # --- 2. GOLES OVER/UNDER Y LÍNEA DE CASINO ---
+                    elif key == "totals":
+                        for out in outcomes:
+                            if "point" in out:
+                                cuotas_limpias["Linea_Goles"] = float(out["point"])
+                            name = out.get("name")
+                            if name == "Over": cuotas_limpias["Over_Goles"] = float(out.get("price"))
+                            elif name == "Under": cuotas_limpias["Under_Goles"] = float(out.get("price"))
+                break # Rompemos el ciclo si ya encontramos el partido
+                
+    except Exception as e:
+        print(f"Error consultando The Odds API: {e}")
+        
     return cuotas_limpias
 
 def evaluar_mercado_avanzado(probabilidad_modelo_pct, cuota_casa):
-    """Evalúa usando EV, Criterio de Kelly Fraccional y Umbrales de Seguridad."""
     if not cuota_casa or cuota_casa <= 0:
         return "N/A", 0, "SIN CUOTA", 0, "N/A"
         
@@ -101,14 +112,13 @@ def evaluar_mercado_avanzado(probabilidad_modelo_pct, cuota_casa):
     return cuota_casa, ev_pct, veredicto, stake_recomendado, riesgo
 
 def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=None, lineas_default=None):
-    """Une las predicciones con cuotas automáticas o inyectadas manualmente y usa líneas dinámicas."""
     if cuotas_personalizadas and len(cuotas_personalizadas) > 0:
         cuotas = cuotas_personalizadas
         l_goles = lineas_default.get("Linea_Goles", 2.5) if lineas_default else 2.5
         l_corners = lineas_default.get("Linea_Corners", 9.5) if lineas_default else 9.5
         l_tarjetas = lineas_default.get("Linea_Tarjetas", 4.5) if lineas_default else 4.5
     else:
-        cuotas = obtener_cuotas_partido(fixture_id)
+        cuotas = obtener_cuotas_partido(fixture_id) # En The Odds API, el fixture_id aquí es ignorado si se pasa el diccionario directo
         if not cuotas: return pd.DataFrame() 
         l_goles = cuotas.get("Linea_Goles", 2.5)
         l_corners = cuotas.get("Linea_Corners", 9.5)
