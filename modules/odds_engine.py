@@ -1,5 +1,6 @@
 import os
 import requests
+import pandas as pd
 import unicodedata
 from difflib import SequenceMatcher
 
@@ -71,3 +72,64 @@ def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
         print(f"Error consultando The Odds API: {e}")
         
     return cuotas_limpias
+
+def analizar_apuestas(resultados, local, visita, cuotas_personalizadas=None, lineas_default=None):
+    """Compara las probabilidades del simulador Montecarlo contra las cuotas y calcula el valor esperado (EV) y Criterio de Kelly."""
+    apuestas_lista = []
+    
+    if not lineas_default:
+        lineas_default = {"Linea_Goles": 2.5, "Linea_Corners": 9.5, "Linea_Tarjetas": 4.5}
+        
+    l_goles = lineas_default.get("Linea_Goles", 2.5)
+    l_corners = lineas_default.get("Linea_Corners", 9.5)
+    l_tarjetas = lineas_default.get("Linea_Tarjetas", 4.5)
+    
+    # Usar cuotas personalizadas o vacías por defecto
+    cuotas = cuotas_personalizadas if cuotas_personalizadas else obtener_cuotas_partido(local, visita)
+    
+    # 1. Analizar Mercado 1X2
+    prob_1x2 = resultados.get('Resultado_1X2', {})
+    mercados_1x2 = [
+        ("Gana Local", f"Victoria {local}", prob_1x2.get('Gana Local', 0) / 100.0, cuotas.get('1', 0.0)),
+        ("Empate", "Empate", prob_1x2.get('Empate', 0) / 100.0, cuotas.get('X', 0.0)),
+        ("Gana Visita", f"Victoria {visita}", prob_1x2.get('Gana Visita', 0) / 100.0, cuotas.get('2', 0.0))
+    ]
+    
+    for key_m, nombre_m, prob_real, cuota in mercados_1x2:
+        if cuota > 1.0 and prob_real > 0:
+            ev = (prob_real * cuota) - 1.0
+            kelly = max(0.0, ((prob_real * cuota - 1) / (cuota - 1))) * 100 if cuota > 1 else 0.0
+            
+            veredicto = "Paso"
+            if ev > 0.05: veredicto = "🔥 Valor Alto (EV+)"
+            elif ev > 0.0: veredicto = "✅ Valor Moderado"
+            
+            apuestas_lista.append({
+                "Mercado": nombre_m,
+                "Prob. Modelo": f"{round(prob_real * 100, 1)}%",
+                "Cuota": f"{cuota:.2f}",
+                "EV (%)": f"{round(ev * 100, 2)}%",
+                "Kelly (%)": f"{round(kelly, 2)}%",
+                "Veredicto": veredicto
+            })
+
+    # 2. Analizar Goles Over/Under
+    goles_ou = resultados.get('Goles_Over_Under', {})
+    prob_over_goles = goles_ou.get(f'Over {l_goles}', 50.0) / 100.0
+    cuota_over_goles = cuotas.get('Over_Goles', 1.90)
+    
+    if cuota_over_goles > 1.0:
+        ev_og = (prob_over_goles * cuota_over_goles) - 1.0
+        kelly_og = max(0.0, ((prob_over_goles * cuota_over_goles - 1) / (cuota_over_goles - 1))) * 100 if cuota_over_goles > 1 else 0.0
+        ver_og = "🔥 Valor Alto (EV+)" if ev_og > 0.05 else ("✅ Valor Moderado" if ev_og > 0.0 else "Paso")
+        
+        apuestas_lista.append({
+            "Mercado": f"Over {l_goles} Goles",
+            "Prob. Modelo": f"{round(prob_over_goles * 100, 1)}%",
+            "Cuota": f"{cuota_over_goles:.2f}",
+            "EV (%)": f"{round(ev_og * 100, 2)}%",
+            "Kelly (%)": f"{round(kelly_og, 2)}%",
+            "Veredicto": ver_og
+        })
+
+    return pd.DataFrame(apuestas_lista)
