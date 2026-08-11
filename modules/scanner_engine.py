@@ -1,7 +1,7 @@
 import os
 import requests
 import pandas as pd
-from datetime import datetime
+import datetime
 import streamlit as st
 
 from modules.montecarlo_sim import simular_partido_montecarlo
