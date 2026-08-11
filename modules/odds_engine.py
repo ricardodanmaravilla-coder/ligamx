@@ -17,12 +17,12 @@ def son_similares(a, b, umbral=0.35):
     return SequenceMatcher(None, a_limpio, b_limpio).ratio() > umbral
 
 def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
-    """Extrae cuotas reales de 1X2 y Goles desde The Odds API, usando respaldos seguros para el resto."""
+    """Consulta The Odds API. Si no hay datos reales disponibles, devuelve ceros estrictos sin inventar nada."""
     cuotas_limpias = {
         "1": 0.0, "X": 0.0, "2": 0.0,
         "Linea_Goles": 2.5, "Over_Goles": 0.0, "Under_Goles": 0.0,
-        "Linea_Corners": 9.5, "Over_Corners": 1.85, "Under_Corners": 1.85,
-        "Linea_Tarjetas": 4.5, "Over_Tarjetas": 1.90, "Under_Tarjetas": 1.90
+        "Linea_Corners": 9.5, "Over_Corners": 0.0, "Under_Corners": 0.0,
+        "Linea_Tarjetas": 4.5, "Over_Tarjetas": 0.0, "Under_Tarjetas": 0.0
     }
     
     api_key = os.environ.get("ODDS_API_KEY")
@@ -32,7 +32,7 @@ def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
     url = f"https://api.the-odds-api.com/v4/sports/{league_id}/odds/"
     params = {
         "apiKey": api_key,
-        "regions": "mx,us",
+        "regions": "mx,us,eu",
         "markets": "h2h,totals",
         "oddsFormat": "decimal"
     }
@@ -48,7 +48,7 @@ def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
                 if son_similares(local, home_team) and son_similares(visita, away_team):
                     bookmakers = partido.get("bookmakers", [])
                     if bookmakers:
-                        bookmaker = bookmakers[0] # Tomamos la primera casa disponible
+                        bookmaker = bookmakers[0] 
                         markets = bookmaker.get("markets", [])
                         
                         for market in markets:
@@ -74,19 +74,17 @@ def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
     return cuotas_limpias
 
 def analizar_apuestas(resultados, local, visita, cuotas_personalizadas=None, lineas_default=None):
-    """Procesa el valor esperado (EV) y Criterio de Kelly combinando los datos reales de la API y el modelo."""
+    """Procesa el valor esperado (EV) únicamente con cuotas reales de la API. Si la cuota es 0.0, omite o marca sin mercado."""
     apuestas_lista = []
     
     if not lineas_default:
         lineas_default = {"Linea_Goles": 2.5, "Linea_Corners": 9.5, "Linea_Tarjetas": 4.5}
         
     l_goles = lineas_default.get("Linea_Goles", 2.5)
-    l_corners = lineas_default.get("Linea_Corners", 9.5)
-    l_tarjetas = lineas_default.get("Linea_Tarjetas", 4.5)
     
     cuotas = cuotas_personalizadas if cuotas_personalizadas else obtener_cuotas_partido(local, visita)
     
-    # 1. Mercado 1X2 (Extraído de la API)
+    # 1. Mercado 1X2
     prob_1x2 = resultados.get('Resultado_1X2', {})
     mercados_1x2 = [
         ("Gana Local", f"Victoria {local}", prob_1x2.get('Gana Local', 0) / 100.0, cuotas.get('1', 0.0)),
@@ -111,8 +109,17 @@ def analizar_apuestas(resultados, local, visita, cuotas_personalizadas=None, lin
                 "Kelly (%)": f"{round(kelly, 2)}%",
                 "Veredicto": veredicto
             })
+        else:
+            apuestas_lista.append({
+                "Mercado": nombre_m,
+                "Prob. Modelo": f"{round(prob_real * 100, 1)}%",
+                "Cuota": "No disponible",
+                "EV (%)": "N/A",
+                "Kelly (%)": "N/A",
+                "Veredicto": "❌ Sin cuota en API"
+            })
 
-    # 2. Mercado Goles Over (Extraído de la API)
+    # 2. Mercado Goles Over
     goles_ou = resultados.get('Goles_Over_Under', {})
     prob_over_goles = goles_ou.get(f'Over {l_goles}', 50.0) / 100.0
     cuota_over_goles = cuotas.get('Over_Goles', 0.0)
@@ -129,6 +136,15 @@ def analizar_apuestas(resultados, local, visita, cuotas_personalizadas=None, lin
             "EV (%)": f"{round(ev_og * 100, 2)}%",
             "Kelly (%)": f"{round(kelly_og, 2)}%",
             "Veredicto": ver_og
+        })
+    else:
+        apuestas_lista.append({
+            "Mercado": f"Over {l_goles} Goles",
+            "Prob. Modelo": f"{round(prob_over_goles * 100, 1)}%",
+            "Cuota": "No disponible",
+            "EV (%)": "N/A",
+            "Kelly (%)": "N/A",
+            "Veredicto": "❌ Sin cuota en API"
         })
 
     return pd.DataFrame(apuestas_lista)
