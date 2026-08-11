@@ -116,3 +116,4 @@ def calcular_eficiencia_portero_api(equipo_id, equipo_nombre):
     
     # print(f"🧤 {equipo_nombre}: Atajó {atajadas_totales} de {tiros_al_arco_rivales} ({round(porcentaje_atajadas*100)}%). Factor: {round(factor_portero, 2)}")
     return factor_portero
+    
