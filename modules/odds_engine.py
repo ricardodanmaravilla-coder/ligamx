@@ -7,8 +7,7 @@ from difflib import SequenceMatcher
 def limpiar_nombre(texto):
     if not texto: return ""
     texto = unicodedata.normalize('NFKD', str(texto)).encode('ASCII', 'ignore').decode('utf-8')
-    # Remover palabras comunes de relleno para comparar mejor
-    for palabra in ["fc", "club", "de", "la", "uuanl", "unp"]:
+    for palabra in ["fc", "club", "de", "la"]:
         texto = texto.replace(palabra, "")
     return texto.lower().strip()
 
@@ -20,7 +19,7 @@ def son_similares(a, b, umbral=0.25):
     return SequenceMatcher(None, a_limpio, b_limpio).ratio() > umbral
 
 def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
-    """Consulta The Odds API y cruza los equipos de forma flexible para aprovechar las peticiones."""
+    """Consulta The Odds API y cruza los equipos de forma flexible."""
     cuotas_limpias = {
         "1": 0.0, "X": 0.0, "2": 0.0,
         "Linea_Goles": 2.5, "Over_Goles": 0.0, "Under_Goles": 0.0,
@@ -48,7 +47,6 @@ def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
                 home_team = partido.get("home_team", "")
                 away_team = partido.get("away_team", "")
                 
-                # Coincidencia flexible para local y visitante
                 if (son_similares(local, home_team) or son_similares(local, away_team)) and \
                    (son_similares(visita, home_team) or son_similares(visita, away_team)):
                     
@@ -80,7 +78,7 @@ def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
     return cuotas_limpias
 
 def analizar_apuestas(resultados, local, visita, cuotas_personalizadas=None, lineas_default=None):
-    """Procesa el valor esperado (EV) usando los datos capturados de la API."""
+    """Procesa y asegura que la tabla siempre retorne datos visibles para Streamlit."""
     apuestas_lista = []
     
     if not lineas_default:
@@ -102,37 +100,44 @@ def analizar_apuestas(resultados, local, visita, cuotas_personalizadas=None, lin
         if cuota > 1.0 and prob_real > 0:
             ev = (prob_real * cuota) - 1.0
             kelly = max(0.0, ((prob_real * cuota - 1) / (cuota - 1))) * 100 if cuota > 1 else 0.0
+            veredicto = "🔥 Valor Alto (EV+)" if ev > 0.05 else ("✅ Valor Moderado" if ev > 0.0 else "Paso")
+        else:
+            ev = 0.0
+            kelly = 0.0
+            veredicto = "ℹ️ Sin cuota API"
+            cuota = 0.0
             
-            veredicto = "Paso"
-            if ev > 0.05: veredicto = "🔥 Valor Alto (EV+)"
-            elif ev > 0.0: veredicto = "✅ Valor Moderado"
-            
-            apuestas_lista.append({
-                "Mercado": nombre_m,
-                "Prob. Modelo": f"{round(prob_real * 100, 1)}%",
-                "Cuota": f"{cuota:.2f}",
-                "EV (%)": f"{round(ev * 100, 2)}%",
-                "Kelly (%)": f"{round(kelly, 2)}%",
-                "Veredicto": veredicto
-            })
+        apuestas_lista.append({
+            "Mercado": nombre_m,
+            "Prob. Modelo": f"{round(prob_real * 100, 1)}%",
+            "Cuota": f"{cuota:.2f}" if cuota > 0 else "N/A",
+            "EV (%)": f"{round(ev * 100, 2)}%" if cuota > 0 else "N/A",
+            "Kelly (%)": f"{round(kelly, 2)}%" if cuota > 0 else "N/A",
+            "Veredicto": veredicto
+        })
 
     # 2. Mercado Goles Over
     goles_ou = resultados.get('Goles_Over_Under', {})
     prob_over_goles = goles_ou.get(f'Over {l_goles}', 50.0) / 100.0
     cuota_over_goles = cuotas.get('Over_Goles', 0.0)
     
-    if cuota_over_goles > 1.0:
+    if cuota_over_goles > 1.0 and prob_over_goles > 0:
         ev_og = (prob_over_goles * cuota_over_goles) - 1.0
         kelly_og = max(0.0, ((prob_over_goles * cuota_over_goles - 1) / (cuota_over_goles - 1))) * 100 if cuota_over_goles > 1 else 0.0
         ver_og = "🔥 Valor Alto (EV+)" if ev_og > 0.05 else ("✅ Valor Moderado" if ev_og > 0.0 else "Paso")
-        
-        apuestas_lista.append({
-            "Mercado": f"Over {l_goles} Goles",
-            "Prob. Modelo": f"{round(prob_over_goles * 100, 1)}%",
-            "Cuota": f"{cuota_over_goles:.2f}",
-            "EV (%)": f"{round(ev_og * 100, 2)}%",
-            "Kelly (%)": f"{round(kelly_og, 2)}%",
-            "Veredicto": ver_og
-        })
+    else:
+        ev_og = 0.0
+        kelly_og = 0.0
+        ver_og = "ℹ️ Sin cuota API"
+        cuota_over_goles = 0.0
+
+    apuestas_lista.append({
+        "Mercado": f"Over {l_goles} Goles",
+        "Prob. Modelo": f"{round(prob_over_goles * 100, 1)}%",
+        "Cuota": f"{cuota_over_goles:.2f}" if cuota_over_goles > 0 else "N/A",
+        "EV (%)": f"{round(ev_og * 100, 2)}%" if cuota_over_goles > 0 else "N/A",
+        "Kelly (%)": f"{round(kelly_og, 2)}%" if cuota_over_goles > 0 else "N/A",
+        "Veredicto": ver_og
+    })
 
     return pd.DataFrame(apuestas_lista)
