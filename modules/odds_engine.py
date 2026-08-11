@@ -7,9 +7,12 @@ from difflib import SequenceMatcher
 def limpiar_nombre(texto):
     if not texto: return ""
     texto = unicodedata.normalize('NFKD', str(texto)).encode('ASCII', 'ignore').decode('utf-8')
+    # Remover palabras comunes de relleno para comparar mejor
+    for palabra in ["fc", "club", "de", "la", "uuanl", "unp"]:
+        texto = texto.replace(palabra, "")
     return texto.lower().strip()
 
-def son_similares(a, b, umbral=0.35):
+def son_similares(a, b, umbral=0.25):
     if not a or not b: return False
     a_limpio = limpiar_nombre(a)
     b_limpio = limpiar_nombre(b)
@@ -17,7 +20,7 @@ def son_similares(a, b, umbral=0.35):
     return SequenceMatcher(None, a_limpio, b_limpio).ratio() > umbral
 
 def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
-    """Consulta The Odds API. Si no hay datos reales disponibles, devuelve ceros estrictos sin inventar nada."""
+    """Consulta The Odds API y cruza los equipos de forma flexible para aprovechar las peticiones."""
     cuotas_limpias = {
         "1": 0.0, "X": 0.0, "2": 0.0,
         "Linea_Goles": 2.5, "Over_Goles": 0.0, "Under_Goles": 0.0,
@@ -45,7 +48,10 @@ def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
                 home_team = partido.get("home_team", "")
                 away_team = partido.get("away_team", "")
                 
-                if son_similares(local, home_team) and son_similares(visita, away_team):
+                # Coincidencia flexible para local y visitante
+                if (son_similares(local, home_team) or son_similares(local, away_team)) and \
+                   (son_similares(visita, home_team) or son_similares(visita, away_team)):
+                    
                     bookmakers = partido.get("bookmakers", [])
                     if bookmakers:
                         bookmaker = bookmakers[0] 
@@ -74,7 +80,7 @@ def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
     return cuotas_limpias
 
 def analizar_apuestas(resultados, local, visita, cuotas_personalizadas=None, lineas_default=None):
-    """Procesa el valor esperado (EV) únicamente con cuotas reales de la API. Si la cuota es 0.0, omite o marca sin mercado."""
+    """Procesa el valor esperado (EV) usando los datos capturados de la API."""
     apuestas_lista = []
     
     if not lineas_default:
@@ -109,15 +115,6 @@ def analizar_apuestas(resultados, local, visita, cuotas_personalizadas=None, lin
                 "Kelly (%)": f"{round(kelly, 2)}%",
                 "Veredicto": veredicto
             })
-        else:
-            apuestas_lista.append({
-                "Mercado": nombre_m,
-                "Prob. Modelo": f"{round(prob_real * 100, 1)}%",
-                "Cuota": "No disponible",
-                "EV (%)": "N/A",
-                "Kelly (%)": "N/A",
-                "Veredicto": "❌ Sin cuota en API"
-            })
 
     # 2. Mercado Goles Over
     goles_ou = resultados.get('Goles_Over_Under', {})
@@ -136,15 +133,6 @@ def analizar_apuestas(resultados, local, visita, cuotas_personalizadas=None, lin
             "EV (%)": f"{round(ev_og * 100, 2)}%",
             "Kelly (%)": f"{round(kelly_og, 2)}%",
             "Veredicto": ver_og
-        })
-    else:
-        apuestas_lista.append({
-            "Mercado": f"Over {l_goles} Goles",
-            "Prob. Modelo": f"{round(prob_over_goles * 100, 1)}%",
-            "Cuota": "No disponible",
-            "EV (%)": "N/A",
-            "Kelly (%)": "N/A",
-            "Veredicto": "❌ Sin cuota en API"
         })
 
     return pd.DataFrame(apuestas_lista)
