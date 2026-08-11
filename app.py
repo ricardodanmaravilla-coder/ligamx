@@ -6,7 +6,7 @@ import requests
 import numpy as np
 import datetime
 
-# --- BLINDAJE DE IMPORTACIÓN DE MÓDULOS ---
+# Blindaje de rutas para la carpeta modules
 current_dir = os.path.dirname(os.path.abspath(__file__))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
@@ -14,7 +14,7 @@ if current_dir not in sys.path:
 from modules.elo_engine import SistemaEloLigaMX
 from modules.ml_engine import PredictorML
 from modules.montecarlo_sim import simular_partido_montecarlo
-from modules.odds_engine import obtener_cuotas_partido, analizar_apuestas
+from modules.odds_engine import analizar_apuestas
 
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(page_title="Dashboard Liga MX & Analítica de Apuestas", layout="wide")
@@ -50,18 +50,12 @@ def cargar_historico_seguro():
 
 @st.cache_data(ttl=3600)
 def obtener_proximos_partidos_espn(liga_espn="mex.1"):
-    """Descarga la jornada completa desde ESPN forzando una ventana de 15 días (máximo 10 partidos)."""
     url = f"https://site.api.espn.com/apis/site/v2/sports/soccer/{liga_espn}/scoreboard"
-    
     hoy = datetime.date.today()
     futuro = hoy + datetime.timedelta(days=15)
     rango_fechas = f"{hoy.strftime('%Y%m%d')}-{futuro.strftime('%Y%m%d')}"
     
-    params = {
-        "limit": 10,  
-        "dates": rango_fechas
-    }
-    
+    params = {"limit": 10, "dates": rango_fechas}
     partidos_dict = {}
     
     try:
@@ -72,7 +66,6 @@ def obtener_proximos_partidos_espn(liga_espn="mex.1"):
                 fecha = event.get('date', '')[:10]
                 competencia = event.get('competitions', [{}])[0]
                 fix_id = event.get('id')
-                
                 competitors = competencia.get('competitors', [])
                 local, visita = "", ""
                 
@@ -85,18 +78,14 @@ def obtener_proximos_partidos_espn(liga_espn="mex.1"):
                 
                 if local and visita:
                     llave = f"📅 {fecha} | {local} vs {visita}"
-                    partidos_dict[llave] = {
-                        "local": local,
-                        "visita": visita,
-                        "fixture_id": fix_id
-                    }
+                    partidos_dict[llave] = {"local": local, "visita": visita, "fixture_id": fix_id}
     except Exception as e:
         st.error(f"Error conectando a la API de ESPN: {e}")
         
     return partidos_dict
 
 st.title("⚽ Liga MX Analytics & Value Betting (2026)")
-st.write("Simulador Montecarlo (Goles, Corners, Tarjetas) + Criterio de Kelly (Modo Automático)")
+st.write("Simulador Montecarlo (Goles, Corners, Tarjetas) + Criterio de Kelly")
 
 st.markdown("### 1. Selecciona el Encuentro")
 partidos_reales = obtener_proximos_partidos_espn("mex.1")
@@ -107,8 +96,43 @@ else:
     seleccion = st.selectbox("Próximos partidos de Liga MX:", list(partidos_reales.keys()))
     datos_partido = partidos_reales[seleccion]
 
-    if st.button("🚀 Ejecutar Simulación Automática y Buscar Cuotas", type="primary"):
-        with st.spinner('Descargando cuotas y procesando simulación en tiempo real...'):
+    # Líneas por defecto
+    linea_goles = 2.5
+    linea_corners = 9.5
+    linea_tarjetas = 4.5
+
+    # --- CAMPOS DE INPUTS DE CUOTAS VISIBLES DE INMEDIATO ---
+    with st.container():
+        st.markdown("⚙️ **Ingreso de Cuotas Reales (Tu Casino / Playdoit)**")
+        st.info("Ajusta los valores con las cuotas exactas que ves en tu plataforma antes de ejecutar la simulación.")
+        
+        c1, c2, c3 = st.columns(3)
+        cuota_1 = c1.number_input("Gana Local (1)", min_value=0.0, value=2.10, step=0.05, format="%.2f")
+        cuota_x = c2.number_input("Empate (X)", min_value=0.0, value=3.30, step=0.05, format="%.2f")
+        cuota_2 = c3.number_input("Gana Visita (2)", min_value=0.0, value=3.20, step=0.05, format="%.2f")
+
+        c4, c5, c6 = st.columns(3)
+        linea_goles = c4.number_input("Línea de Goles", min_value=0.5, value=2.5, step=0.5, format="%.1f")
+        cuota_over_goles = c5.number_input("Cuota Over Goles", min_value=0.0, value=1.90, step=0.05, format="%.2f")
+        cuota_under_goles = c6.number_input("Cuota Under Goles", min_value=0.0, value=1.90, step=0.05, format="%.2f")
+
+        c7, c8 = st.columns(2)
+        linea_corners = c7.number_input("Línea Córners", min_value=0.5, value=9.5, step=0.5, format="%.1f")
+        cuota_over_corners = c8.number_input("Cuota Over Córners", min_value=0.0, value=1.85, step=0.05, format="%.2f")
+
+        c9, c10 = st.columns(2)
+        linea_tarjetas = c9.number_input("Línea Tarjetas", min_value=0.5, value=4.5, step=0.5, format="%.1f")
+        cuota_over_tarjetas = c10.number_input("Cuota Over Tarjetas", min_value=0.0, value=1.90, step=0.05, format="%.2f")
+
+    cuotas_usuario = {
+        "1": cuota_1, "X": cuota_x, "2": cuota_2,
+        "Over_Goles": cuota_over_goles, "Under_Goles": cuota_under_goles,
+        "Over_Corners": cuota_over_corners, "Under_Corners": 1.90,
+        "Over_Tarjetas": cuota_over_tarjetas, "Under_Tarjetas": 1.90
+    }
+
+    if st.button("🚀 Ejecutar Simulación y Calcular Valor (EV)", type="primary"):
+        with st.spinner('Procesando simulación y calculando rentabilidad...'):
             try:
                 df_hist_base = cargar_historico_seguro()
                 
@@ -123,11 +147,6 @@ else:
                     e_vis = float(tabla_elo_temp.loc[tabla_elo_temp['Equipo'] == datos_partido['visita'], 'ELO_Rating'].values[0])
                 except:
                     e_vis = 1500.0
-
-                cuotas_automaticas = obtener_cuotas_partido(datos_partido["local"], datos_partido["visita"])
-                linea_goles = cuotas_automaticas.get("Linea_Goles", 2.5) if cuotas_automaticas else 2.5
-                linea_corners = cuotas_automaticas.get("Linea_Corners", 9.5) if cuotas_automaticas else 9.5
-                linea_tarjetas = cuotas_automaticas.get("Linea_Tarjetas", 4.5) if cuotas_automaticas else 4.5
 
                 resultados = simular_partido_montecarlo(
                     datos_partido["local"], 
@@ -167,15 +186,17 @@ else:
                     
                     st.markdown("---")
 
+                    lineas_default = {"Linea_Goles": linea_goles, "Linea_Corners": linea_corners, "Linea_Tarjetas": linea_tarjetas}
                     df_apuestas = analizar_apuestas(
                         resultados, 
                         datos_partido["local"], 
                         datos_partido["visita"], 
-                        lineas_default={"Linea_Goles": linea_goles, "Linea_Corners": linea_corners, "Linea_Tarjetas": linea_tarjetas}
+                        cuotas_personalizadas=cuotas_usuario,
+                        lineas_default=lineas_default
                     )
                     
                     if not df_apuestas.empty:
-                        st.subheader("💰 Tabla Automática de Valor y Kelly")
+                        st.subheader("💰 Tabla de Valor (EV) y Criterio de Kelly")
                         def color_veredicto(val):
                             if '🔥' in str(val): return 'color: #00ff00; font-weight: bold'
                             elif '✅' in str(val): return 'color: #adff2f'
@@ -191,30 +212,6 @@ else:
                     
             except Exception as e:
                 st.error(f"Ocurrió un error inesperado durante la simulación: {e}")
-
-st.markdown("---")
-
-with st.expander("🚨 Escáner Automático de Oportunidades (Jornada Completa)", expanded=False):
-    st.info("Este escáner analiza todos los partidos de la próxima jornada de golpe y filtra el valor de forma automática.")
-    
-    if st.button("🔍 Ejecutar Escáner Automático de Jornada", key="btn_scanner_mx"):
-        with st.spinner("Analizando la jornada completa con Montecarlo..."):
-            from modules.scanner_engine import escanear_jornada_actual
-            df_oro = pd.DataFrame(escanear_jornada_actual())
-            
-            if not df_oro.empty:
-                st.success(f"¡Se encontraron {len(df_oro)} oportunidades de alta probabilidad con valor!")
-                def color_veredicto_oro(val):
-                    if '🔥' in str(val): return 'color: #00ff00; font-weight: bold'
-                    elif '✅' in str(val): return 'color: #adff2f'
-                    return ''
-                st.dataframe(
-                    df_oro.style.map(color_veredicto_oro, subset=['Veredicto']), 
-                    width='stretch',
-                    hide_index=True
-                )
-            else:
-                st.warning("No hay partidos próximos en la jornada con los criterios requeridos en este momento.")
 
 st.markdown("---")
 
