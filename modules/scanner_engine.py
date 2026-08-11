@@ -49,9 +49,11 @@ def escanear_jornada_actual():
         pass
 
     # Consultamos la cartelera pública de ESPN para Liga MX
+    # Consultamos la cartelera pública de ESPN para Liga MX con límite de jornada
     url = "https://site.api.espn.com/apis/site/v2/sports/soccer/mex.1/scoreboard"
+    params = {"limit": 50}
     try:
-        res = requests.get(url, timeout=5)
+        res = requests.get(url, params=params, timeout=10)
         if res.status_code != 200:
             return []
         data = res.json()
