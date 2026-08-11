@@ -92,7 +92,7 @@ def obtener_proximos_partidos_espn(liga_espn="mex.1"):
 st.title("⚽ Liga MX Analytics & Value Betting (2026)")
 st.write("Simulador Montecarlo (Goles, Corners, Tarjetas) + Criterio de Kelly")
 
-# --- SECCIÓN DE INGRESO MASIVO DE TODA LA JORNADA ---
+# --- SECCIÓN 1: INGRESO MASIVO DE TODA LA JORNADA ---
 st.markdown("### 🏆 Ingreso Masivo de Cuotas (Toda la Jornada)")
 st.info("Ingresa las cuotas principales (1, X, 2) que ves en tu plataforma (ej. Playdoit) para cada encuentro y presiona el botón para calcular el valor esperado (EV) de toda la jornada de golpe.")
 
@@ -159,7 +159,6 @@ else:
                     continue
                 
                 over_goles_val = resultados['Goles_Over_Under'].get(f'Over {l_goles}', 50.0)
-                # Estimación de cuota over goles por defecto segura si no hay input específico
                 over_goles_cuota = 1.90 
                 
                 cuotas_dict = {
@@ -205,28 +204,109 @@ else:
 
 st.markdown("---")
 
-# --- SECCIÓN SECUNDARIA: RANKING ELO Y MODELOS ---
-st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
+# --- SECCIÓN 2: ANALIZADOR DETALLADO POR PARTIDO INDIVIDUAL (CON ML E HÍBRIDO) ---
+st.markdown("### 🔍 Análisis Detallado por Partido (Individual + Machine Learning)")
+if partidos_reales:
+    seleccion_ind = st.selectbox("Selecciona un partido para análisis profundo:", list(partidos_reales.keys()), key="select_individual")
+    datos_partido = partidos_reales[seleccion_ind]
 
+    cuotas_automaticas = obtener_cuotas_partido(datos_partido["local"], datos_partido["visita"])
+    linea_goles_ind = cuotas_automaticas.get("Linea_Goles", 2.5) if cuotas_automaticas else 2.5
+    linea_corners_ind = cuotas_automaticas.get("Linea_Corners", 9.5) if cuotas_automaticas else 9.5
+    linea_tarjetas_ind = cuotas_automaticas.get("Linea_Tarjetas", 4.5) if cuotas_automaticas else 4.5
+
+    if st.button("Ejecutar Análisis Profundo del Partido", type="primary", key="btn_ind"):
+        with st.spinner('Calculando Montecarlo, ELO y Machine Learning...'):
+            try:
+                df_hist_base = cargar_historico_seguro()
+                motor_elo_temp = SistemaEloLigaMX()
+                tabla_elo_temp = motor_elo_temp.calcular_historico(df_hist_base)
+                
+                try:
+                    e_loc = float(tabla_elo_temp.loc[tabla_elo_temp['Equipo'] == datos_partido['local'], 'ELO_Rating'].values[0])
+                except:
+                    e_loc = 1500.0
+                try:
+                    e_vis = float(tabla_elo_temp.loc[tabla_elo_temp['Equipo'] == datos_partido['visita'], 'ELO_Rating'].values[0])
+                except:
+                    e_vis = 1500.0
+
+                resultados = simular_partido_montecarlo(
+                    datos_partido["local"], datos_partido["visita"],
+                    df_historico=df_hist_base, elo_local=e_loc, elo_visita=e_vis,
+                    linea_goles=linea_goles_ind, linea_corners=linea_corners_ind, linea_tarjetas=linea_tarjetas_ind
+                )
+                
+                if isinstance(resultados, str):
+                    st.error(f"🚨 Problema con los datos: {resultados}")
+                else:
+                    st.subheader("📊 Probabilidades Reales (Montecarlo)")
+                    col1, col2, col3 = st.columns(3)
+                    col1.metric(f"Victoria {datos_partido['local']}", f"{resultados['Resultado_1X2']['Gana Local']}%")
+                    col2.metric("Empate", f"{resultados['Resultado_1X2']['Empate']}%")
+                    col3.metric(f"Victoria {datos_partido['visita']}", f"{resultados['Resultado_1X2']['Gana Visita']}%")
+                    
+                    st.markdown("---")
+
+                    # ML Predictions
+                    ml_predictor = PredictorML()
+                    if ml_predictor.entrenar(df_hist_base):
+                        g_l_sim = resultados['Goles_Individuales'][datos_partido['local']]['goles']
+                        g_v_sim = resultados['Goles_Individuales'][datos_partido['visita']]['goles']
+                        
+                        preds_ml = ml_predictor.predecir_mercados_completos(
+                            df_hist_base, datos_partido['local'], datos_partido['visita'], 
+                            g_l_sim, g_v_sim, e_loc, e_vis,
+                            linea_goles=linea_goles_ind, linea_corners=linea_corners_ind, linea_tarjetas=linea_tarjetas_ind
+                        )
+                        
+                        st.subheader("🤖 Predicciones Independientes de Machine Learning (Random Forest)")
+                        if "Resultado_1X2" in preds_ml:
+                            ml_c1, ml_c2, ml_c3 = st.columns(3)
+                            ml_c1.metric("ML Local", f"{preds_ml['Resultado_1X2']['Gana Local']}%")
+                            ml_c2.metric("ML Empate", f"{preds_ml['Resultado_1X2']['Empate']}%")
+                            ml_c3.metric("ML Visita", f"{preds_ml['Resultado_1X2']['Gana Visita']}%")
+
+                    # Híbrido ELO
+                    st.subheader("🤖 Predicciones Híbridas (Poisson + ELO)")
+                    df_predicciones = pd.DataFrame([{
+                        'Local': datos_partido['local'],
+                        'Visitante': datos_partido['visita'],
+                        'Probabilidad_Local': resultados['Resultado_1X2']['Gana Local'] / 100.0
+                    }])
+                    df_predicciones = df_predicciones.merge(tabla_elo_temp, left_on='Local', right_on='Equipo', how='left').rename(columns={'ELO_Rating': 'ELO_Local'}).drop('Equipo', axis=1, errors='ignore')
+                    df_predicciones = df_predicciones.merge(tabla_elo_temp, left_on='Visitante', right_on='Equipo', how='left').rename(columns={'ELO_Rating': 'ELO_Visita'}).drop('Equipo', axis=1, errors='ignore')
+
+                    def evaluar_apuesta_hibrida(fila):
+                        prob_poisson_local = fila['Probabilidad_Local']
+                        el_loc = fila.get('ELO_Local', 1500)
+                        el_vis = fila.get('ELO_Visita', 1500)
+                        if prob_poisson_local > 0.55 and el_loc > el_vis: return "✅ Aprobada: Doble Validación"
+                        elif prob_poisson_local > 0.55 and el_vis > el_loc: return "⚠️ Alerta: El visitante trae mejor racha"
+                        else: return "Paso"
+
+                    df_predicciones['Veredicto_Hibrido'] = df_predicciones.apply(evaluar_apuesta_hibrida, axis=1)
+                    st.dataframe(df_predicciones[['Local', 'Visitante', 'Probabilidad_Local', 'ELO_Local', 'ELO_Visita', 'Veredicto_Hibrido']], width='stretch')
+
+            except Exception as e:
+                st.error(f"Ocurrió un error en el análisis detallado: {e}")
+
+st.markdown("---")
+
+# --- SECCIÓN 3: RANKING ELO ---
+st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
 try:
     df_historico = cargar_historico_seguro()
-
     correccion_equipos = {
-        "Atletico San Luis": "Atlético de San Luis",
-        "Atlético San Luis": "Atlético de San Luis",
-        "San Luis": "Atlético de San Luis",
-        "Mazatlan": "Mazatlán",
-        "Mazatlan FC": "Mazatlán",
-        "Queretaro": "Querétaro",
-        "Leon": "León"
+        "Atletico San Luis": "Atlético de San Luis", "Atlético San Luis": "Atlético de San Luis",
+        "San Luis": "Atlético de San Luis", "Mazatlan": "Mazatlán", "Mazatlan FC": "Mazatlán",
+        "Queretaro": "Querétaro", "Leon": "León"
     }
-
     df_historico['Local'] = df_historico['Local'].replace(correccion_equipos)
     df_historico['Visitante'] = df_historico['Visitante'].replace(correccion_equipos)
 
     motor_elo = SistemaEloLigaMX()
     tabla_posiciones_elo = motor_elo.calcular_historico(df_historico)
     st.dataframe(tabla_posiciones_elo, width='stretch')
-
 except Exception as e:
     st.info("ℹ️ Cargando ranking ELO...")
