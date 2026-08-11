@@ -4,6 +4,7 @@ import pandas as pd
 import requests
 import numpy as np
 import datetime
+
 from modules.elo_engine import SistemaEloLigaMX
 from modules.ml_engine import PredictorML
 from modules.montecarlo_sim import simular_partido_montecarlo
@@ -51,7 +52,7 @@ def obtener_proximos_partidos_espn(liga_espn="mex.1"):
     rango_fechas = f"{hoy.strftime('%Y%m%d')}-{futuro.strftime('%Y%m%d')}"
     
     params = {
-        "limit": 10,  # Límite optimizado para traer la jornada inmediata
+        "limit": 10,  
         "dates": rango_fechas
     }
     
@@ -91,178 +92,120 @@ def obtener_proximos_partidos_espn(liga_espn="mex.1"):
 st.title("⚽ Liga MX Analytics & Value Betting (2026)")
 st.write("Simulador Montecarlo (Goles, Corners, Tarjetas) + Criterio de Kelly")
 
-st.markdown("### 1. Selecciona el Encuentro")
+# --- SECCIÓN DE INGRESO MASIVO DE TODA LA JORNADA ---
+st.markdown("### 🏆 Ingreso Masivo de Cuotas (Toda la Jornada)")
+st.info("Ingresa las cuotas principales (1, X, 2) que ves en tu plataforma (ej. Playdoit) para cada encuentro y presiona el botón para calcular el valor esperado (EV) de toda la jornada de golpe.")
+
 partidos_reales = obtener_proximos_partidos_espn("mex.1")
 
 if not partidos_reales:
     st.warning("⚠️ No se encontraron partidos próximos en la cartelera de ESPN para la Liga MX.")
 else:
-    seleccion = st.selectbox("Próximos partidos de Liga MX:", list(partidos_reales.keys()))
-    datos_partido = partidos_reales[seleccion]
+    jornada_data = {}
+    
+    with st.form("form_jornada_completa"):
+        for i, (nombre_llave, info) in enumerate(partidos_reales.items()):
+            st.markdown(f"#### ⚽ {info['local']} vs {info['visita']}")
+            
+            c1, c2, c3, c4 = st.columns(4)
+            
+            jornada_data[nombre_llave] = {
+                "local": info['local'],
+                "visita": info['visita'],
+                "1": c1.number_input(f"Local (1)", value=2.00, step=0.05, format="%.2f", key=f"j_1_{i}"),
+                "X": c2.number_input(f"Empate (X)", value=3.20, step=0.05, format="%.2f", key=f"j_x_{i}"),
+                "2": c3.number_input(f"Visita (2)", value=3.10, step=0.05, format="%.2f", key=f"j_2_{i}"),
+                "Linea_Goles": c4.number_input(f"Línea Goles", value=2.5, step=0.5, format="%.1f", key=f"j_goles_{i}")
+            }
+            st.markdown("---")
+            
+        btn_calcular_jornada = st.form_submit_button("🚀 Calcular Valor (EV) de Toda la Jornada", type="primary")
 
-    if st.button("Ejecutar Simulación y Buscar Cuotas", type="primary") or st.session_state.get('simulacion_activa', False):
-        st.session_state['simulacion_activa'] = True
-
-        with st.spinner('Procesando simulación y cuotas en tiempo real...'):
-            try:
-                df_hist_base = cargar_historico_seguro()
-                
-                motor_elo_temp = SistemaEloLigaMX()
-                tabla_elo_temp = motor_elo_temp.calcular_historico(df_hist_base)
+    # --- PROCESAMIENTO DE LA JORNADA COMPLETA ---
+    if btn_calcular_jornada:
+        with st.spinner("Ejecutando simulaciones de Montecarlo para toda la jornada..."):
+            df_hist_base = cargar_historico_seguro()
+            motor_elo_temp = SistemaEloLigaMX()
+            tabla_elo_temp = motor_elo_temp.calcular_historico(df_hist_base)
+            
+            consolizado_apuestas = []
+            
+            for nombre_llave, datos in jornada_data.items():
+                loc = datos['local']
+                vis = datos['visita']
                 
                 try:
-                    e_loc = float(tabla_elo_temp.loc[tabla_elo_temp['Equipo'] == datos_partido['local'], 'ELO_Rating'].values[0])
+                    e_loc = float(tabla_elo_temp.loc[tabla_elo_temp['Equipo'] == loc, 'ELO_Rating'].values[0])
                 except:
                     e_loc = 1500.0
                 try:
-                    e_vis = float(tabla_elo_temp.loc[tabla_elo_temp['Equipo'] == datos_partido['visita'], 'ELO_Rating'].values[0])
+                    e_vis = float(tabla_elo_temp.loc[tabla_elo_temp['Equipo'] == vis, 'ELO_Rating'].values[0])
                 except:
                     e_vis = 1500.0
 
-                cuotas_automaticas = obtener_cuotas_partido(datos_partido["local"], datos_partido["visita"])
-                linea_goles = cuotas_automaticas.get("Linea_Goles", 2.5) if cuotas_automaticas else 2.5
-                linea_corners = cuotas_automaticas.get("Linea_Corners", 9.5) if cuotas_automaticas else 9.5
-                linea_tarjetas = cuotas_automaticas.get("Linea_Tarjetas", 4.5) if cuotas_automaticas else 4.5
-
+                l_goles = datos['Linea_Goles']
+                
                 resultados = simular_partido_montecarlo(
-                    datos_partido["local"], 
-                    datos_partido["visita"],
+                    loc, vis,
                     df_historico=df_hist_base,
                     elo_local=e_loc,
                     elo_visita=e_vis,
-                    linea_goles=linea_goles,
-                    linea_corners=linea_corners,
-                    linea_tarjetas=linea_tarjetas
+                    linea_goles=l_goles,
+                    linea_corners=9.5,
+                    linea_tarjetas=4.5
                 )
                 
                 if isinstance(resultados, str):
-                    st.error(f"🚨 Problema con los datos: {resultados}")
-                else:
-                    st.subheader("📊 Probabilidades Reales (Montecarlo)")
-                    
-                    st.markdown("**🏆 Resultado del Encuentro (1X2)**")
-                    col1, col2, col3 = st.columns(3)
-                    col1.metric(f"Victoria {datos_partido['local']}", f"{resultados['Resultado_1X2']['Gana Local']}%")
-                    col2.metric("Empate", f"{resultados['Resultado_1X2']['Empate']}%")
-                    col3.metric(f"Victoria {datos_partido['visita']}", f"{resultados['Resultado_1X2']['Gana Visita']}%")
-                    
-                    st.markdown("---")
-                    
-                    st.markdown("🎯 **Goles, Corners y Tarjetas Más Probables del Partido**")
-                    col4, col5, col6 = st.columns(3)
-                    
-                    over_goles = resultados['Goles_Over_Under'][f'Over {linea_goles}']
-                    col4.metric(f"Más de {linea_goles} Goles", f"{over_goles}%", f"Under: {round(100-over_goles, 2)}%")
-                    
-                    over_corners = resultados['Corners_Totales'][f'Over {linea_corners} Corners']
-                    col5.metric(f"Más de {linea_corners} Corners", f"{over_corners}%", f"Under: {round(100-over_corners, 2)}%")
-                    
-                    over_tarjetas = resultados['Tarjetas_Totales'][f'Over {linea_tarjetas} Tarjetas']
-                    col6.metric(f"Más de {linea_tarjetas} Tarjetas", f"{over_tarjetas}%", f"Under: {round(100-over_tarjetas, 2)}%")
-                    
-                    st.markdown("---")
-                    st.markdown("📈 **Pronósticos Detallados por Equipo (Expectativa Matemática)**")
-                    
-                    g_l_ind = round(resultados['Goles_Individuales'][datos_partido['local']]['goles'])
-                    g_v_ind = round(resultados['Goles_Individuales'][datos_partido['visita']]['goles'])
-                    c_l_ind = round(resultados['Corners_Individuales'][datos_partido['local']]['corners'])
-                    c_v_ind = round(resultados['Corners_Individuales'][datos_partido['visita']]['corners'])
-                    t_l_ind = round(resultados['Tarjetas_Individuales'][datos_partido['local']]['tarjetas'])
-                    t_v_ind = round(resultados['Tarjetas_Individuales'][datos_partido['visita']]['tarjetas'])
-
-                    ind_col1, ind_col2, ind_col3 = st.columns(3)
-                    with ind_col1:
-                        st.markdown(f"⚽ **Goles Esperados**")
-                        st.write(f"- {datos_partido['local']}: **{g_l_ind}** goles")
-                        st.write(f"- {datos_partido['visita']}: **{g_v_ind}** goles")
-                    with ind_col2:
-                        st.markdown(f"🚩 **Córners Esperados**")
-                        st.write(f"- {datos_partido['local']}: **{c_l_ind}** córners")
-                        st.write(f"- {datos_partido['visita']}: **{c_v_ind}** córners")
-                    with ind_col3:
-                        st.markdown(f"🟨 **Tarjetas Esperadas**")
-                        st.write(f"- {datos_partido['local']}: **{t_l_ind}** puntos")
-                        st.write(f"- {datos_partido['visita']}: **{t_v_ind}** puntos")
-
-                    st.markdown("---")
-                    
-                    with st.container():
-                        st.markdown("⚙️ **Gestión de Cuotas (Automáticas / Manuales)**")
-                        st.info("Ingresa o ajusta las cuotas reales que ves en tu plataforma (ej. Playdoit) para calcular el Valor Esperado (EV) con precisión.")
-                        
-                        mercados_keys = {
-                            "Gana Local": "1", 
-                            "Empate": "X",
-                            "Gana Visita": "2", 
-                            f"Over {linea_goles} Goles": "Over_Goles", 
-                            f"Under {linea_goles} Goles": "Under_Goles",
-                            f"Over {linea_corners} Corners": "Over_Corners",
-                            f"Under {linea_corners} Corners": "Under_Corners",
-                            f"Over {linea_tarjetas} Tarjetas": "Over_Tarjetas",
-                            f"Under {linea_tarjetas} Tarjetas": "Under_Tarjetas"
-                        }
-                        
-                        cuotas_usuario = {}
-                        cols = st.columns(3)
-                        
-                        for i, (nombre_m, llave) in enumerate(mercados_keys.items()):
-                            val_default = cuotas_automaticas.get(llave) if cuotas_automaticas and cuotas_automaticas.get(llave) else 0.0
-                            with cols[i % 3]:
-                                cuotas_usuario[llave] = st.number_input(
-                                    f"{nombre_m}", 
-                                    min_value=0.0, 
-                                    value=float(val_default), 
-                                    step=0.05,
-                                    format="%.2f",
-                                    key=f"input_cuota_mx_{llave}"
-                                )
-
-                    lineas_default = {"Linea_Goles": linea_goles, "Linea_Corners": linea_corners, "Linea_Tarjetas": linea_tarjetas}
-                    df_apuestas = analizar_apuestas(resultados, datos_partido["local"], datos_partido["visita"], cuotas_personalizadas=cuotas_usuario, lineas_default=lineas_default)
-                    
-                    if not df_apuestas.empty:
-                        def color_veredicto(val):
-                            if '🔥' in str(val): return 'color: #00ff00; font-weight: bold'
-                            elif '✅' in str(val): return 'color: #adff2f'
-                            elif '⚠️' in str(val): return 'color: #ffa500'
-                            elif '❌' in str(val): return 'color: #ff4d4d'
-                            return ''
-                            
-                        st.dataframe(
-                            df_apuestas.style.map(color_veredicto, subset=['Veredicto']), 
-                            width='stretch',
-                            hide_index=True
-                        )
-                    
-            except Exception as e:
-                st.error(f"Ocurrió un error inesperado durante la simulación: {e}")
-
-st.markdown("---")
-
-with st.expander("🚨 Escáner Automático de Oportunidades (Jornada Completa)", expanded=False):
-    st.info("Este escáner analiza los partidos de la próxima jornada utilizando la cartelera de ESPN y filtra el valor.")
-    
-    if st.button("🔍 Ejecutar Escáner de Jornada", key="btn_scanner_mx"):
-        with st.spinner("Analizando la jornada completa con Montecarlo... Esto puede tomar unos segundos."):
-            from modules.scanner_engine import escanear_jornada_actual
-            df_oro = pd.DataFrame(escanear_jornada_actual())
+                    continue
+                
+                over_goles_val = resultados['Goles_Over_Under'].get(f'Over {l_goles}', 50.0)
+                # Estimación de cuota over goles por defecto segura si no hay input específico
+                over_goles_cuota = 1.90 
+                
+                cuotas_dict = {
+                    "1": datos['1'],
+                    "X": datos['X'],
+                    "2": datos['2'],
+                    "Over_Goles": over_goles_cuota,
+                    "Under_Goles": round(1.0 / (1.0 - (1.0 / over_goles_cuota)), 2) if over_goles_cuota > 1.0 else 1.90
+                }
+                
+                lineas_default = {"Linea_Goles": l_goles, "Linea_Corners": 9.5, "Linea_Tarjetas": 4.5}
+                
+                df_apuestas = analizar_apuestas(
+                    resultados, loc, vis, 
+                    cuotas_personalizadas=cuotas_dict, 
+                    lineas_default=lineas_default
+                )
+                
+                if not df_apuestas.empty:
+                    df_apuestas.insert(0, "Partido", f"{loc} vs {vis}")
+                    consolizado_apuestas.append(df_apuestas)
             
-            if not df_oro.empty:
-                st.success(f"¡Se encontraron {len(df_oro)} oportunidades de alta probabilidad con valor!")
-                def color_veredicto_oro(val):
+            if consolizado_apuestas:
+                tabla_maestra = pd.concat(consolizado_apuestas, ignore_index=True)
+                
+                st.subheader("📊 Tabla Maestra de Oportunidades (Jornada Completa)")
+                st.markdown("Revisa las mejores oportunidades con EV positivo calculadas con tus cuotas manuales.")
+                
+                def color_veredicto(val):
                     if '🔥' in str(val): return 'color: #00ff00; font-weight: bold'
                     elif '✅' in str(val): return 'color: #adff2f'
+                    elif '⚠️' in str(val): return 'color: #ffa500'
+                    elif '❌' in str(val): return 'color: #ff4d4d'
                     return ''
+                    
                 st.dataframe(
-                    df_oro.style.map(color_veredicto_oro, subset=['Veredicto']), 
+                    tabla_maestra.style.map(color_veredicto, subset=['Veredicto']), 
                     width='stretch',
                     hide_index=True
                 )
             else:
-                st.warning("No hay partidos próximos en la jornada con los criterios requeridos en este momento.")
+                st.warning("No se pudieron generar los análisis. Revisa los datos ingresados.")
 
 st.markdown("---")
 
+# --- SECCIÓN SECUNDARIA: RANKING ELO Y MODELOS ---
 st.subheader("📊 Ranking de Poder ELO (Fuerza Actual)")
 
 try:
@@ -285,95 +228,5 @@ try:
     tabla_posiciones_elo = motor_elo.calcular_historico(df_historico)
     st.dataframe(tabla_posiciones_elo, width='stretch')
 
-    ml_predictor = PredictorML()
-    if ml_predictor.entrenar(df_historico):
-        if 'resultados' in locals() and isinstance(resultados, dict):
-            g_l_sim = resultados['Goles_Individuales'][datos_partido['local']]['goles']
-            g_v_sim = resultados['Goles_Individuales'][datos_partido['visita']]['goles']
-            
-            try:
-                puntos_local = float(tabla_posiciones_elo.loc[tabla_posiciones_elo['Equipo'] == datos_partido['local'], 'ELO_Rating'].values[0])
-            except (IndexError, KeyError):
-                puntos_local = 1500.0
-                
-            try:
-                puntos_visita = float(tabla_posiciones_elo.loc[tabla_posiciones_elo['Equipo'] == datos_partido['visita'], 'ELO_Rating'].values[0])
-            except (IndexError, KeyError):
-                puntos_visita = 1500.0
-            
-            preds_ml = ml_predictor.predecir_mercados_completos(
-                df_historico, 
-                datos_partido['local'], 
-                datos_partido['visita'], 
-                g_l_sim, 
-                g_v_sim,
-                puntos_local,  
-                puntos_visita,
-                linea_goles=linea_goles,
-                linea_corners=linea_corners,
-                linea_tarjetas=linea_tarjetas 
-            )
-            
-            st.markdown("---")
-            st.subheader("🤖 Predicciones Independientes de Machine Learning (Random Forest)")
-            
-            if "Resultado_1X2" in preds_ml:
-                st.markdown("##### 🏆 Mercado 1X2 (Ganador del Partido)")
-                ml_col1, ml_col2, ml_col3 = st.columns(3)
-                ml_col1.metric("Local", f"{preds_ml['Resultado_1X2']['Gana Local']}%")
-                ml_col2.metric("Empate", f"{preds_ml['Resultado_1X2']['Empate']}%")
-                ml_col3.metric("Visita", f"{preds_ml['Resultado_1X2']['Gana Visita']}%")
-                
-                st.write("")
-                
-                st.markdown("##### 📊 Mercados de Goles, Córners y Tarjetas")
-                ml_col4, ml_col5, ml_col6 = st.columns(3)
-                
-                with ml_col4:
-                    st.metric(f"Over {linea_goles} Goles", f"{preds_ml['Goles_Over_Under'][f'Over {linea_goles}']}%")
-                    st.metric(f"Under {linea_goles} Goles", f"{preds_ml['Goles_Over_Under'][f'Under {linea_goles}']}%")
-                    
-                with ml_col5:
-                    st.metric(f"Over {linea_corners} Córners", f"{preds_ml['Corners_Totales'][f'Over {linea_corners} Corners']}%")
-                    st.metric(f"Under {linea_corners} Córners", f"{preds_ml['Corners_Totales'][f'Under {linea_corners} Corners']}%")
-                    
-                with ml_col6:
-                    st.metric(f"Over {linea_tarjetas} Tarjetas", f"{preds_ml['Tarjetas_Totales'][f'Over {linea_tarjetas} Tarjetas']}%")
-                    st.metric(f"Under {linea_tarjetas} Tarjetas", f"{preds_ml['Tarjetas_Totales'][f'Under {linea_tarjetas} Tarjetas']}%")
-            else:
-                st.warning("⚠️ El modelo ML no pudo generar predicciones. Revisa los datos históricos.")
-    
-    if 'resultados' in locals() and isinstance(resultados, dict):
-        st.subheader("🤖 Predicciones Híbridas (Poisson + ELO)")
-        
-        df_predicciones = pd.DataFrame([{
-            'Local': datos_partido['local'],
-            'Visitante': datos_partido['visita'],
-            'Probabilidad_Local': resultados['Resultado_1X2']['Gana Local'] / 100.0
-        }])
-
-        df_predicciones = df_predicciones.merge(
-            tabla_posiciones_elo, left_on='Local', right_on='Equipo', how='left'
-        ).rename(columns={'ELO_Rating': 'ELO_Local'}).drop('Equipo', axis=1, errors='ignore')
-
-        df_predicciones = df_predicciones.merge(
-            tabla_posiciones_elo, left_on='Visitante', right_on='Equipo', how='left'
-        ).rename(columns={'ELO_Rating': 'ELO_Visita'}).drop('Equipo', axis=1, errors='ignore')
-
-        def evaluar_apuesta_hibrida(fila):
-            prob_poisson_local = fila['Probabilidad_Local']
-            elo_local = fila.get('ELO_Local', 1500)
-            elo_visita = fila.get('ELO_Visita', 1500)
-            
-            if prob_poisson_local > 0.55 and elo_local > elo_visita:
-                return "✅ Aprobada: Doble Validación"
-            elif prob_poisson_local > 0.55 and elo_visita > elo_local:
-                return "⚠️ Alerta: El visitante trae mejor racha"
-            else:
-                return "Paso"
-
-        df_predicciones['Veredicto_Hibrido'] = df_predicciones.apply(evaluar_apuesta_hibrida, axis=1)
-        st.dataframe(df_predicciones[['Local', 'Visitante', 'Probabilidad_Local', 'ELO_Local', 'ELO_Visita', 'Veredicto_Hibrido']], width='stretch')
-
 except Exception as e:
-    st.info("ℹ️ Ejecuta la simulación de arriba para ver el cruce híbrido detallado con ELO.")
+    st.info("ℹ️ Cargando ranking ELO...")
