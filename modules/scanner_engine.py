@@ -56,7 +56,7 @@ def escanear_jornada_actual():
     rango_fechas = f"{hoy.strftime('%Y%m%d')}-{futuro.strftime('%Y%m%d')}"
     
     params = {
-        "limit": 50,
+        "limit": 10,  # <--- Límite reducido a 10 partidos desde la petición
         "dates": rango_fechas
     }
     
@@ -65,10 +65,12 @@ def escanear_jornada_actual():
         if res.status_code != 200:
             return []
         data = res.json()
-        fixtures = data.get('events', [])
+        
+        # Doble candado: forzamos a que la lista solo contenga los primeros 10 elementos
+        fixtures = data.get('events', [])[:10] 
+        
     except Exception:
         return []
-
     oportunidades_oro = []
     st.write("---")
     st.write("🔎 **Escaneando partidos oficiales de la Liga MX (Cartelera ESPN) y validando modelos...**")
