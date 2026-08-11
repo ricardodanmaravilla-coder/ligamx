@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 
 def generar_csv_cuotas_jornada():
-    """Descarga la cartelera limpia de los próximos 9 partidos para la jornada."""
+    """Descarga la cartelera limpia de los 9 partidos de la jornada con estructura completa de cuotas y líneas."""
     url = "https://site.api.espn.com/apis/site/v2/sports/soccer/mex.1/scoreboard"
     
     hoy = datetime.date.today()
@@ -44,16 +44,21 @@ def generar_csv_cuotas_jornada():
                         "X": 0.00,
                         "2": 0.00,
                         "Linea_Goles": 2.5,
-                        "Over_Goles": 1.90,
+                        "Over_Goles": 0.00,
+                        "Under_Goles": 0.00,
                         "Linea_Corners": 9.5,
-                        "Linea_Tarjetas": 4.5
+                        "Over_Corners": 0.00,
+                        "Under_Corners": 0.00,
+                        "Linea_Tarjetas": 4.5,
+                        "Over_Tarjetas": 0.00,
+                        "Under_Tarjetas": 0.00
                     })
                     
             if partidos_data:
                 os.makedirs("data", exist_ok=True)
                 df = pd.DataFrame(partidos_data)
                 df.to_csv("data/cuotas_jornada.csv", index=False)
-                print("✅ CSV base de la jornada generado limpiamente.")
+                print("✅ CSV completo de la jornada generado con todas las cuotas y líneas.")
                 
     except Exception as e:
         print(f"⚠️ Error al generar el CSV: {e}")
