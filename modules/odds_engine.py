@@ -17,10 +17,10 @@ def son_similares(a, b, umbral=0.35):
     return SequenceMatcher(None, a_limpio, b_limpio).ratio() > umbral
 
 def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
-    """Consulta cuotas automáticas y asigna cuotas base de mercado estándar si no hay datos en vivo."""
+    """Extrae cuotas reales de 1X2 y Goles desde The Odds API, usando respaldos seguros para el resto."""
     cuotas_limpias = {
-        "1": 2.10, "X": 3.40, "2": 3.20,
-        "Linea_Goles": 2.5, "Over_Goles": 1.90, "Under_Goles": 1.90,
+        "1": 0.0, "X": 0.0, "2": 0.0,
+        "Linea_Goles": 2.5, "Over_Goles": 0.0, "Under_Goles": 0.0,
         "Linea_Corners": 9.5, "Over_Corners": 1.85, "Under_Corners": 1.85,
         "Linea_Tarjetas": 4.5, "Over_Tarjetas": 1.90, "Under_Tarjetas": 1.90
     }
@@ -48,7 +48,7 @@ def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
                 if son_similares(local, home_team) and son_similares(visita, away_team):
                     bookmakers = partido.get("bookmakers", [])
                     if bookmakers:
-                        bookmaker = bookmakers[0] 
+                        bookmaker = bookmakers[0] # Tomamos la primera casa disponible
                         markets = bookmaker.get("markets", [])
                         
                         for market in markets:
@@ -56,17 +56,17 @@ def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
                                 for outcome in market.get("outcomes", []):
                                     name = outcome.get("name")
                                     price = outcome.get("price")
-                                    if son_similares(name, local): cuotas_limpias["1"] = price
-                                    elif son_similares(name, visita): cuotas_limpias["2"] = price
-                                    elif "draw" in name.lower() or "empate" in name.lower(): cuotas_limpias["X"] = price
+                                    if son_similares(name, local): cuotas_limpias["1"] = float(price)
+                                    elif son_similares(name, visita): cuotas_limpias["2"] = float(price)
+                                    elif "draw" in name.lower() or "empate" in name.lower(): cuotas_limpias["X"] = float(price)
                                     
                             elif market.get("key") == "totals":
                                 for outcome in market.get("outcomes", []):
                                     if outcome.get("name") == "Over":
-                                        cuotas_limpias["Linea_Goles"] = outcome.get("point", 2.5)
-                                        cuotas_limpias["Over_Goles"] = outcome.get("price", 1.90)
+                                        cuotas_limpias["Linea_Goles"] = float(outcome.get("point", 2.5))
+                                        cuotas_limpias["Over_Goles"] = float(outcome.get("price", 0.0))
                                     elif outcome.get("name") == "Under":
-                                        cuotas_limpias["Under_Goles"] = outcome.get("price", 1.90)
+                                        cuotas_limpias["Under_Goles"] = float(outcome.get("price", 0.0))
                     break
     except Exception as e:
         print(f"Error consultando The Odds API: {e}")
@@ -74,7 +74,7 @@ def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
     return cuotas_limpias
 
 def analizar_apuestas(resultados, local, visita, cuotas_personalizadas=None, lineas_default=None):
-    """Compara las probabilidades de Montecarlo contra las cuotas automáticas y calcula el EV y Kelly."""
+    """Procesa el valor esperado (EV) y Criterio de Kelly combinando los datos reales de la API y el modelo."""
     apuestas_lista = []
     
     if not lineas_default:
@@ -86,12 +86,12 @@ def analizar_apuestas(resultados, local, visita, cuotas_personalizadas=None, lin
     
     cuotas = cuotas_personalizadas if cuotas_personalizadas else obtener_cuotas_partido(local, visita)
     
-    # 1. Mercado 1X2
+    # 1. Mercado 1X2 (Extraído de la API)
     prob_1x2 = resultados.get('Resultado_1X2', {})
     mercados_1x2 = [
-        ("Gana Local", f"Victoria {local}", prob_1x2.get('Gana Local', 0) / 100.0, cuotas.get('1', 2.10)),
-        ("Empate", "Empate", prob_1x2.get('Empate', 0) / 100.0, cuotas.get('X', 3.40)),
-        ("Gana Visita", f"Victoria {visita}", prob_1x2.get('Gana Visita', 0) / 100.0, cuotas.get('2', 3.20))
+        ("Gana Local", f"Victoria {local}", prob_1x2.get('Gana Local', 0) / 100.0, cuotas.get('1', 0.0)),
+        ("Empate", "Empate", prob_1x2.get('Empate', 0) / 100.0, cuotas.get('X', 0.0)),
+        ("Gana Visita", f"Victoria {visita}", prob_1x2.get('Gana Visita', 0) / 100.0, cuotas.get('2', 0.0))
     ]
     
     for key_m, nombre_m, prob_real, cuota in mercados_1x2:
@@ -112,10 +112,10 @@ def analizar_apuestas(resultados, local, visita, cuotas_personalizadas=None, lin
                 "Veredicto": veredicto
             })
 
-    # 2. Goles Over/Under
+    # 2. Mercado Goles Over (Extraído de la API)
     goles_ou = resultados.get('Goles_Over_Under', {})
     prob_over_goles = goles_ou.get(f'Over {l_goles}', 50.0) / 100.0
-    cuota_over_goles = cuotas.get('Over_Goles', 1.90)
+    cuota_over_goles = cuotas.get('Over_Goles', 0.0)
     
     if cuota_over_goles > 1.0:
         ev_og = (prob_over_goles * cuota_over_goles) - 1.0
@@ -129,25 +129,6 @@ def analizar_apuestas(resultados, local, visita, cuotas_personalizadas=None, lin
             "EV (%)": f"{round(ev_og * 100, 2)}%",
             "Kelly (%)": f"{round(kelly_og, 2)}%",
             "Veredicto": ver_og
-        })
-
-    # 3. Córners Over/Under
-    corners_tot = resultados.get('Corners_Totales', {})
-    prob_over_corners = corners_tot.get(f'Over {l_corners} Corners', 50.0) / 100.0
-    cuota_over_corners = cuotas.get('Over_Corners', 1.85)
-    
-    if cuota_over_corners > 1.0:
-        ev_oc = (prob_over_corners * cuota_over_corners) - 1.0
-        kelly_oc = max(0.0, ((prob_over_corners * cuota_over_corners - 1) / (cuota_over_corners - 1))) * 100 if cuota_over_corners > 1 else 0.0
-        ver_oc = "🔥 Valor Alto (EV+)" if ev_oc > 0.05 else ("✅ Valor Moderado" if ev_oc > 0.0 else "Paso")
-        
-        apuestas_lista.append({
-            "Mercado": f"Over {l_corners} Córners",
-            "Prob. Modelo": f"{round(prob_over_corners * 100, 1)}%",
-            "Cuota": f"{cuota_over_corners:.2f}",
-            "EV (%)": f"{round(ev_oc * 100, 2)}%",
-            "Kelly (%)": f"{round(kelly_oc, 2)}%",
-            "Veredicto": ver_oc
         })
 
     return pd.DataFrame(apuestas_lista)
