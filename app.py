@@ -92,9 +92,9 @@ def obtener_proximos_partidos_espn(liga_espn="mex.1"):
 st.title("⚽ Liga MX Analytics & Value Betting (2026)")
 st.write("Simulador Montecarlo (Goles, Corners, Tarjetas) + Criterio de Kelly")
 
-# --- SECCIÓN 1: INGRESO MASIVO DE TODA LA JORNADA (CON TODOS LOS MERCADOS) ---
-st.markdown("### 🏆 Ingreso Masivo de Cuotas (Toda la Jornada - Todos los Mercados)")
-st.info("Ingresa las cuotas reales de tu casino para cada partido y mercado. Al hacer clic se evaluará toda la jornada de golpe.")
+# --- SECCIÓN 1: INGRESO MASIVO DE TODA LA JORNADA (TODOS LOS MERCADOS + OVERS/UNDERS) ---
+st.markdown("### 🏆 Ingreso Masivo de Cuotas (Toda la Jornada - Over y Under)")
+st.info("Ingresa las cuotas reales de tu casino para el 1X2 y las líneas de Over/Under en Goles, Córners y Tarjetas.")
 
 partidos_reales = obtener_proximos_partidos_espn("mex.1")
 
@@ -113,27 +113,31 @@ else:
             val_x = c2.number_input(f"Empate (X)", value=3.20, step=0.05, format="%.2f", key=f"j_x_{i}")
             val_2 = c3.number_input(f"Visita (2)", value=3.10, step=0.05, format="%.2f", key=f"j_2_{i}")
             
-            # Fila 2: Goles y Over de Goles
-            c4, c5 = st.columns(2)
+            # Fila 2: Goles (Línea + Over + Under)
+            c4, c5, c6 = st.columns(3)
             val_lg = c4.number_input(f"Línea Goles", value=2.5, step=0.5, format="%.1f", key=f"j_lgoles_{i}")
-            val_og = c5.number_input(f"Cuota Over Goles", value=1.90, step=0.05, format="%.2f", key=f"j_ogoles_{i}")
+            val_og = c5.number_input(f"Over Goles", value=1.90, step=0.05, format="%.2f", key=f"j_ogoles_{i}")
+            val_ug = c6.number_input(f"Under Goles", value=1.90, step=0.05, format="%.2f", key=f"j_ugoles_{i}")
 
-            # Fila 3: Córners y Tarjetas
-            c6, c7 = st.columns(2)
-            val_lc = c6.number_input(f"Línea Córners", value=9.5, step=0.5, format="%.1f", key=f"j_lcorners_{i}")
-            val_oc = c7.number_input(f"Cuota Over Córners", value=1.90, step=0.05, format="%.2f", key=f"j_ocorn_{i}")
+            # Fila 3: Córners (Línea + Over + Under)
+            c7, c8, c9 = st.columns(3)
+            val_lc = c7.number_input(f"Línea Córners", value=9.5, step=0.5, format="%.1f", key=f"j_lcorn_{i}")
+            val_oc = c8.number_input(f"Over Córners", value=1.90, step=0.05, format="%.2f", key=f"j_ocorn_{i}")
+            val_uc = c9.number_input(f"Under Córners", value=1.90, step=0.05, format="%.2f", key=f"j_ucorn_{i}")
 
-            c8, c9 = st.columns(2)
-            val_lt = c8.number_input(f"Línea Tarjetas", value=4.5, step=0.5, format="%.1f", key=f"j_ltarjetas_{i}")
-            val_ot = c9.number_input(f"Cuota Over Tarjetas", value=1.90, step=0.05, format="%.2f", key=f"j_otar_{i}")
+            # Fila 4: Tarjetas (Línea + Over + Under)
+            c10, c11, c12 = st.columns(3)
+            val_lt = c10.number_input(f"Línea Tarjetas", value=4.5, step=0.5, format="%.1f", key=f"j_ltar_{i}")
+            val_ot = c11.number_input(f"Over Tarjetas", value=1.90, step=0.05, format="%.2f", key=f"j_otar_{i}")
+            val_ut = c12.number_input(f"Under Tarjetas", value=1.90, step=0.05, format="%.2f", key=f"j_utar_{i}")
 
             jornada_data[nombre_llave] = {
                 "local": info['local'],
                 "visita": info['visita'],
                 "1": val_1, "X": val_x, "2": val_2,
-                "Linea_Goles": val_lg, "Over_Goles": val_og,
-                "Linea_Corners": val_lc, "Over_Corners": val_oc,
-                "Linea_Tarjetas": val_lt, "Over_Tarjetas": val_ot
+                "Linea_Goles": val_lg, "Over_Goles": val_og, "Under_Goles": val_ug,
+                "Linea_Corners": val_lc, "Over_Corners": val_oc, "Under_Corners": val_uc,
+                "Linea_Tarjetas": val_lt, "Over_Tarjetas": val_ot, "Under_Tarjetas": val_ut
             }
             st.markdown("---")
             
@@ -178,20 +182,16 @@ else:
                 if isinstance(resultados, str):
                     continue
                 
-                og_cuota = datos['Over_Goles']
-                oc_cuota = datos['Over_Corners']
-                ot_cuota = datos['Over_Tarjetas']
-                
                 cuotas_dict = {
                     "1": datos['1'],
                     "X": datos['X'],
                     "2": datos['2'],
-                    "Over_Goles": og_cuota,
-                    "Under_Goles": round(1.0 / (1.0 - (1.0 / og_cuota)), 2) if og_cuota > 1.0 else 1.90,
-                    "Over_Corners": oc_cuota,
-                    "Under_Corners": round(1.0 / (1.0 - (1.0 / oc_cuota)), 2) if oc_cuota > 1.0 else 1.90,
-                    "Over_Tarjetas": ot_cuota,
-                    "Under_Tarjetas": round(1.0 / (1.0 - (1.0 / ot_cuota)), 2) if ot_cuota > 1.0 else 1.90
+                    "Over_Goles": datos['Over_Goles'],
+                    "Under_Goles": datos['Under_Goles'],
+                    "Over_Corners": datos['Over_Corners'],
+                    "Under_Corners": datos['Under_Corners'],
+                    "Over_Tarjetas": datos['Over_Tarjetas'],
+                    "Under_Tarjetas": datos['Under_Tarjetas']
                 }
                 
                 lineas_default = {"Linea_Goles": l_goles, "Linea_Corners": l_corners, "Linea_Tarjetas": l_tarjetas}
@@ -210,7 +210,7 @@ else:
                 tabla_maestra = pd.concat(consolizado_apuestas, ignore_index=True)
                 
                 st.subheader("📊 Tabla Maestra de Oportunidades (Jornada Completa)")
-                st.markdown("Resultados evaluados con tus cuotas manuales en Goles, Córners y Tarjetas.")
+                st.markdown("Resultados evaluados con tus cuotas manuales (incluyendo Unders).")
                 
                 def color_veredicto(val):
                     if '🔥' in str(val): return 'color: #00ff00; font-weight: bold'
