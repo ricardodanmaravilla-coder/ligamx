@@ -1,0 +1,35 @@
+name: Actualizar Cuotas Jornada Liga MX
+
+on:
+  schedule:
+    # Se ejecuta automáticamente todos los viernes a las 16:00 UTC (10:00 AM CDMX, antes de los juegos de fin de semana)
+    - cron: '0 16 * * 5'
+  workflow_dispatch: # Te permite darle clic y ejecutarlo manualmente desde GitHub cuando tú quieras
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar Repositorio
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Instalar Dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas requests
+
+      - name: Ejecutar Script de Cuotas
+        run: python scraper_cuotas.py
+
+      - name: Commit y Push de los Cambios al Repositorio
+        run: |
+          git config --global user.name 'Bot Automático Cuotas'
+          git config --global user.email 'bot@actions.com'
+          git add data/cuotas_jornada.csv
+          git commit -m "🤖 Actualización automática cuotas de la jornada (9 partidos)" || echo "Sin cambios en el CSV"
+          git push
