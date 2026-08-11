@@ -40,11 +40,23 @@ def cargar_historico_seguro():
     df['Visitante'] = df['Visitante'].str.strip()
     return df
 
+import datetime
+
 @st.cache_data(ttl=3600)
 def obtener_proximos_partidos_espn(liga_espn="mex.1"):
-    """Descarga la jornada completa desde la API pública de ESPN agregando un límite amplio."""
+    """Descarga la jornada completa desde ESPN forzando una ventana de 15 días."""
     url = f"https://site.api.espn.com/apis/site/v2/sports/soccer/{liga_espn}/scoreboard"
-    params = {"limit": 50}  # <--- Forzamos a traer toda la jornada completa
+    
+    # Calculamos la fecha de hoy y 15 días a futuro en formato YYYYMMDD
+    hoy = datetime.date.today()
+    futuro = hoy + datetime.timedelta(days=15)
+    rango_fechas = f"{hoy.strftime('%Y%m%d')}-{futuro.strftime('%Y%m%d')}"
+    
+    params = {
+        "limit": 50,
+        "dates": rango_fechas  # <--- Forzamos la ventana de tiempo
+    }
+    
     partidos_dict = {}
     
     try:
