@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 import requests
 import numpy as np
+import datetime
 from modules.elo_engine import SistemaEloLigaMX
 from modules.ml_engine import PredictorML
 from modules.montecarlo_sim import simular_partido_montecarlo
@@ -40,21 +41,18 @@ def cargar_historico_seguro():
     df['Visitante'] = df['Visitante'].str.strip()
     return df
 
-import datetime
-
 @st.cache_data(ttl=3600)
 def obtener_proximos_partidos_espn(liga_espn="mex.1"):
     """Descarga la jornada completa desde ESPN forzando una ventana de 15 días."""
     url = f"https://site.api.espn.com/apis/site/v2/sports/soccer/{liga_espn}/scoreboard"
     
-    # Calculamos la fecha de hoy y 15 días a futuro en formato YYYYMMDD
     hoy = datetime.date.today()
     futuro = hoy + datetime.timedelta(days=15)
     rango_fechas = f"{hoy.strftime('%Y%m%d')}-{futuro.strftime('%Y%m%d')}"
     
     params = {
-        "limit": 50,
-        "dates": rango_fechas  # <--- Forzamos la ventana de tiempo
+        "limit": 10,  # Límite optimizado para traer la jornada inmediata
+        "dates": rango_fechas
     }
     
     partidos_dict = {}
@@ -190,6 +188,8 @@ else:
                     
                     with st.container():
                         st.markdown("⚙️ **Gestión de Cuotas (Automáticas / Manuales)**")
+                        st.info("Ingresa o ajusta las cuotas reales que ves en tu plataforma (ej. Playdoit) para calcular el Valor Esperado (EV) con precisión.")
+                        
                         mercados_keys = {
                             "Gana Local": "1", 
                             "Empate": "X",
@@ -240,7 +240,7 @@ else:
 st.markdown("---")
 
 with st.expander("🚨 Escáner Automático de Oportunidades (Jornada Completa)", expanded=False):
-    st.info("Este escáner analiza todos los partidos de la próxima jornada de la Liga MX de golpe utilizando la cartelera de ESPN y filtra el valor.")
+    st.info("Este escáner analiza los partidos de la próxima jornada utilizando la cartelera de ESPN y filtra el valor.")
     
     if st.button("🔍 Ejecutar Escáner de Jornada", key="btn_scanner_mx"):
         with st.spinner("Analizando la jornada completa con Montecarlo... Esto puede tomar unos segundos."):
