@@ -45,10 +45,9 @@ def obtener_cuotas_partido(local, visita, league_id="soccer_mexico_ligamx"):
                 away_team = partido.get("away_team", "")
                 
                 if son_similares(local, home_team) and son_similares(visita, away_team):
-                    # Extraer bookmakers (ej. Caliente o Bet365 si están disponibles)
                     bookmakers = partido.get("bookmakers", [])
                     if bookmakers:
-                        bookmaker = bookmakers[0] # Tomamos la primera casa disponible
+                        bookmaker = bookmakers[0] 
                         markets = bookmaker.get("markets", [])
                         
                         for market in markets:
