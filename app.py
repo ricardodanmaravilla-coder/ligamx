@@ -112,7 +112,6 @@ else:
                 except:
                     e_vis = 1500.0
 
-                # Descarga automática de cuotas y líneas
                 cuotas_automaticas = obtener_cuotas_partido(datos_partido["local"], datos_partido["visita"])
                 linea_goles = cuotas_automaticas.get("Linea_Goles", 2.5) if cuotas_automaticas else 2.5
                 linea_corners = cuotas_automaticas.get("Linea_Corners", 9.5) if cuotas_automaticas else 9.5
@@ -180,6 +179,31 @@ else:
                     
             except Exception as e:
                 st.error(f"Ocurrió un error inesperado durante la simulación: {e}")
+
+st.markdown("---")
+
+# --- ESCÁNER AUTOMÁTICO DE LA JORNADA ---
+with st.expander("🚨 Escáner Automático de Oportunidades (Jornada Completa)", expanded=False):
+    st.info("Este escáner analiza todos los partidos de la próxima jornada de golpe y filtra el valor de forma automática.")
+    
+    if st.button("🔍 Ejecutar Escáner Automático de Jornada", key="btn_scanner_mx"):
+        with st.spinner("Analizando la jornada completa con Montecarlo..."):
+            from modules.scanner_engine import escanear_jornada_actual
+            df_oro = pd.DataFrame(escanear_jornada_actual())
+            
+            if not df_oro.empty:
+                st.success(f"¡Se encontraron {len(df_oro)} oportunidades de alta probabilidad con valor!")
+                def color_veredicto_oro(val):
+                    if '🔥' in str(val): return 'color: #00ff00; font-weight: bold'
+                    elif '✅' in str(val): return 'color: #adff2f'
+                    return ''
+                st.dataframe(
+                    df_oro.style.map(color_veredicto_oro, subset=['Veredicto']), 
+                    width='stretch',
+                    hide_index=True
+                )
+            else:
+                st.warning("No hay partidos próximos en la jornada con los criterios requeridos en este momento.")
 
 st.markdown("---")
 
