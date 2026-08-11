@@ -24,7 +24,7 @@ jobs:
           pip install pandas requests
 
       - name: Ejecutar Script de Cuotas
-        run: python scraper_cuotas.py
+        run: python modules/scraper_cuotas.py
 
       - name: Commit y Push de los Cambios al Repositorio
         run: |
