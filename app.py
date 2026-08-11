@@ -92,9 +92,9 @@ def obtener_proximos_partidos_espn(liga_espn="mex.1"):
 st.title("⚽ Liga MX Analytics & Value Betting (2026)")
 st.write("Simulador Montecarlo (Goles, Corners, Tarjetas) + Criterio de Kelly")
 
-# --- SECCIÓN 1: INGRESO MASIVO DE TODA LA JORNADA ---
-st.markdown("### 🏆 Ingreso Masivo de Cuotas (Toda la Jornada)")
-st.info("Ingresa las cuotas principales (1, X, 2) que ves en tu plataforma (ej. Playdoit) para cada encuentro y presiona el botón para calcular el valor esperado (EV) de toda la jornada de golpe.")
+# --- SECCIÓN 1: INGRESO MASIVO DE TODA LA JORNADA (CON TODOS LOS MERCADOS) ---
+st.markdown("### 🏆 Ingreso Masivo de Cuotas (Toda la Jornada - Todos los Mercados)")
+st.info("Ingresa las cuotas reales de tu casino para cada partido y mercado. Al hacer clic se evaluará toda la jornada de golpe.")
 
 partidos_reales = obtener_proximos_partidos_espn("mex.1")
 
@@ -107,15 +107,33 @@ else:
         for i, (nombre_llave, info) in enumerate(partidos_reales.items()):
             st.markdown(f"#### ⚽ {info['local']} vs {info['visita']}")
             
-            c1, c2, c3, c4 = st.columns(4)
+            # Fila 1: Resultado 1X2
+            c1, c2, c3 = st.columns(3)
+            val_1 = c1.number_input(f"Local (1)", value=2.00, step=0.05, format="%.2f", key=f"j_1_{i}")
+            val_x = c2.number_input(f"Empate (X)", value=3.20, step=0.05, format="%.2f", key=f"j_x_{i}")
+            val_2 = c3.number_input(f"Visita (2)", value=3.10, step=0.05, format="%.2f", key=f"j_2_{i}")
             
+            # Fila 2: Goles y Over de Goles
+            c4, c5 = st.columns(2)
+            val_lg = c4.number_input(f"Línea Goles", value=2.5, step=0.5, format="%.1f", key=f"j_lgoles_{i}")
+            val_og = c5.number_input(f"Cuota Over Goles", value=1.90, step=0.05, format="%.2f", key=f"j_ogoles_{i}")
+
+            # Fila 3: Córners y Tarjetas
+            c6, c7 = st.columns(2)
+            val_lc = c6.number_input(f"Línea Córners", value=9.5, step=0.5, format="%.1f", key=f"j_lcorners_{i}")
+            val_oc = c7.number_input(f"Cuota Over Córners", value=1.90, step=0.05, format="%.2f", key=f"j_ocorn_{i}")
+
+            c8, c9 = st.columns(2)
+            val_lt = c8.number_input(f"Línea Tarjetas", value=4.5, step=0.5, format="%.1f", key=f"j_ltarjetas_{i}")
+            val_ot = c9.number_input(f"Cuota Over Tarjetas", value=1.90, step=0.05, format="%.2f", key=f"j_otar_{i}")
+
             jornada_data[nombre_llave] = {
                 "local": info['local'],
                 "visita": info['visita'],
-                "1": c1.number_input(f"Local (1)", value=2.00, step=0.05, format="%.2f", key=f"j_1_{i}"),
-                "X": c2.number_input(f"Empate (X)", value=3.20, step=0.05, format="%.2f", key=f"j_x_{i}"),
-                "2": c3.number_input(f"Visita (2)", value=3.10, step=0.05, format="%.2f", key=f"j_2_{i}"),
-                "Linea_Goles": c4.number_input(f"Línea Goles", value=2.5, step=0.5, format="%.1f", key=f"j_goles_{i}")
+                "1": val_1, "X": val_x, "2": val_2,
+                "Linea_Goles": val_lg, "Over_Goles": val_og,
+                "Linea_Corners": val_lc, "Over_Corners": val_oc,
+                "Linea_Tarjetas": val_lt, "Over_Tarjetas": val_ot
             }
             st.markdown("---")
             
@@ -144,6 +162,8 @@ else:
                     e_vis = 1500.0
 
                 l_goles = datos['Linea_Goles']
+                l_corners = datos['Linea_Corners']
+                l_tarjetas = datos['Linea_Tarjetas']
                 
                 resultados = simular_partido_montecarlo(
                     loc, vis,
@@ -151,25 +171,30 @@ else:
                     elo_local=e_loc,
                     elo_visita=e_vis,
                     linea_goles=l_goles,
-                    linea_corners=9.5,
-                    linea_tarjetas=4.5
+                    linea_corners=l_corners,
+                    linea_tarjetas=l_tarjetas
                 )
                 
                 if isinstance(resultados, str):
                     continue
                 
-                over_goles_val = resultados['Goles_Over_Under'].get(f'Over {l_goles}', 50.0)
-                over_goles_cuota = 1.90 
+                og_cuota = datos['Over_Goles']
+                oc_cuota = datos['Over_Corners']
+                ot_cuota = datos['Over_Tarjetas']
                 
                 cuotas_dict = {
                     "1": datos['1'],
                     "X": datos['X'],
                     "2": datos['2'],
-                    "Over_Goles": over_goles_cuota,
-                    "Under_Goles": round(1.0 / (1.0 - (1.0 / over_goles_cuota)), 2) if over_goles_cuota > 1.0 else 1.90
+                    "Over_Goles": og_cuota,
+                    "Under_Goles": round(1.0 / (1.0 - (1.0 / og_cuota)), 2) if og_cuota > 1.0 else 1.90,
+                    "Over_Corners": oc_cuota,
+                    "Under_Corners": round(1.0 / (1.0 - (1.0 / oc_cuota)), 2) if oc_cuota > 1.0 else 1.90,
+                    "Over_Tarjetas": ot_cuota,
+                    "Under_Tarjetas": round(1.0 / (1.0 - (1.0 / ot_cuota)), 2) if ot_cuota > 1.0 else 1.90
                 }
                 
-                lineas_default = {"Linea_Goles": l_goles, "Linea_Corners": 9.5, "Linea_Tarjetas": 4.5}
+                lineas_default = {"Linea_Goles": l_goles, "Linea_Corners": l_corners, "Linea_Tarjetas": l_tarjetas}
                 
                 df_apuestas = analizar_apuestas(
                     resultados, loc, vis, 
@@ -185,7 +210,7 @@ else:
                 tabla_maestra = pd.concat(consolizado_apuestas, ignore_index=True)
                 
                 st.subheader("📊 Tabla Maestra de Oportunidades (Jornada Completa)")
-                st.markdown("Revisa las mejores oportunidades con EV positivo calculadas con tus cuotas manuales.")
+                st.markdown("Resultados evaluados con tus cuotas manuales en Goles, Córners y Tarjetas.")
                 
                 def color_veredicto(val):
                     if '🔥' in str(val): return 'color: #00ff00; font-weight: bold'
@@ -204,7 +229,7 @@ else:
 
 st.markdown("---")
 
-# --- SECCIÓN 2: ANALIZADOR DETALLADO POR PARTIDO INDIVIDUAL (CON ML E HÍBRIDO) ---
+# --- SECCIÓN 2: ANÁLISIS DETALLADO INDIVIDUAL + MACHINE LEARNING ---
 st.markdown("### 🔍 Análisis Detallado por Partido (Individual + Machine Learning)")
 if partidos_reales:
     seleccion_ind = st.selectbox("Selecciona un partido para análisis profundo:", list(partidos_reales.keys()), key="select_individual")
@@ -248,7 +273,6 @@ if partidos_reales:
                     
                     st.markdown("---")
 
-                    # ML Predictions
                     ml_predictor = PredictorML()
                     if ml_predictor.entrenar(df_hist_base):
                         g_l_sim = resultados['Goles_Individuales'][datos_partido['local']]['goles']
@@ -267,7 +291,6 @@ if partidos_reales:
                             ml_c2.metric("ML Empate", f"{preds_ml['Resultado_1X2']['Empate']}%")
                             ml_c3.metric("ML Visita", f"{preds_ml['Resultado_1X2']['Gana Visita']}%")
 
-                    # Híbrido ELO
                     st.subheader("🤖 Predicciones Híbridas (Poisson + ELO)")
                     df_predicciones = pd.DataFrame([{
                         'Local': datos_partido['local'],
