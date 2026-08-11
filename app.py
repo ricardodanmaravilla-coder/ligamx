@@ -42,12 +42,13 @@ def cargar_historico_seguro():
 
 @st.cache_data(ttl=3600)
 def obtener_proximos_partidos_espn(liga_espn="mex.1"):
-    """Descarga los próximos partidos directamente desde la API pública de ESPN."""
+    """Descarga la jornada completa desde la API pública de ESPN agregando un límite amplio."""
     url = f"https://site.api.espn.com/apis/site/v2/sports/soccer/{liga_espn}/scoreboard"
+    params = {"limit": 50}  # <--- Forzamos a traer toda la jornada completa
     partidos_dict = {}
     
     try:
-        response = requests.get(url, timeout=5)
+        response = requests.get(url, params=params, timeout=10)
         if response.status_code == 200:
             data = response.json()
             for event in data.get('events', []):
