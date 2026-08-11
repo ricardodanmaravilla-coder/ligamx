@@ -1,9 +1,15 @@
 import os
+import sys
 import streamlit as st
 import pandas as pd
 import requests
 import numpy as np
 import datetime
+
+# --- BLINDAJE DE IMPORTACIÓN DE MÓDULOS ---
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
 
 from modules.elo_engine import SistemaEloLigaMX
 from modules.ml_engine import PredictorML
@@ -118,7 +124,6 @@ else:
                 except:
                     e_vis = 1500.0
 
-                # Obtenemos las cuotas automáticas en background
                 cuotas_automaticas = obtener_cuotas_partido(datos_partido["local"], datos_partido["visita"])
                 linea_goles = cuotas_automaticas.get("Linea_Goles", 2.5) if cuotas_automaticas else 2.5
                 linea_corners = cuotas_automaticas.get("Linea_Corners", 9.5) if cuotas_automaticas else 9.5
@@ -162,7 +167,6 @@ else:
                     
                     st.markdown("---")
 
-                    # Análisis automático de apuestas con cuotas descargadas
                     df_apuestas = analizar_apuestas(
                         resultados, 
                         datos_partido["local"], 
