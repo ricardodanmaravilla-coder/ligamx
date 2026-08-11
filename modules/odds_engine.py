@@ -8,7 +8,7 @@ import streamlit as st
 try:
     THE_ODDS_API_KEY = st.secrets["THE_ODDS_API_KEY"]
 except Exception:
-    THE_ODDS_API_KEY = os.environ.get("THE_ODDS_API_KEY", "30e69fcfaa1a12d0a4f919bf1eddce94")
+    THE_ODDS_API_KEY = os.environ.get("THE_ODDS_API_KEY", "")
 
 def limpiar_nombre(texto):
     if not texto: return ""
@@ -22,72 +22,83 @@ def son_similares(a, b, umbral=0.35):
     if a_limpio in b_limpio or b_limpio in a_limpio: return True
     return SequenceMatcher(None, a_limpio, b_limpio).ratio() > umbral
 
-def obtener_cuotas_partido(local, visita, league_id=262):
+# ---------------------------------------------------------
+# EL TRUCO: GUARDAMOS LA RESPUESTA EN MEMORIA POR 6 HORAS
+# ---------------------------------------------------------
+@st.cache_data(ttl=21600) 
+def descargar_cuotas_liga(league_id=262):
+    """Hace una sola llamada a la API y guarda todos los partidos en RAM"""
     sport_key = "soccer_mexico_ligamx" if league_id == 262 else "soccer_usa_mls"
     url = f"https://api.the-odds-api.com/v4/sports/{sport_key}/odds/"
     
-    # Valores base por defecto por si la API no responde o no tiene el partido
-    cuotas_limpias = {
-        "1": 2.10, "X": 3.40, "2": 3.20,
-        "Linea_Goles": 2.5, "Over_Goles": 1.91, "Under_Goles": 1.91,
-        "Linea_Corners": 9.5, "Over_Corners": 1.90, "Under_Corners": 1.90,
-        "Linea_Tarjetas": 4.5, "Over_Tarjetas": 1.85, "Under_Tarjetas": 1.95
-    }
-    
     if not THE_ODDS_API_KEY:
-        return cuotas_limpias
+        return []
         
     params = {
         "apiKey": THE_ODDS_API_KEY,
-        "regions": "us,eu,uk,au", 
+        "regions": "us,eu,uk", 
         "markets": "h2h,totals", 
         "oddsFormat": "decimal"
     }
     
     try:
-        res = requests.get(url, params=params, timeout=8)
-        if res.status_code != 200: 
-            return cuotas_limpias
-        
-        datos = res.json()
-        if not datos or not isinstance(datos, list):
-            return cuotas_limpias
-            
-        encontrado = False
-        for partido in datos:
-            home_api = partido.get("home_team", "")
-            away_api = partido.get("away_team", "")
-            
-            if son_similares(local, home_api) or son_similares(visita, away_api):
-                bookmakers = partido.get("bookmakers", [])
-                if not bookmakers: continue
-                
-                for bookmaker in bookmakers:
-                    mercados = bookmaker.get("markets", [])
-                    for m in mercados:
-                        key = m.get("key")
-                        outcomes = m.get("outcomes", [])
-                        
-                        if key == "h2h":
-                            for out in outcomes:
-                                name = out.get("name")
-                                if name == home_api: cuotas_limpias["1"] = float(out.get("price"))
-                                elif name == "Draw": cuotas_limpias["X"] = float(out.get("price"))
-                                else: cuotas_limpias["2"] = float(out.get("price"))
-                                encontrado = True
-                                
-                        elif key == "totals":
-                            for out in outcomes:
-                                if "point" in out: cuotas_limpias["Linea_Goles"] = float(out["point"])
-                                name = out.get("name")
-                                if name == "Over": cuotas_limpias["Over_Goles"] = float(out.get("price"))
-                                elif name == "Under": cuotas_limpias["Under_Goles"] = float(out.get("price"))
-                                encontrado = True
-                if encontrado:
-                    break
+        res = requests.get(url, params=params, timeout=10)
+        if res.status_code == 200:
+            return res.json()
     except Exception:
         pass
+    
+    return []
+
+def obtener_cuotas_partido(local, visita, league_id=262):
+    """Busca el partido específico dentro de los datos ya descargados en memoria"""
+    
+    # Cuotas base limpias sin números falsos
+    cuotas_limpias = {
+        "Linea_Goles": 2.5, 
+        "Linea_Corners": 9.5, 
+        "Linea_Tarjetas": 4.5
+    }
+    
+    # Obtenemos los datos de la memoria (Costo de API = 0 si ya está en caché)
+    datos_liga = descargar_cuotas_liga(league_id)
+    
+    if not datos_liga:
+        return cuotas_limpias
+            
+    encontrado = False
+    for partido in datos_liga:
+        home_api = partido.get("home_team", "")
+        away_api = partido.get("away_team", "")
         
+        if son_similares(local, home_api) or son_similares(visita, away_api):
+            bookmakers = partido.get("bookmakers", [])
+            if not bookmakers: continue
+            
+            for bookmaker in bookmakers:
+                mercados = bookmaker.get("markets", [])
+                for m in mercados:
+                    key = m.get("key")
+                    outcomes = m.get("outcomes", [])
+                    
+                    if key == "h2h":
+                        for out in outcomes:
+                            name = out.get("name")
+                            if name == home_api: cuotas_limpias["1"] = float(out.get("price"))
+                            elif name == "Draw": cuotas_limpias["X"] = float(out.get("price"))
+                            else: cuotas_limpias["2"] = float(out.get("price"))
+                            encontrado = True
+                            
+                    elif key == "totals":
+                        for out in outcomes:
+                            if "point" in out: cuotas_limpias["Linea_Goles"] = float(out["point"])
+                            name = out.get("name")
+                            if name == "Over": cuotas_limpias["Over_Goles"] = float(out.get("price"))
+                            elif name == "Under": cuotas_limpias["Under_Goles"] = float(out.get("price"))
+                            encontrado = True
+            if encontrado:
+                break
+                
     return cuotas_limpias
 
 def evaluar_mercado_avanzado(probabilidad_modelo_pct, cuota_casa):
