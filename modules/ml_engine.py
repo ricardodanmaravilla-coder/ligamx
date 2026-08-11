@@ -68,9 +68,7 @@ class PredictorML:
             print(f"Error entrenando ML: {e}")
             return False
 
-    # ... (mantén las importaciones y método __init__ y entrenar igual)
-
-    def predecir_mercados_completos(self, df_historico, equipo_local, equipo_visita, goles_sim_l, goles_sim_v, elo_local=1500, elo_visita=1500, linea_goles=2.5, linea_corners=9.5, linea_tarjetas=4.5):
+    def predecir_mercados_completos(self, df_historico, equipo_local, equipo_visita, goles_sim_l, goles_sim_v, elo_local=1500, elo_visita=1500):
         if not self.is_trained:
             if not self.entrenar(df_historico):
                 return {}
@@ -96,14 +94,14 @@ class PredictorML:
             corners_totales_ml = float(self.model_corners.predict(X_pred)[0])
             tarjetas_totales_ml = float(self.model_tarjetas.predict(X_pred)[0])
             
-            over_goles_ml = round(min(95.0, max(5.0, (goles_totales_ml / (linea_goles + 0.3)) * 55.0)), 1)
-            under_goles_ml = round(100.0 - over_goles_ml, 1)
+            over_25 = round(min(95.0, max(5.0, (goles_totales_ml / 2.8) * 55.0)), 1)
+            under_25 = round(100.0 - over_25, 1)
 
-            over_corners_ml = round(min(95.0, max(5.0, (corners_totales_ml / (linea_corners + 0.5)) * 50.0)), 1)
-            under_corners_ml = round(100.0 - over_corners_ml, 1)
+            over_corners_95 = round(min(95.0, max(5.0, (corners_totales_ml / 9.5) * 50.0)), 1)
+            under_corners_95 = round(100.0 - over_corners_95, 1)
 
-            over_tarjetas_ml = round(min(95.0, max(5.0, (tarjetas_totales_ml / (linea_tarjetas + 0.5)) * 50.0)), 1)
-            under_tarjetas_ml = round(100.0 - over_tarjetas_ml, 1)
+            over_tarjetas_45 = round(min(95.0, max(5.0, (tarjetas_totales_ml / 4.5) * 50.0)), 1)
+            under_tarjetas_45 = round(100.0 - over_tarjetas_45, 1)
             
             return {
                 "Resultado_1X2": {
@@ -112,16 +110,16 @@ class PredictorML:
                     "Gana Visita": p_visita
                 },
                 "Goles_Over_Under": {
-                    f"Over {linea_goles}": over_goles_ml,
-                    f"Under {linea_goles}": under_goles_ml
+                    "Over 2.5": over_25,
+                    "Under 2.5": under_25
                 },
                 "Corners_Totales": {
-                    f"Over {linea_corners} Corners": over_corners_ml,
-                    f"Under {linea_corners} Corners": under_corners_ml
+                    "Over 9.5 Corners": over_corners_95,
+                    "Under 9.5 Corners": under_corners_95
                 },
                 "Tarjetas_Totales": {
-                    f"Over {linea_tarjetas} Tarjetas": over_tarjetas_ml,
-                    f"Under {linea_tarjetas} Tarjetas": under_tarjetas_ml
+                    "Over 4.5 Tarjetas": over_tarjetas_45,
+                    "Under 4.5 Tarjetas": under_tarjetas_45
                 }
             }
         except Exception as e:
