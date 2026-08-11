@@ -6,46 +6,68 @@ API_KEY = os.environ.get("API_SPORTS_KEY")
 BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {'x-apisports-key': API_KEY}
 
-def obtener_cuotas_partido(fixture_id, bookmaker_id=8):
-    """Descarga las cuotas de Playdoit (Proxy Bet365) para un partido."""
-    url = f"{BASE_URL}/odds"
-    response = requests.get(url, headers=HEADERS, params={"fixture": fixture_id, "bookmaker": bookmaker_id})
-    if response.status_code != 200: return None
-    
-    datos = response.json().get("response", [])
-    if not datos: return None
+def obtener_cuotas_partido(fixture_id):
+    """Descarga cuotas reales desde API-Football usando el fixture_id del partido."""
+    if not fixture_id or not API_KEY:
+        return {}
         
-    mercados = datos[0]["bookmakers"][0]["bets"]
+    url = f"{BASE_URL}/odds"
     cuotas_limpias = {}
     
-    for mercado in mercados:
-        nombre = mercado["name"]
-        
-        # --- 1. GANADOR DEL PARTIDO (1X2) ---
-        if nombre == "Match Winner":
-            for val in mercado["values"]:
-                if val["value"] == "Home": cuotas_limpias["1"] = float(val["odd"])
-                if val["value"] == "Draw": cuotas_limpias["X"] = float(val["odd"])
-                if val["value"] == "Away": cuotas_limpias["2"] = float(val["odd"])
+    # Lista de bookmakers comunes a probar (8 = Bet365 / Playdoit, 6 = Bwin, etc.)
+    bookmakers_a_probar = [8, 6, 11, 1]
+    
+    for bookmaker_id in bookmakers_a_probar:
+        try:
+            response = requests.get(url, headers=HEADERS, params={"fixture": fixture_id, "bookmaker": bookmaker_id}, timeout=10)
+            if response.status_code != 200:
+                continue
                 
-        # --- 2. GOLES (Over/Under) ---
-        elif nombre == "Goals Over/Under":
-            for val in mercado["values"]:
-                if val["value"] == "Over 2.5": cuotas_limpias["Over 2.5"] = float(val["odd"])
-                if val["value"] == "Under 2.5": cuotas_limpias["Under 2.5"] = float(val["odd"])
+            data = response.json().get("response", [])
+            if not data:
+                continue
                 
-        # --- 3. CORNERS ---
-        elif nombre in ["Corners Over Under", "Corners"]:
-            for val in mercado["values"]:
-                if val["value"] == "Over 9.5": cuotas_limpias["Over 9.5 Corners"] = float(val["odd"])
-                if val["value"] == "Under 9.5": cuotas_limpias["Under 9.5 Corners"] = float(val["odd"])
-        
-        # --- 4. TARJETAS ---
-        elif nombre in ["Cards Over/Under", "Cards"]:
-            for val in mercado["values"]:
-                if val["value"] == "Over 4.5": cuotas_limpias["Over 4.5 Tarjetas"] = float(val["odd"])
-                if val["value"] == "Under 4.5": cuotas_limpias["Under 4.5 Tarjetas"] = float(val["odd"])
-                    
+            bookmakers_data = data[0].get("bookmakers", [])
+            if not bookmakers_data:
+                continue
+                
+            mercados = bookmakers_data[0].get("bets", [])
+            
+            for mercado in mercados:
+                nombre = mercado.get("name", "")
+                
+                # --- 1. GANADOR DEL PARTIDO (1X2) ---
+                if nombre == "Match Winner":
+                    for val in mercado.get("values", []):
+                        if val.get("value") == "Home": cuotas_limpias["1"] = float(val.get("odd", 0))
+                        elif val.get("value") == "Draw": cuotas_limpias["X"] = float(val.get("odd", 0))
+                        elif val.get("value") == "Away": cuotas_limpias["2"] = float(val.get("odd", 0))
+                        
+                # --- 2. GOLES (Over/Under) ---
+                elif nombre == "Goals Over/Under":
+                    for val in mercado.get("values", []):
+                        if val.get("value") == "Over 2.5": cuotas_limpias["Over 2.5"] = float(val.get("odd", 0))
+                        elif val.get("value") == "Under 2.5": cuotas_limpias["Under 2.5"] = float(val.get("odd", 0))
+                        
+                # --- 3. CORNERS ---
+                elif nombre in ["Corners Over Under", "Corners", "Total Corners"]:
+                    for val in mercado.get("values", []):
+                        if val.get("value") == "Over 9.5": cuotas_limpias["Over 9.5 Corners"] = float(val.get("odd", 0))
+                        elif val.get("value") == "Under 9.5": cuotas_limpias["Under 9.5 Corners"] = float(val.get("odd", 0))
+                        
+                # --- 4. TARJETAS ---
+                elif nombre in ["Cards Over/Under", "Cards", "Total Cards"]:
+                    for val in mercado.get("values", []):
+                        if val.get("value") == "Over 4.5": cuotas_limpias["Over 4.5 Tarjetas"] = float(val.get("odd", 0))
+                        elif val.get("value") == "Under 4.5": cuotas_limpias["Under 4.5 Tarjetas"] = float(val.get("odd", 0))
+            
+            # Si logramos extraer al menos el 1X2, detenemos la búsqueda en otras casas
+            if "1" in cuotas_limpias and "X" in cuotas_limpias and "2" in cuotas_limpias:
+                break
+                
+        except Exception as e:
+            print(f"Error consultando cuotas para fixture {fixture_id} con bookmaker {bookmaker_id}: {e}")
+            
     return cuotas_limpias
 
 def evaluar_mercado_avanzado(probabilidad_modelo_pct, cuota_casa):
@@ -83,13 +105,14 @@ def evaluar_mercado_avanzado(probabilidad_modelo_pct, cuota_casa):
     return cuota_casa, ev_pct, veredicto, stake_recomendado, riesgo
 
 def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=None):
-    """Une las predicciones con cuotas automáticas o inyectadas manualmente."""
+    """Une las predicciones con cuotas automáticas de API-Football o inyectadas manualmente."""
     if cuotas_personalizadas and len(cuotas_personalizadas) > 0:
         cuotas = cuotas_personalizadas
     else:
         cuotas = obtener_cuotas_partido(fixture_id)
         
-    if not cuotas: return pd.DataFrame() 
+    if not cuotas: 
+        cuotas = {}
         
     analisis = []
     mercados_a_evaluar = [
