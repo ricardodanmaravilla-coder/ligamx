@@ -8,7 +8,7 @@ import streamlit as st
 try:
     THE_ODDS_API_KEY = st.secrets["THE_ODDS_API_KEY"]
 except Exception:
-    THE_ODDS_API_KEY = os.environ.get("THE_ODDS_API_KEY", "de66554a17bce1149445b1a883056607")
+    THE_ODDS_API_KEY = os.environ.get("THE_ODDS_API_KEY", "30e69fcfaa1a12d0a4f919bf1eddce94")
 
 def limpiar_nombre(texto):
     if not texto: return ""
