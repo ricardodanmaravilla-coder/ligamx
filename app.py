@@ -137,7 +137,7 @@ tab1, tab2 = st.tabs(["🇲🇽 Liga MX", "🏆 Leagues Cup"])
 # ==========================================
 with tab1:
     st.markdown("### 1. Selecciona el Encuentro")
-    partidos_reales = obtener_proximos_partidos()
+    partidos_reales = obtener_proximos_partidos_espn()
 
     if not partidos_reales:
         st.warning("⚠️ No se encontraron partidos próximos en la API para la Liga MX.")
