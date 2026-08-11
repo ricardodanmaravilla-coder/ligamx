@@ -42,36 +42,43 @@ def cargar_historico_seguro():
     return df
 
 @st.cache_data(ttl=3600)
-def obtener_proximos_partidos():
-    """Descarga los próximos partidos de la Liga MX de forma segura"""
-    url = f"{BASE_URL}/fixtures"
-    querystring = {"league": str(LIGA_MX_ID), "season": "2026", "next": "10"} 
-    
-    response = requests.get(url, headers=HEADERS, params=querystring)
-    if response.status_code != 200:
-        return {}
-        
-    datos = response.json().get("response", [])
-    
-    if not datos:
-        querystring_fallback = {"league": str(LIGA_MX_ID), "next": "10"}
-        response = requests.get(url, headers=HEADERS, params=querystring_fallback)
-        if response.status_code == 200:
-            datos = response.json().get("response", [])
-
+def obtener_proximos_partidos_espn(liga_espn="mex.1"):
+    """
+    Descarga los próximos partidos directamente desde la API pública de ESPN.
+    Puedes usar 'mex.1' para Liga MX o 'mex.leagues_cup' para la Leagues Cup.
+    """
+    url = f"https://site.api.espn.com/apis/site/v2/sports/soccer/{liga_espn}/scoreboard"
     partidos_dict = {}
-    for p in datos:
-        local = p["teams"]["home"]["name"]
-        visita = p["teams"]["away"]["name"]
-        fix_id = p["fixture"]["id"]
-        fecha = p["fixture"]["date"][:10]
+    
+    try:
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            for event in data.get('events', []):
+                fecha = event.get('date', '')[:10]
+                competencia = event.get('competitions', [{}])[0]
+                fix_id = event.get('id')
+                
+                competitors = competencia.get('competitors', [])
+                local, visita = "", ""
+                
+                for comp in competitors:
+                    team_name = comp.get('team', {}).get('displayName', '')
+                    if comp.get('homeAway') == 'home':
+                        local = team_name
+                    else:
+                        visita = team_name
+                
+                if local and visita:
+                    llave = f"📅 {fecha} | {local} vs {visita}"
+                    partidos_dict[llave] = {
+                        "local": local,
+                        "visita": visita,
+                        "fixture_id": fix_id
+                    }
+    except Exception as e:
+        st.error(f"Error conectando a la API de ESPN: {e}")
         
-        llave = f"📅 {fecha} | {local} vs {visita}"
-        partidos_dict[llave] = {
-            "local": local,
-            "visita": visita,
-            "fixture_id": fix_id
-        }
     return partidos_dict
 
 # --- FUNCIONES PARA LEAGUES CUP ---
