@@ -43,13 +43,13 @@ def generar_csv_cuotas_jornada():
                         "1": 0.00,
                         "X": 0.00,
                         "2": 0.00,
-                        "Linea_Goles": 2.5,
+                        "Linea_Goles": 0.00,
                         "Over_Goles": 0.00,
                         "Under_Goles": 0.00,
-                        "Linea_Corners": 9.5,
+                        "Linea_Corners": 0.00,
                         "Over_Corners": 0.00,
                         "Under_Corners": 0.00,
-                        "Linea_Tarjetas": 4.5,
+                        "Linea_Tarjetas": 0.00,
                         "Over_Tarjetas": 0.00,
                         "Under_Tarjetas": 0.00
                     })
