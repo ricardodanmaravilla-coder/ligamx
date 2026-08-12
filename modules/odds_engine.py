@@ -7,7 +7,7 @@ BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {'x-apisports-key': API_KEY}
 
 def obtener_cuotas_partido(fixture_id):
-    """Descarga cuotas reales desde API-Football usando el fixture_id del partido."""
+    """Descarga cuotas reales desde API-Football usando el fixture_id del partido y extrae líneas dinámicas."""
     if not fixture_id or not API_KEY:
         return {}
         
@@ -16,6 +16,10 @@ def obtener_cuotas_partido(fixture_id):
     
     # Lista de bookmakers comunes a probar (8 = Bet365 / Playdoit, 6 = Bwin, etc.)
     bookmakers_a_probar = [8, 6, 11, 1]
+    
+    linea_goles = "2.5"
+    linea_corners = "9.5"
+    linea_tarjetas = "4.5"
     
     for bookmaker_id in bookmakers_a_probar:
         try:
@@ -43,24 +47,53 @@ def obtener_cuotas_partido(fixture_id):
                         elif val.get("value") == "Draw": cuotas_limpias["X"] = float(val.get("odd", 0))
                         elif val.get("value") == "Away": cuotas_limpias["2"] = float(val.get("odd", 0))
                         
-                # --- 2. GOLES (Over/Under) ---
+                # --- 2. GOLES (Over/Under dinámico) ---
                 elif nombre == "Goals Over/Under":
+                    mejor_dif = 999
                     for val in mercado.get("values", []):
-                        if val.get("value") == "Over 2.5": cuotas_limpias["Over 2.5"] = float(val.get("odd", 0))
-                        elif val.get("value") == "Under 2.5": cuotas_limpias["Under 2.5"] = float(val.get("odd", 0))
+                        if "Over" in val.get("value", ""):
+                            dif = abs(float(val.get("odd", 0)) - 1.90)
+                            if dif < mejor_dif:
+                                mejor_dif = dif
+                                linea_goles = val.get("value", "").replace("Over ", "")
+                                
+                    for val in mercado.get("values", []):
+                        if val.get("value") == f"Over {linea_goles}": cuotas_limpias[f"Over {linea_goles}"] = float(val.get("odd", 0))
+                        elif val.get("value") == f"Under {linea_goles}": cuotas_limpias[f"Under {linea_goles}"] = float(val.get("odd", 0))
                         
-                # --- 3. CORNERS ---
+                # --- 3. CORNERS (Over/Under dinámico) ---
                 elif nombre in ["Corners Over Under", "Corners", "Total Corners"]:
+                    mejor_dif = 999
                     for val in mercado.get("values", []):
-                        if val.get("value") == "Over 9.5": cuotas_limpias["Over 9.5 Corners"] = float(val.get("odd", 0))
-                        elif val.get("value") == "Under 9.5": cuotas_limpias["Under 9.5 Corners"] = float(val.get("odd", 0))
+                        if "Over" in val.get("value", ""):
+                            dif = abs(float(val.get("odd", 0)) - 1.90)
+                            if dif < mejor_dif:
+                                mejor_dif = dif
+                                linea_corners = val.get("value", "").replace("Over ", "")
+                                
+                    for val in mercado.get("values", []):
+                        if val.get("value") == f"Over {linea_corners}": cuotas_limpias[f"Over {linea_corners} Corners"] = float(val.get("odd", 0))
+                        elif val.get("value") == f"Under {linea_corners}": cuotas_limpias[f"Under {linea_corners} Corners"] = float(val.get("odd", 0))
                         
-                # --- 4. TARJETAS ---
+                # --- 4. TARJETAS (Over/Under dinámico) ---
                 elif nombre in ["Cards Over/Under", "Cards", "Total Cards"]:
+                    mejor_dif = 999
                     for val in mercado.get("values", []):
-                        if val.get("value") == "Over 4.5": cuotas_limpias["Over 4.5 Tarjetas"] = float(val.get("odd", 0))
-                        elif val.get("value") == "Under 4.5": cuotas_limpias["Under 4.5 Tarjetas"] = float(val.get("odd", 0))
+                        if "Over" in val.get("value", ""):
+                            dif = abs(float(val.get("odd", 0)) - 1.90)
+                            if dif < mejor_dif:
+                                mejor_dif = dif
+                                linea_tarjetas = val.get("value", "").replace("Over ", "")
+                                
+                    for val in mercado.get("values", []):
+                        if val.get("value") == f"Over {linea_tarjetas}": cuotas_limpias[f"Over {linea_tarjetas} Tarjetas"] = float(val.get("odd", 0))
+                        elif val.get("value") == f"Under {linea_tarjetas}": cuotas_limpias[f"Under {linea_tarjetas} Tarjetas"] = float(val.get("odd", 0))
             
+            # Guardamos las líneas detectadas en el diccionario de cuotas limpias
+            cuotas_limpias["linea_goles_detectada"] = linea_goles
+            cuotas_limpias["linea_corners_detectada"] = linea_corners
+            cuotas_limpias["linea_tarjetas_detectada"] = linea_tarjetas
+
             # Si logramos extraer al menos el 1X2, detenemos la búsqueda en otras casas
             if "1" in cuotas_limpias and "X" in cuotas_limpias and "2" in cuotas_limpias:
                 break
@@ -114,17 +147,22 @@ def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=N
     if not cuotas: 
         cuotas = {}
         
+    # Extracción de líneas dinámicas reales detectadas
+    l_goles = cuotas.get("linea_goles_detectada", "2.5")
+    l_corners = cuotas.get("linea_corners_detectada", "9.5")
+    l_tarjetas = cuotas.get("linea_tarjetas_detectada", "4.5")
+        
     analisis = []
     mercados_a_evaluar = [
         ("Gana Local", resultados_montecarlo["Resultado_1X2"]["Gana Local"], "1"),
         ("Empate", resultados_montecarlo["Resultado_1X2"]["Empate"], "X"),
         ("Gana Visita", resultados_montecarlo["Resultado_1X2"]["Gana Visita"], "2"),
-        ("Over 2.5 Goles", resultados_montecarlo["Goles_Over_Under"]["Over 2.5"], "Over 2.5"),
-        ("Under 2.5 Goles", resultados_montecarlo["Goles_Over_Under"]["Under 2.5"], "Under 2.5"),
-        ("Over 9.5 Corners", resultados_montecarlo["Corners_Totales"]["Over 9.5 Corners"], "Over 9.5 Corners"),
-        ("Under 9.5 Corners", resultados_montecarlo["Corners_Totales"]["Under 9.5 Corners"], "Under 9.5 Corners"),
-        ("Over 4.5 Tarjetas", resultados_montecarlo["Tarjetas_Totales"]["Over 4.5 Tarjetas"], "Over 4.5 Tarjetas"),
-        ("Under 4.5 Tarjetas", resultados_montecarlo["Tarjetas_Totales"]["Under 4.5 Tarjetas"], "Under 4.5 Tarjetas")
+        (f"Over {l_goles} Goles", resultados_montecarlo["Goles_Over_Under"].get(f"Over {l_goles}", 0), f"Over {l_goles}"),
+        (f"Under {l_goles} Goles", resultados_montecarlo["Goles_Over_Under"].get(f"Under {l_goles}", 0), f"Under {l_goles}"),
+        (f"Over {l_corners} Corners", resultados_montecarlo["Corners_Totales"].get(f"Over {l_corners} Corners", 0), f"Over {l_corners} Corners"),
+        (f"Under {l_corners} Corners", resultados_montecarlo["Corners_Totales"].get(f"Under {l_corners} Corners", 0), f"Under {l_corners} Corners"),
+        (f"Over {l_tarjetas} Tarjetas", resultados_montecarlo["Tarjetas_Totales"].get(f"Over {l_tarjetas} Tarjetas", 0), f"Over {l_tarjetas} Tarjetas"),
+        (f"Under {l_tarjetas} Tarjetas", resultados_montecarlo["Tarjetas_Totales"].get(f"Under {l_tarjetas} Tarjetas", 0), f"Under {l_tarjetas} Tarjetas")
     ]
     
     for nombre_m, prob, llave_cuota in mercados_a_evaluar:
