@@ -14,7 +14,6 @@ def obtener_cuotas_partido(fixture_id):
     url = f"{BASE_URL}/odds"
     cuotas_limpias = {}
     
-    # Lista de bookmakers comunes a probar (8 = Bet365 / Playdoit, 6 = Bwin, etc.)
     bookmakers_a_probar = [8, 6, 11, 1]
     
     linea_goles = "2.5"
@@ -40,14 +39,12 @@ def obtener_cuotas_partido(fixture_id):
             for mercado in mercados:
                 nombre = mercado.get("name", "")
                 
-                # --- 1. GANADOR DEL PARTIDO (1X2) ---
                 if nombre == "Match Winner":
                     for val in mercado.get("values", []):
                         if val.get("value") == "Home": cuotas_limpias["1"] = float(val.get("odd", 0))
                         elif val.get("value") == "Draw": cuotas_limpias["X"] = float(val.get("odd", 0))
                         elif val.get("value") == "Away": cuotas_limpias["2"] = float(val.get("odd", 0))
                         
-                # --- 2. GOLES (Over/Under dinámico) ---
                 elif nombre == "Goals Over/Under":
                     mejor_dif = 999
                     for val in mercado.get("values", []):
@@ -58,10 +55,13 @@ def obtener_cuotas_partido(fixture_id):
                                 linea_goles = val.get("value", "").replace("Over ", "")
                                 
                     for val in mercado.get("values", []):
-                        if val.get("value") == f"Over {linea_goles}": cuotas_limpias[f"Over {linea_goles}"] = float(val.get("odd", 0))
-                        elif val.get("value") == f"Under {linea_goles}": cuotas_limpias[f"Under {linea_goles}"] = float(val.get("odd", 0))
+                        if val.get("value") == f"Over {linea_goles}": 
+                            cuotas_limpias[f"Over {linea_goles}"] = float(val.get("odd", 0))
+                            cuotas_limpias[f"Over {linea_goles} Goles"] = float(val.get("odd", 0))
+                        elif val.get("value") == f"Under {linea_goles}": 
+                            cuotas_limpias[f"Under {linea_goles}"] = float(val.get("odd", 0))
+                            cuotas_limpias[f"Under {linea_goles} Goles"] = float(val.get("odd", 0))
                         
-                # --- 3. CORNERS (Over/Under dinámico) ---
                 elif nombre in ["Corners Over Under", "Corners", "Total Corners"]:
                     mejor_dif = 999
                     for val in mercado.get("values", []):
@@ -75,7 +75,6 @@ def obtener_cuotas_partido(fixture_id):
                         if val.get("value") == f"Over {linea_corners}": cuotas_limpias[f"Over {linea_corners} Corners"] = float(val.get("odd", 0))
                         elif val.get("value") == f"Under {linea_corners}": cuotas_limpias[f"Under {linea_corners} Corners"] = float(val.get("odd", 0))
                         
-                # --- 4. TARJETAS (Over/Under dinámico) ---
                 elif nombre in ["Cards Over/Under", "Cards", "Total Cards"]:
                     mejor_dif = 999
                     for val in mercado.get("values", []):
@@ -89,22 +88,19 @@ def obtener_cuotas_partido(fixture_id):
                         if val.get("value") == f"Over {linea_tarjetas}": cuotas_limpias[f"Over {linea_tarjetas} Tarjetas"] = float(val.get("odd", 0))
                         elif val.get("value") == f"Under {linea_tarjetas}": cuotas_limpias[f"Under {linea_tarjetas} Tarjetas"] = float(val.get("odd", 0))
             
-            # Guardamos las líneas detectadas en el diccionario de cuotas limpias
             cuotas_limpias["linea_goles_detectada"] = linea_goles
             cuotas_limpias["linea_corners_detectada"] = linea_corners
             cuotas_limpias["linea_tarjetas_detectada"] = linea_tarjetas
 
-            # Si logramos extraer al menos el 1X2, detenemos la búsqueda en otras casas
             if "1" in cuotas_limpias and "X" in cuotas_limpias and "2" in cuotas_limpias:
                 break
                 
         except Exception as e:
-            print(f"Error consultando cuotas para fixture {fixture_id} con bookmaker {bookmaker_id}: {e}")
+            print(f"Error consultando cuotas para fixture {fixture_id}: {e}")
             
     return cuotas_limpias
 
 def evaluar_mercado_avanzado(probabilidad_modelo_pct, cuota_casa):
-    """Evalúa usando EV, Criterio de Kelly Fraccional y Umbrales de Seguridad."""
     if not cuota_casa or cuota_casa <= 0:
         return "N/A", 0, "SIN CUOTA", 0, "N/A"
         
@@ -138,7 +134,6 @@ def evaluar_mercado_avanzado(probabilidad_modelo_pct, cuota_casa):
     return cuota_casa, ev_pct, veredicto, stake_recomendado, riesgo
 
 def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=None):
-    """Une las predicciones con cuotas automáticas de API-Football o inyectadas manualmente."""
     if cuotas_personalizadas and len(cuotas_personalizadas) > 0:
         cuotas = cuotas_personalizadas
     else:
@@ -147,12 +142,10 @@ def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=N
     if not cuotas: 
         cuotas = {}
         
-    # Extracción de líneas dinámicas reales detectadas
     l_goles = cuotas.get("linea_goles_detectada", "2.5")
     l_corners = cuotas.get("linea_corners_detectada", "9.5")
     l_tarjetas = cuotas.get("linea_tarjetas_detectada", "4.5")
     
-    # Si las cuotas vienen personalizadas del usuario, buscamos la línea desde las llaves del diccionario
     if cuotas_personalizadas:
         for k in cuotas_personalizadas.keys():
             if "Over " in k and " Goles" in k:
@@ -164,28 +157,39 @@ def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=N
 
     analisis = []
     
-    # Extraemos probabilidades de Montecarlo garantizando coincidencia con las líneas reales
     prob_1x2 = resultados_montecarlo.get("Resultado_1X2", {})
     prob_goles = resultados_montecarlo.get("Goles_Over_Under", {})
     prob_corners = resultados_montecarlo.get("Corners_Totales", {})
     prob_tarjetas = resultados_montecarlo.get("Tarjetas_Totales", {})
 
+    # Búsqueda flexible de probabilidades para evitar ceros
+    p_og = prob_goles.get(f"Over {l_goles}", prob_goles.get(f"Over {float(l_goles)}", prob_goles.get("Over 2.5", 0)))
+    p_ug = prob_goles.get(f"Under {l_goles}", prob_goles.get(f"Under {float(l_goles)}", prob_goles.get("Under 2.5", 0)))
+    
+    p_oc = prob_corners.get(f"Over {l_corners} Corners", prob_corners.get(f"Over {float(l_corners)} Corners", prob_corners.get("Over 9.5 Corners", 0)))
+    p_uc = prob_corners.get(f"Under {l_corners} Corners", prob_corners.get(f"Under {float(l_corners)} Corners", prob_corners.get("Under 9.5 Corners", 0)))
+    
+    p_ot = prob_tarjetas.get(f"Over {l_tarjetas} Tarjetas", prob_tarjetas.get(f"Over {float(l_tarjetas)} Tarjetas", prob_tarjetas.get("Over 4.5 Tarjetas", 0)))
+    p_ut = prob_tarjetas.get(f"Under {l_tarjetas} Tarjetas", prob_tarjetas.get(f"Under {float(l_tarjetas)} Tarjetas", prob_tarjetas.get("Under 4.5 Tarjetas", 0)))
+
     mercados_a_evaluar = [
         ("Gana Local", prob_1x2.get("Gana Local", 0), "1"),
         ("Empate", prob_1x2.get("Empate", 0), "X"),
         ("Gana Visita", prob_1x2.get("Gana Visita", 0), "2"),
-        (f"Over {l_goles} Goles", prob_goles.get(f"Over {l_goles}", 0), f"Over {l_goles} Goles"),
-        (f"Under {l_goles} Goles", prob_goles.get(f"Under {l_goles}", 0), f"Under {l_goles} Goles"),
-        (f"Over {l_corners} Corners", prob_corners.get(f"Over {l_corners} Corners", 0), f"Over {l_corners} Corners"),
-        (f"Under {l_corners} Corners", prob_corners.get(f"Under {l_corners} Corners", 0), f"Under {l_corners} Corners"),
-        (f"Over {l_tarjetas} Tarjetas", prob_tarjetas.get(f"Over {l_tarjetas} Tarjetas", 0), f"Over {l_tarjetas} Tarjetas"),
-        (f"Under {l_tarjetas} Tarjetas", prob_tarjetas.get(f"Under {l_tarjetas} Tarjetas", 0), f"Under {l_tarjetas} Tarjetas")
+        (f"Over {l_goles} Goles", p_og, f"Over {l_goles} Goles"),
+        (f"Under {l_goles} Goles", p_ug, f"Under {l_goles} Goles"),
+        (f"Over {l_corners} Corners", p_oc, f"Over {l_corners} Corners"),
+        (f"Under {l_corners} Corners", p_uc, f"Under {l_corners} Corners"),
+        (f"Over {l_tarjetas} Tarjetas", p_ot, f"Over {l_tarjetas} Tarjetas"),
+        (f"Under {l_tarjetas} Tarjetas", p_ut, f"Under {l_tarjetas} Tarjetas")
     ]
     
     for nombre_m, prob, llave_cuota in mercados_a_evaluar:
-        # Busca la cuota con la llave exacta o simplificada
+        # Busca la cuota probando distintas variantes de nombres de llaves
         cuota = cuotas.get(llave_cuota, cuotas.get(llave_cuota.replace(" Goles", "").replace(" Corners", "").replace(" Tarjetas", "")))
-        
+        if not cuota:
+            cuota = cuotas.get(f"Over {l_goles}") if "Over" in nombre_m and "Goles" in nombre_m else cuotas.get(f"Under {l_goles}")
+            
         if cuota is None or cuota == 0.0:
             analisis.append([nombre_m, f"{prob}%", "Sin Cuota", "N/A", "N/A", "0%", "🕒 Ingresa Cuota"])
             continue
