@@ -228,7 +228,6 @@ with tab1:
                         
                         with st.container():
                             st.markdown("⚙️ **Gestión de Cuotas (Automáticas / Manuales)**")
-                            # Modificado para usar las líneas exactas en el formulario
                             mercados_keys = {
                                 "Gana Local": "1", 
                                 "Empate": "X",
