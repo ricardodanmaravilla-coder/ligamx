@@ -157,12 +157,22 @@ with tab1:
                     except:
                         e_vis = 1500.0
 
+                    # --- EXTRACCIÓN DE CUOTAS REALES DESDE LA API-SPORTS (Detectar las líneas primero) ---
+                    cuotas_automaticas = obtener_cuotas_partido(datos_partido["fixture_id"])
+                    
+                    l_goles = cuotas_automaticas.get("linea_goles_detectada", "2.5") if cuotas_automaticas else "2.5"
+                    l_corners = cuotas_automaticas.get("linea_corners_detectada", "9.5") if cuotas_automaticas else "9.5"
+                    l_tarjetas = cuotas_automaticas.get("linea_tarjetas_detectada", "4.5") if cuotas_automaticas else "4.5"
+
                     resultados = simular_partido_montecarlo(
                         datos_partido["local"], 
                         datos_partido["visita"],
                         df_historico=df_hist_base,
                         elo_local=e_loc,
-                        elo_visita=e_vis
+                        elo_visita=e_vis,
+                        linea_goles=float(l_goles),
+                        linea_corners=float(l_corners),
+                        linea_tarjetas=float(l_tarjetas)
                     )
                     
                     if isinstance(resultados, str):
@@ -181,14 +191,14 @@ with tab1:
                         st.markdown("🎯 **Goles, Corners y Tarjetas Más Probables del Partido**")
                         col4, col5, col6 = st.columns(3)
                         
-                        over_goles = resultados['Goles_Over_Under']['Over 2.5']
-                        col4.metric("Más de 2.5 Goles", f"{over_goles}%", f"Under: {round(100-over_goles, 2)}%")
+                        over_goles = resultados['Goles_Over_Under'].get(f'Over {l_goles}', 0)
+                        col4.metric(f"Más de {l_goles} Goles", f"{over_goles}%", f"Under: {round(100-over_goles, 2)}%")
                         
-                        over_corners = resultados['Corners_Totales']['Over 9.5 Corners']
-                        col5.metric("Más de 9.5 Corners", f"{over_corners}%", f"Under: {round(100-over_corners, 2)}%")
+                        over_corners = resultados['Corners_Totales'].get(f'Over {l_corners} Corners', 0)
+                        col5.metric(f"Más de {l_corners} Corners", f"{over_corners}%", f"Under: {round(100-over_corners, 2)}%")
                         
-                        over_tarjetas = resultados['Tarjetas_Totales']['Over 4.5 Tarjetas']
-                        col6.metric("Más de 4.5 Tarjetas", f"{over_tarjetas}%", f"Under: {round(100-over_tarjetas, 2)}%")
+                        over_tarjetas = resultados['Tarjetas_Totales'].get(f'Over {l_tarjetas} Tarjetas', 0)
+                        col6.metric(f"Más de {l_tarjetas} Tarjetas", f"{over_tarjetas}%", f"Under: {round(100-over_tarjetas, 2)}%")
                         
                         st.markdown("---")
                         st.markdown("📈 **Pronósticos Detallados por Equipo (Expectativa Matemática)**")
@@ -216,21 +226,19 @@ with tab1:
 
                         st.markdown("---")
                         
-                        # --- EXTRACCIÓN DE CUOTAS REALES DESDE LA API-SPORTS ---
-                        cuotas_automaticas = obtener_cuotas_partido(datos_partido["fixture_id"])
-                        
                         with st.container():
                             st.markdown("⚙️ **Gestión de Cuotas (Automáticas / Manuales)**")
+                            # Modificado para usar las líneas exactas en el formulario
                             mercados_keys = {
                                 "Gana Local": "1", 
                                 "Empate": "X",
                                 "Gana Visita": "2", 
-                                "Over 2.5 Goles": "Over 2.5", 
-                                "Under 2.5 Goles": "Under 2.5",
-                                "Over 9.5 Corners": "Over 9.5 Corners",
-                                "Under 9.5 Corners": "Under 9.5 Corners",
-                                "Over 4.5 Tarjetas": "Over 4.5 Tarjetas",
-                                "Under 4.5 Tarjetas": "Under 4.5 Tarjetas"
+                                f"Over {l_goles} Goles": f"Over {l_goles}", 
+                                f"Under {l_goles} Goles": f"Under {l_goles}",
+                                f"Over {l_corners} Corners": f"Over {l_corners} Corners",
+                                f"Under {l_corners} Corners": f"Under {l_corners} Corners",
+                                f"Over {l_tarjetas} Tarjetas": f"Over {l_tarjetas} Tarjetas",
+                                f"Under {l_tarjetas} Tarjetas": f"Under {l_tarjetas} Tarjetas"
                             }
                             
                             cuotas_usuario = {}
