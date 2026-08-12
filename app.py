@@ -255,6 +255,10 @@ with tab1:
                                         key=f"input_cuota_mx_{llave}"
                                     )
 
+                        cuotas_usuario["linea_goles_detectada"] = str(l_goles)
+                        cuotas_usuario["linea_corners_detectada"] = str(l_corners)
+                        cuotas_usuario["linea_tarjetas_detectada"] = str(l_tarjetas)
+                        
                         df_apuestas = analizar_apuestas(resultados, datos_partido["fixture_id"], cuotas_personalizadas=cuotas_usuario)
                         
                         if not df_apuestas.empty:
