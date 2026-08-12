@@ -151,22 +151,40 @@ def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=N
     l_goles = cuotas.get("linea_goles_detectada", "2.5")
     l_corners = cuotas.get("linea_corners_detectada", "9.5")
     l_tarjetas = cuotas.get("linea_tarjetas_detectada", "4.5")
-        
+    
+    # Si las cuotas vienen personalizadas del usuario, buscamos la línea desde las llaves del diccionario
+    if cuotas_personalizadas:
+        for k in cuotas_personalizadas.keys():
+            if "Over " in k and " Goles" in k:
+                l_goles = k.replace("Over ", "").replace(" Goles", "").strip()
+            elif "Over " in k and " Corners" in k:
+                l_corners = k.replace("Over ", "").replace(" Corners", "").strip()
+            elif "Over " in k and " Tarjetas" in k:
+                l_tarjetas = k.replace("Over ", "").replace(" Tarjetas", "").strip()
+
     analisis = []
+    
+    # Extraemos probabilidades de Montecarlo garantizando coincidencia con las líneas reales
+    prob_1x2 = resultados_montecarlo.get("Resultado_1X2", {})
+    prob_goles = resultados_montecarlo.get("Goles_Over_Under", {})
+    prob_corners = resultados_montecarlo.get("Corners_Totales", {})
+    prob_tarjetas = resultados_montecarlo.get("Tarjetas_Totales", {})
+
     mercados_a_evaluar = [
-        ("Gana Local", resultados_montecarlo["Resultado_1X2"]["Gana Local"], "1"),
-        ("Empate", resultados_montecarlo["Resultado_1X2"]["Empate"], "X"),
-        ("Gana Visita", resultados_montecarlo["Resultado_1X2"]["Gana Visita"], "2"),
-        (f"Over {l_goles} Goles", resultados_montecarlo["Goles_Over_Under"].get(f"Over {l_goles}", 0), f"Over {l_goles}"),
-        (f"Under {l_goles} Goles", resultados_montecarlo["Goles_Over_Under"].get(f"Under {l_goles}", 0), f"Under {l_goles}"),
-        (f"Over {l_corners} Corners", resultados_montecarlo["Corners_Totales"].get(f"Over {l_corners} Corners", 0), f"Over {l_corners} Corners"),
-        (f"Under {l_corners} Corners", resultados_montecarlo["Corners_Totales"].get(f"Under {l_corners} Corners", 0), f"Under {l_corners} Corners"),
-        (f"Over {l_tarjetas} Tarjetas", resultados_montecarlo["Tarjetas_Totales"].get(f"Over {l_tarjetas} Tarjetas", 0), f"Over {l_tarjetas} Tarjetas"),
-        (f"Under {l_tarjetas} Tarjetas", resultados_montecarlo["Tarjetas_Totales"].get(f"Under {l_tarjetas} Tarjetas", 0), f"Under {l_tarjetas} Tarjetas")
+        ("Gana Local", prob_1x2.get("Gana Local", 0), "1"),
+        ("Empate", prob_1x2.get("Empate", 0), "X"),
+        ("Gana Visita", prob_1x2.get("Gana Visita", 0), "2"),
+        (f"Over {l_goles} Goles", prob_goles.get(f"Over {l_goles}", 0), f"Over {l_goles} Goles"),
+        (f"Under {l_goles} Goles", prob_goles.get(f"Under {l_goles}", 0), f"Under {l_goles} Goles"),
+        (f"Over {l_corners} Corners", prob_corners.get(f"Over {l_corners} Corners", 0), f"Over {l_corners} Corners"),
+        (f"Under {l_corners} Corners", prob_corners.get(f"Under {l_corners} Corners", 0), f"Under {l_corners} Corners"),
+        (f"Over {l_tarjetas} Tarjetas", prob_tarjetas.get(f"Over {l_tarjetas} Tarjetas", 0), f"Over {l_tarjetas} Tarjetas"),
+        (f"Under {l_tarjetas} Tarjetas", prob_tarjetas.get(f"Under {l_tarjetas} Tarjetas", 0), f"Under {l_tarjetas} Tarjetas")
     ]
     
     for nombre_m, prob, llave_cuota in mercados_a_evaluar:
-        cuota = cuotas.get(llave_cuota)
+        # Busca la cuota con la llave exacta o simplificada
+        cuota = cuotas.get(llave_cuota, cuotas.get(llave_cuota.replace(" Goles", "").replace(" Corners", "").replace(" Tarjetas", "")))
         
         if cuota is None or cuota == 0.0:
             analisis.append([nombre_m, f"{prob}%", "Sin Cuota", "N/A", "N/A", "0%", "🕒 Ingresa Cuota"])
