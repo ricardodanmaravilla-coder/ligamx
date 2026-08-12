@@ -68,7 +68,7 @@ class PredictorML:
             print(f"Error entrenando ML: {e}")
             return False
 
-    def predecir_mercados_completos(self, df_historico, equipo_local, equipo_visita, goles_sim_l, goles_sim_v, elo_local=1500, elo_visita=1500):
+    def predecir_mercados_completos(self, df_historico, equipo_local, equipo_visita, goles_sim_l, goles_sim_v, elo_local=1500, elo_visita=1500, linea_goles=2.5, linea_corners=9.5, linea_tarjetas=4.5):
         if not self.is_trained:
             if not self.entrenar(df_historico):
                 return {}
@@ -94,14 +94,21 @@ class PredictorML:
             corners_totales_ml = float(self.model_corners.predict(X_pred)[0])
             tarjetas_totales_ml = float(self.model_tarjetas.predict(X_pred)[0])
             
-            over_25 = round(min(95.0, max(5.0, (goles_totales_ml / 2.8) * 55.0)), 1)
-            under_25 = round(100.0 - over_25, 1)
+            # Asegurar que las líneas sean tratadas como flotantes para la matemática
+            l_goles = float(linea_goles)
+            l_corners = float(linea_corners)
+            l_tarjetas = float(linea_tarjetas)
+            
+            # Se respeta la proporción original del cálculo sumando ~0.3 a la línea de goles para la base
+            base_goles = l_goles + 0.3
+            over_goles_pct = round(min(95.0, max(5.0, (goles_totales_ml / base_goles) * 55.0)), 1)
+            under_goles_pct = round(100.0 - over_goles_pct, 1)
 
-            over_corners_95 = round(min(95.0, max(5.0, (corners_totales_ml / 9.5) * 50.0)), 1)
-            under_corners_95 = round(100.0 - over_corners_95, 1)
+            over_corners_pct = round(min(95.0, max(5.0, (corners_totales_ml / l_corners) * 50.0)), 1)
+            under_corners_pct = round(100.0 - over_corners_pct, 1)
 
-            over_tarjetas_45 = round(min(95.0, max(5.0, (tarjetas_totales_ml / 4.5) * 50.0)), 1)
-            under_tarjetas_45 = round(100.0 - over_tarjetas_45, 1)
+            over_tarjetas_pct = round(min(95.0, max(5.0, (tarjetas_totales_ml / l_tarjetas) * 50.0)), 1)
+            under_tarjetas_pct = round(100.0 - over_tarjetas_pct, 1)
             
             return {
                 "Resultado_1X2": {
@@ -110,16 +117,16 @@ class PredictorML:
                     "Gana Visita": p_visita
                 },
                 "Goles_Over_Under": {
-                    "Over 2.5": over_25,
-                    "Under 2.5": under_25
+                    f"Over {linea_goles}": over_goles_pct,
+                    f"Under {linea_goles}": under_goles_pct
                 },
                 "Corners_Totales": {
-                    "Over 9.5 Corners": over_corners_95,
-                    "Under 9.5 Corners": under_corners_95
+                    f"Over {linea_corners} Corners": over_corners_pct,
+                    f"Under {linea_corners} Corners": under_corners_pct
                 },
                 "Tarjetas_Totales": {
-                    "Over 4.5 Tarjetas": over_tarjetas_45,
-                    "Under 4.5 Tarjetas": under_tarjetas_45
+                    f"Over {linea_tarjetas} Tarjetas": over_tarjetas_pct,
+                    f"Under {linea_tarjetas} Tarjetas": under_tarjetas_pct
                 }
             }
         except Exception as e:
