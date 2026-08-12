@@ -11,11 +11,135 @@ from modules.odds_engine import obtener_cuotas_partido, analizar_apuestas
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(page_title="Dashboard Liga MX & Analítica de Apuestas", layout="wide")
 
+# --- INYECCIÓN DE ESTILOS CSS DE ALTO IMPACTO VISUAL ---
+st.markdown("""
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  :root{
+    --bg:#09110D;
+    --panel:#111B14;
+    --panel-alt:#18261D;
+    --panel-raise:#1F3025;
+    --turf:#2E6F40;
+    --turf-light:#4E9F64;
+    --chalk:#F4F1EA;
+    --chalk-dim:#B5B0A1;
+    --amber:#FFB703;
+    --red:#E05340;
+    --steel:#7C8E81;
+    --line:rgba(244,241,234,0.08);
+    --line-strong:rgba(244,241,234,0.18);
+  }
+
+  /* Fondo general y tipografía principal */
+  .stApp {
+    background: 
+      radial-gradient(1200px 600px at 15% -10%, rgba(46,111,64,0.20), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(255,183,3,0.05), transparent 55%),
+      var(--bg);
+    font-family: 'Inter', sans-serif;
+    color: var(--chalk);
+  }
+
+  /* Títulos con estilo industrial / deportivo */
+  h1, h2, h3, .custom-title {
+    font-family: 'Oswald', sans-serif !important;
+    letter-spacing: 0.03em !important;
+    text-transform: uppercase;
+  }
+
+  /* Tarjetas y contenedores de Streamlit con diseño de panel táctico */
+  div[data-testid="stVerticalBlock"] > div[style*="background-color"], 
+  div.stExpander, 
+  div[data-testid="stHorizontalBlock"] {
+    background-color: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.2rem;
+  }
+
+  /* Estilización de Métricas */
+  div[data-testid="stMetric"] {
+    background: linear-gradient(180deg, var(--panel-raise), var(--panel));
+    border: 1px solid var(--line-strong);
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  div[data-testid="stMetric"]:hover {
+    border-color: var(--turf-light);
+    transform: translateY(-2px);
+  }
+  [data-testid="stMetricLabel"] {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 11px !important;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--steel) !important;
+  }
+  [data-testid="stMetricValue"] {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-weight: 700 !important;
+    color: var(--amber) !important;
+  }
+
+  /* Botones de alto impacto */
+  .stButton button {
+    background: linear-gradient(135deg, var(--turf), #235531) !important;
+    color: var(--chalk) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    font-family: 'Oswald', sans-serif !important;
+    font-size: 16px !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+    border-radius: 10px !important;
+    padding: 0.6rem 1.2rem !important;
+    box-shadow: 0 4px 14px rgba(46,111,64,0.4);
+    transition: all 0.2s ease;
+  }
+  .stButton button:hover {
+    background: linear-gradient(135deg, var(--turf-light), var(--turf)) !important;
+    border-color: var(--amber) !important;
+    box-shadow: 0 6px 20px rgba(78,159,100,0.5);
+  }
+
+  /* Inputs y Selectboxes estilizados */
+  .stSelectbox select, .stNumberInput input {
+    background-color: var(--panel-alt) !important;
+    border: 1px solid var(--line-strong) !important;
+    color: var(--chalk) !important;
+    border-radius: 8px !important;
+    font-family: 'Inter', sans-serif !important;
+  }
+  .stSelectbox select:focus, .stNumberInput input:focus {
+    border-color: var(--turf-light) !important;
+    box-shadow: 0 0 0 2px rgba(78,159,100,0.2);
+  }
+
+  /* Tablas de datos con estética de terminal táctica */
+  dataframe, [data-testid="stDataFrame"] {
+    border-radius: 12px;
+    border: 1px solid var(--line-strong);
+    background-color: var(--panel);
+  }
+
+  /* Divisores personalizados tipo yardas de campo */
+  hr {
+    border: none;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, var(--line-strong) 0 2px, transparent 2px 14px);
+    margin: 2rem 0;
+  }
+</style>
+""", unsafe_allow_html=True)
+
 API_KEY = os.environ.get("API_SPORTS_KEY") 
 BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {'x-apisports-key': API_KEY}
 LIGA_MX_ID = 262
-LEAGUES_CUP_ID = 772 # ID oficial actualizado de Leagues Cup
+LEAGUES_CUP_ID = 772
 
 def cargar_historico_seguro():
     url_github_raw = 'https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/data/historico_ligamx_completo.csv'
@@ -43,7 +167,6 @@ def cargar_historico_seguro():
 
 @st.cache_data(ttl=3600)
 def obtener_proximos_partidos():
-    """Descarga los próximos partidos de la Liga MX de forma segura"""
     url = f"{BASE_URL}/fixtures"
     querystring = {"league": str(LIGA_MX_ID), "season": "2026", "next": "10"} 
     
@@ -117,10 +240,23 @@ def obtener_proximos_partidos_lc():
         llave = f"🏆 {fecha} | {local} vs {visita}"
         partidos_dict[llave] = {"local": local, "visita": visita, "fixture_id": fix_id}
     return partidos_dict
-# -----------------------------------
 
-st.title("⚽ Liga MX Analytics & Value Betting (2026)")
-st.write("Simulador Montecarlo (Goles, Corners, Tarjetas) + Criterio de Kelly")
+# --- ENCABEZADO PRINCIPAL ESTILIZADO ---
+st.markdown("""
+<div style="padding: 20px 0 10px 0; text-align: center;">
+  <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--amber); text-transform: uppercase; margin-bottom: 8px;">
+    MODELO ESTADÍSTICO · DATOS HISTÓRICOS Y EN TIEMPO REAL
+  </div>
+  <h1 style="font-size: clamp(32px, 5vw, 52px); margin: 0; font-weight: 700; color: var(--chalk);">
+    LIGA MX <span style="color: var(--turf-light);">ANALYTICS</span>
+  </h1>
+  <p style="color: var(--chalk-dim); font-size: 14px; max-width: 600px; margin: 10px auto 0 auto; line-height: 1.5;">
+    Simulador Montecarlo avanzado (Goles, Córners, Tarjetas) combinado con Value Betting y Criterio de Kelly.
+  </p>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("---")
 
 # --- SISTEMA DE PESTAÑAS ---
 tab1, tab2 = st.tabs(["🇲🇽 Liga MX", "🏆 Leagues Cup"])
@@ -157,7 +293,6 @@ with tab1:
                     except:
                         e_vis = 1500.0
 
-                    # --- EXTRACCIÓN DE CUOTAS REALES DESDE LA API-SPORTS (Detectar las líneas primero) ---
                     cuotas_automaticas = obtener_cuotas_partido(datos_partido["fixture_id"])
                     
                     l_goles = cuotas_automaticas.get("linea_goles_detectada", "2.5") if cuotas_automaticas else "2.5"
@@ -258,7 +393,7 @@ with tab1:
                         cuotas_usuario["linea_goles_detectada"] = str(l_goles)
                         cuotas_usuario["linea_corners_detectada"] = str(l_corners)
                         cuotas_usuario["linea_tarjetas_detectada"] = str(l_tarjetas)
-                        
+
                         df_apuestas = analizar_apuestas(resultados, datos_partido["fixture_id"], cuotas_personalizadas=cuotas_usuario)
                         
                         if not df_apuestas.empty:
@@ -396,7 +531,7 @@ with tab1:
 
             df_predicciones = df_predicciones.merge(
                 tabla_posiciones_elo, left_on='Visitante', right_on='Equipo', how='left'
-            ).rename(columns={'ELO_Rating': 'ELO_Visita'}).drop('Equipo', axis=1, errors='ignore')
+            ).rename(columns={'ELO_Rating': 'ELO_Visual'}).drop('Equipo', axis=1, errors='ignore')
 
             def evaluar_apuesta_hibrida(fila):
                 prob_poisson_local = fila['Probabilidad_Local']
