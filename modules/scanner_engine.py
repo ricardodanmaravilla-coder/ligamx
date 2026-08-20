@@ -126,7 +126,13 @@ def _obtener_partidos_escanner(league_id, temporada_actual):
     if not partidos_list:
         url_espn = "https://site.api.espn.com/apis/site/v2/sports/soccer/mex.1/scoreboard"
         try:
-            res = requests.get(url_espn, timeout=5)
+            # FIX: ESPN por defecto solo manda los de hoy. Forzamos una ventana de 7 días.
+            hoy_espn = datetime.date.today().strftime("%Y%m%d")
+            futuro_espn = (datetime.date.today() + datetime.timedelta(days=7)).strftime("%Y%m%d")
+            
+            # Inyectamos el rango de fechas en los params
+            res = requests.get(url_espn, params={"dates": f"{hoy_espn}-{futuro_espn}"}, timeout=5)
+            
             if res.status_code == 200:
                 for event in res.json().get("events", []):
                     estado = event.get("status", {}).get("type", {}).get("name", "")
