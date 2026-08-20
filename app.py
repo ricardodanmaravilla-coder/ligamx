@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 import requests
 import numpy as np
+import datetime
 from modules.elo_engine import SistemaEloLigaMX
 from modules.ml_engine import PredictorML
 from modules.montecarlo_sim import simular_partido_montecarlo
@@ -167,22 +168,30 @@ def cargar_historico_seguro():
 @st.cache_data(ttl=3600)
 def obtener_proximos_partidos():
     url = f"{BASE_URL}/fixtures"
-    querystring = {"league": str(LIGA_MX_ID), "season": "2026", "next": "10"} 
+    
+    hoy = datetime.date.today().strftime("%Y-%m-%d")
+    futuro = (datetime.date.today() + datetime.timedelta(days=45)).strftime("%Y-%m-%d")
+    
+    querystring = {"league": str(LIGA_MX_ID), "from": hoy, "to": futuro} 
     
     response = requests.get(url, headers=HEADERS, params=querystring)
-    if response.status_code != 200:
-        return {}
-        
-    datos = response.json().get("response", [])
+    datos = []
     
+    if response.status_code == 200:
+        datos = response.json().get("response", [])
+        
     if not datos:
-        querystring_fallback = {"league": str(LIGA_MX_ID), "next": "10"}
+        querystring_fallback = {"league": str(LIGA_MX_ID), "next": "15"}
         response = requests.get(url, headers=HEADERS, params=querystring_fallback)
         if response.status_code == 200:
             datos = response.json().get("response", [])
 
     partidos_dict = {}
     for p in datos:
+        estado = p.get("fixture", {}).get("status", {}).get("short", "")
+        if estado in ["FT", "AET", "PEN", "CANC", "ABD"]: 
+            continue
+            
         local = p["teams"]["home"]["name"]
         visita = p["teams"]["away"]["name"]
         fix_id = p["fixture"]["id"]
@@ -194,6 +203,43 @@ def obtener_proximos_partidos():
             "visita": visita,
             "fixture_id": fix_id
         }
+        
+    # --- RESPALDO DE ESPN PARA PARTIDOS ---
+    if not partidos_dict:
+        url_espn = "https://site.api.espn.com/apis/site/v2/sports/soccer/mex.1/scoreboard"
+        try:
+            res = requests.get(url_espn, timeout=5)
+            if res.status_code == 200:
+                data = res.json()
+                for event in data.get("events", []):
+                    estado = event.get("status", {}).get("type", {}).get("name", "")
+                    if estado in ["STATUS_FINAL", "STATUS_POSTPONED", "STATUS_CANCELED", "STATUS_FULL_TIME"]:
+                        continue
+                        
+                    competitions = event.get("competitions", [])
+                    if competitions:
+                        comp = competitions[0]
+                        competitors = comp.get("competitors", [])
+                        local = "Local"
+                        visita = "Visita"
+                        for team in competitors:
+                            if team.get("homeAway") == "home":
+                                local = team.get("team", {}).get("name", "Local")
+                            else:
+                                visita = team.get("team", {}).get("name", "Visita")
+                        
+                        fix_id = event.get("id")
+                        fecha = event.get("date", "")[:10]
+                        
+                        llave = f"📅 {fecha} | {local} vs {visita} (ESPN)"
+                        partidos_dict[llave] = {
+                            "local": local,
+                            "visita": visita,
+                            "fixture_id": fix_id
+                        }
+        except Exception as e:
+            pass
+            
     return partidos_dict
 
 # --- ENCABEZADO PRINCIPAL ESTILIZADO ---
@@ -217,7 +263,7 @@ st.markdown("### 1. Selecciona el Encuentro")
 partidos_reales = obtener_proximos_partidos()
 
 if not partidos_reales:
-    st.warning("⚠️ No se encontraron partidos próximos en la API para la Liga MX.")
+    st.warning("⚠️ No se encontraron partidos próximos ni en API-Football ni en ESPN.")
 else:
     seleccion = st.selectbox("Próximos partidos de Liga MX:", list(partidos_reales.keys()))
     datos_partido = partidos_reales[seleccion]
