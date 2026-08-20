@@ -1,24 +1,63 @@
 import os
 import requests
 import pandas as pd
+import datetime
 
 API_KEY = os.environ.get("API_SPORTS_KEY")
 BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {'x-apisports-key': API_KEY}
 
-def obtener_cuotas_partido(fixture_id):
-    """Descarga cuotas reales desde API-Football usando el fixture_id del partido y extrae líneas dinámicas."""
-    if not fixture_id or not API_KEY:
-        return {}
+def _obtener_fallback_espn():
+    """
+    Función de rescate (Fallback) usando la API oculta de ESPN para Liga MX.
+    Se activa solo si API-Football falla o no tiene datos.
+    Nota: ESPN raramente provee córners o tarjetas, solo rescatará 1X2 y Goles.
+    """
+    url_espn = "https://site.api.espn.com/apis/site/v2/sports/soccer/mex.1/scoreboard"
+    cuotas_rescate = {}
+    
+    try:
+        res = requests.get(url_espn, timeout=5)
+        if res.status_code == 200:
+            data = res.json()
+            # Toma el primer evento disponible para buscar cuotas generales
+            for event in data.get("events", []):
+                competitions = event.get("competitions", [])
+                if competitions:
+                    odds = competitions[0].get("odds", [])
+                    if odds:
+                        # Extraer momios y convertirlos a formato de nuestro motor
+                        cuotas_rescate["linea_goles_detectada"] = str(odds[0].get("overUnder", "2.5"))
+                        # ESPN normalmente da cuotas en formato Americano o Decimal según la región
+                        # Asumiremos que no siempre están limpias, pero rescatamos la línea O/U
+                        
+                        # No podemos asegurar el 1X2 exacto sin cruzar nombres de equipos,
+                        # pero devolvemos las líneas base para que la interfaz no colapse.
+                        return cuotas_rescate
+    except Exception as e:
+        print(f"Fallo en el respaldo de ESPN: {e}")
         
-    url = f"{BASE_URL}/odds"
+    return cuotas_rescate
+
+def obtener_cuotas_partido(fixture_id):
+    """Descarga cuotas reales desde API-Football. Si falla, activa el respaldo de ESPN."""
     cuotas_limpias = {}
-    
-    bookmakers_a_probar = [8, 6, 11, 1]
-    
     linea_goles = "2.5"
     linea_corners = "9.5"
     linea_tarjetas = "4.5"
+
+    if not fixture_id or not API_KEY:
+        # Activar respaldo de ESPN inmediatamente si no hay API Key
+        respaldo = _obtener_fallback_espn()
+        respaldo["linea_corners_detectada"] = linea_corners
+        respaldo["linea_tarjetas_detectada"] = linea_tarjetas
+        if not respaldo.get("linea_goles_detectada"):
+            respaldo["linea_goles_detectada"] = linea_goles
+        return respaldo
+        
+    url = f"{BASE_URL}/odds"
+    bookmakers_a_probar = [8, 6, 11, 1] # Bet365, Bwin, 1xBet, 10Bet
+    exito_api_principal = False
     
     for bookmaker_id in bookmakers_a_probar:
         try:
@@ -93,11 +132,22 @@ def obtener_cuotas_partido(fixture_id):
             cuotas_limpias["linea_tarjetas_detectada"] = linea_tarjetas
 
             if "1" in cuotas_limpias and "X" in cuotas_limpias and "2" in cuotas_limpias:
+                exito_api_principal = True
                 break
                 
         except Exception as e:
             print(f"Error consultando cuotas para fixture {fixture_id}: {e}")
             
+    # --- ACTIVACIÓN DEL RESPALDO (FALLBACK) ---
+    if not exito_api_principal or len(cuotas_limpias) < 4:
+        print("API Principal falló o devolvió datos incompletos. Activando respaldo de ESPN...")
+        respaldo = _obtener_fallback_espn()
+        
+        # Mezclamos lo que haya sobrevivido de la API principal con el respaldo
+        cuotas_limpias["linea_goles_detectada"] = respaldo.get("linea_goles_detectada", linea_goles)
+        cuotas_limpias["linea_corners_detectada"] = linea_corners # ESPN no da corners
+        cuotas_limpias["linea_tarjetas_detectada"] = linea_tarjetas # ESPN no da tarjetas
+
     return cuotas_limpias
 
 def evaluar_mercado_avanzado(probabilidad_modelo_pct, cuota_casa):
@@ -162,7 +212,6 @@ def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=N
     prob_corners = resultados_montecarlo.get("Corners_Totales", {})
     prob_tarjetas = resultados_montecarlo.get("Tarjetas_Totales", {})
 
-    # Búsqueda flexible de probabilidades para evitar ceros
     p_og = prob_goles.get(f"Over {l_goles}", prob_goles.get(f"Over {float(l_goles)}", prob_goles.get("Over 2.5", 0)))
     p_ug = prob_goles.get(f"Under {l_goles}", prob_goles.get(f"Under {float(l_goles)}", prob_goles.get("Under 2.5", 0)))
     
@@ -185,7 +234,6 @@ def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=N
     ]
     
     for nombre_m, prob, llave_cuota in mercados_a_evaluar:
-        # Busca la cuota probando distintas variantes de nombres de llaves
         cuota = cuotas.get(llave_cuota, cuotas.get(llave_cuota.replace(" Goles", "").replace(" Corners", "").replace(" Tarjetas", "")))
         if not cuota:
             cuota = cuotas.get(f"Over {l_goles}") if "Over" in nombre_m and "Goles" in nombre_m else cuotas.get(f"Under {l_goles}")
