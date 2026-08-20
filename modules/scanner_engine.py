@@ -89,6 +89,69 @@ def obtener_ultimo_elo(df, equipo):
         pass
     return 1500.0
 
+def _obtener_partidos_escanner(league_id, temporada_actual):
+    """Busca los partidos de la jornada con rango de fechas y respaldo de ESPN."""
+    url = f"{BASE_URL}/fixtures"
+    import datetime
+    
+    hoy = datetime.date.today().strftime("%Y-%m-%d")
+    futuro = (datetime.date.today() + datetime.timedelta(days=45)).strftime("%Y-%m-%d")
+    
+    querystring = {"league": str(league_id), "from": hoy, "to": futuro}
+    response = requests.get(url, headers=HEADERS, params=querystring)
+    datos = []
+    
+    if response.status_code == 200:
+        datos = response.json().get("response", [])
+        
+    if not datos:
+        querystring_fallback = {"league": str(league_id), "next": "15"}
+        response = requests.get(url, headers=HEADERS, params=querystring_fallback)
+        if response.status_code == 200:
+            datos = response.json().get("response", [])
+
+    partidos_list = []
+    for p in datos:
+        estado = p.get("fixture", {}).get("status", {}).get("short", "")
+        if estado in ["FT", "AET", "PEN", "CANC", "ABD"]: 
+            continue
+        partidos_list.append({
+            "local": p["teams"]["home"]["name"],
+            "visita": p["teams"]["away"]["name"],
+            "fixture_id": p["fixture"]["id"],
+            "fecha": p["fixture"]["date"][:16].replace("T", " ")
+        })
+        
+    # --- ACTIVACIÓN DEL RESPALDO DE ESPN PARA EL ESCÁNER ---
+    if not partidos_list:
+        url_espn = "https://site.api.espn.com/apis/site/v2/sports/soccer/mex.1/scoreboard"
+        try:
+            res = requests.get(url_espn, timeout=5)
+            if res.status_code == 200:
+                for event in res.json().get("events", []):
+                    estado = event.get("status", {}).get("type", {}).get("name", "")
+                    if estado in ["STATUS_FINAL", "STATUS_POSTPONED", "STATUS_CANCELED", "STATUS_FULL_TIME"]: 
+                        continue
+                        
+                    comp = event.get("competitions", [])[0]
+                    local, visita = "Local", "Visita"
+                    for team in comp.get("competitors", []):
+                        if team.get("homeAway") == "home": 
+                            local = team.get("team", {}).get("name", "Local")
+                        else: 
+                            visita = team.get("team", {}).get("name", "Visita")
+                    
+                    partidos_list.append({
+                        "local": local,
+                        "visita": visita,
+                        "fixture_id": event.get("id"),
+                        "fecha": event.get("date", "")[:16].replace("T", " ")
+                    })
+        except Exception as e:
+            print(f"Fallo en respaldo ESPN Escáner: {e}")
+            
+    return partidos_list
+
 def escanear_jornada_actual(temporada_actual=2026):
     """Mantiene compatibilidad exacta por defecto con Liga MX"""
     return escanear_jornada_personalizada(league_id=LIGA_MX_ID, ruta_csv='data/historico_ligamx_completo.csv', temporada_actual=temporada_actual)
@@ -115,19 +178,10 @@ def escanear_jornada_personalizada(league_id, ruta_csv, temporada_actual=2026):
     except Exception:
         pass
 
-    url = f"{BASE_URL}/fixtures"
-    params = {
-        "league": league_id, 
-        "season": temporada_actual, 
-        "status": "NS",
-        "next": 10
-    }
-    
-    res = requests.get(url, headers=HEADERS, params=params)
-    if res.status_code != 200:
+    fixtures = _obtener_partidos_escanner(league_id, temporada_actual)
+    if not fixtures:
         return []
-        
-    fixtures = res.json().get("response", [])
+
     oportunidades_oro = []
 
     st.write("---")
@@ -135,10 +189,10 @@ def escanear_jornada_personalizada(league_id, ruta_csv, temporada_actual=2026):
 
     for p in fixtures:
         try:
-            fix_id = p["fixture"]["id"]
-            local = p["teams"]["home"]["name"]
-            visita = p["teams"]["away"]["name"]
-            fecha = p["fixture"]["date"][:16].replace("T", " ")
+            fix_id = p["fixture_id"]
+            local = p["local"]
+            visita = p["visita"]
+            fecha = p["fecha"]
             
             st.write(f"⚙️ Analizando: **{local} vs {visita}**")
             
