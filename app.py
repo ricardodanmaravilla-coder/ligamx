@@ -320,13 +320,14 @@ else:
                     st.markdown("🎯 **Goles, Corners y Tarjetas Más Probables del Partido**")
                     col4, col5, col6 = st.columns(3)
                     
-                    over_goles = resultados['Goles_Over_Under'].get(f'Over {l_goles}', 0)
+                    # Corrección 1: Búsquedas con tolerancias robustas (.get)
+                    over_goles = resultados['Goles_Over_Under'].get(f'Over {l_goles}', resultados['Goles_Over_Under'].get(f'Over {float(l_goles)}', 0))
                     col4.metric(f"Más de {l_goles} Goles", f"{over_goles}%", f"Under: {round(100-over_goles, 2)}%")
                     
-                    over_corners = resultados['Corners_Totales'].get(f'Over {l_corners} Corners', resultados['Corners_Totales'].get(f'Over {l_corners}', 0))
+                    over_corners = resultados['Corners_Totales'].get(f'Over {l_corners} Corners', resultados['Corners_Totales'].get(f'Over {float(l_corners)} Corners', resultados['Corners_Totales'].get(f'Over {l_corners}', 0)))
                     col5.metric(f"Más de {l_corners} Corners", f"{over_corners}%", f"Under: {round(100-over_corners, 2)}%")
                     
-                    over_tarjetas = resultados['Tarjetas_Totales'].get(f'Over {l_tarjetas} Tarjetas', resultados['Tarjetas_Totales'].get(f'Over {l_tarjetas}', 0))
+                    over_tarjetas = resultados['Tarjetas_Totales'].get(f'Over {l_tarjetas} Tarjetas', resultados['Tarjetas_Totales'].get(f'Over {float(l_tarjetas)} Tarjetas', resultados['Tarjetas_Totales'].get(f'Over {l_tarjetas}', 0)))
                     col6.metric(f"Más de {l_tarjetas} Tarjetas", f"{over_tarjetas}%", f"Under: {round(100-over_tarjetas, 2)}%")
                     
                     st.markdown("---")
@@ -471,6 +472,7 @@ try:
             except (IndexError, KeyError):
                 puntos_visita = 1500.0
             
+            # Corrección 2: Inyectar variables dinámicas al modelo predictivo
             preds_ml = ml_predictor.predecir_mercados_completos(
                 df_historico, 
                 datos_partido['local'], 
@@ -478,7 +480,10 @@ try:
                 g_l_sim, 
                 g_v_sim,
                 puntos_local,  
-                puntos_visita  
+                puntos_visita,
+                linea_goles=float(l_goles),
+                linea_corners=float(l_corners),
+                linea_tarjetas=float(l_tarjetas)
             )
             
             st.markdown("---")
@@ -496,14 +501,15 @@ try:
                 st.markdown("##### 📊 Mercados de Goles, Córners y Tarjetas")
                 ml_col4, ml_col5, ml_col6 = st.columns(3)
                 
-                over_g_ml = preds_ml['Goles_Over_Under'].get(f'Over {l_goles}', 0)
-                under_g_ml = preds_ml['Goles_Over_Under'].get(f'Under {l_goles}', 0)
+                # Corrección 3: Búsquedas con tolerancias robustas (.get)
+                over_g_ml = preds_ml['Goles_Over_Under'].get(f'Over {l_goles}', preds_ml['Goles_Over_Under'].get(f'Over {float(l_goles)}', 0))
+                under_g_ml = preds_ml['Goles_Over_Under'].get(f'Under {l_goles}', preds_ml['Goles_Over_Under'].get(f'Under {float(l_goles)}', 0))
                 
-                over_c_ml = preds_ml['Corners_Totales'].get(f'Over {l_corners} Corners', preds_ml['Corners_Totales'].get(f'Over {l_corners}', 0))
-                under_c_ml = preds_ml['Corners_Totales'].get(f'Under {l_corners} Corners', preds_ml['Corners_Totales'].get(f'Under {l_corners}', 0))
+                over_c_ml = preds_ml['Corners_Totales'].get(f'Over {l_corners} Corners', preds_ml['Corners_Totales'].get(f'Over {float(l_corners)} Corners', preds_ml['Corners_Totales'].get(f'Over {l_corners}', 0)))
+                under_c_ml = preds_ml['Corners_Totales'].get(f'Under {l_corners} Corners', preds_ml['Corners_Totales'].get(f'Under {float(l_corners)} Corners', preds_ml['Corners_Totales'].get(f'Under {l_corners}', 0)))
                 
-                over_t_ml = preds_ml['Tarjetas_Totales'].get(f'Over {l_tarjetas} Tarjetas', preds_ml['Tarjetas_Totales'].get(f'Over {l_tarjetas}', 0))
-                under_t_ml = preds_ml['Tarjetas_Totales'].get(f'Under {l_tarjetas} Tarjetas', preds_ml['Tarjetas_Totales'].get(f'Under {l_tarjetas}', 0))
+                over_t_ml = preds_ml['Tarjetas_Totales'].get(f'Over {l_tarjetas} Tarjetas', preds_ml['Tarjetas_Totales'].get(f'Over {float(l_tarjetas)} Tarjetas', preds_ml['Tarjetas_Totales'].get(f'Over {l_tarjetas}', 0)))
+                under_t_ml = preds_ml['Tarjetas_Totales'].get(f'Under {l_tarjetas} Tarjetas', preds_ml['Tarjetas_Totales'].get(f'Under {float(l_tarjetas)} Tarjetas', preds_ml['Tarjetas_Totales'].get(f'Under {l_tarjetas}', 0)))
                 
                 with ml_col4:
                     st.metric(f"Over {l_goles} Goles", f"{over_g_ml}%")
