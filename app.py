@@ -266,7 +266,41 @@ if not partidos_reales:
     st.warning("⚠️ No se encontraron partidos próximos ni en API-Football ni en ESPN.")
 else:
     seleccion = st.selectbox("Próximos partidos de Liga MX:", list(partidos_reales.keys()))
-    datos_partido = partidos_reales[seleccion]
+    
+    # Extraemos el diccionario original para poder limpiar los nombres
+    datos_partido = dict(partidos_reales[seleccion])
+    
+    # --- CORRECCIÓN CRÍTICA: TRADUCTOR DE NOMBRES API -> CSV ---
+    # Esto asegura que todo el motor (ELO, Montecarlo y ML) encuentre la coincidencia exacta
+    TRADUCTOR_API = {
+        "Atletico San Luis": "Atlético de San Luis",
+        "Atlético San Luis": "Atlético de San Luis",
+        "Mazatlan FC": "Mazatlán", 
+        "Mazatlan": "Mazatlán",
+        "Queretaro": "Querétaro", 
+        "Leon": "León",
+        "Club America": "América", 
+        "America": "América",
+        "Pumas UNAM": "Pumas", 
+        "UNAM": "Pumas",
+        "Chivas Guadalajara": "Guadalajara", 
+        "Chivas": "Guadalajara",
+        "FC Juarez": "Juárez", 
+        "Juarez": "Juárez",
+        "Club Tijuana": "Tijuana", 
+        "Tigres UANL": "Tigres", 
+        "U.A.N.L.": "Tigres",
+        "Santos Laguna": "Santos",
+        "Monterrey": "Monterrey",
+        "Cruz Azul": "Cruz Azul",
+        "Pachuca": "Pachuca",
+        "Atlas": "Atlas",
+        "Toluca": "Toluca",
+        "Necaxa": "Necaxa",
+        "Puebla": "Puebla"
+    }
+    datos_partido['local'] = TRADUCTOR_API.get(datos_partido['local'], datos_partido['local'])
+    datos_partido['visita'] = TRADUCTOR_API.get(datos_partido['visita'], datos_partido['visita'])
 
     if st.button("Ejecutar Simulación y Buscar Cuotas", type="primary") or st.session_state.get('simulacion_activa', False):
         st.session_state['simulacion_activa'] = True
