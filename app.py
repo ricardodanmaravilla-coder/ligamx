@@ -323,10 +323,10 @@ else:
                     over_goles = resultados['Goles_Over_Under'].get(f'Over {l_goles}', 0)
                     col4.metric(f"Más de {l_goles} Goles", f"{over_goles}%", f"Under: {round(100-over_goles, 2)}%")
                     
-                    over_corners = resultados['Corners_Totales'].get(f'Over {l_corners} Corners', 0)
+                    over_corners = resultados['Corners_Totales'].get(f'Over {l_corners} Corners', resultados['Corners_Totales'].get(f'Over {l_corners}', 0))
                     col5.metric(f"Más de {l_corners} Corners", f"{over_corners}%", f"Under: {round(100-over_corners, 2)}%")
                     
-                    over_tarjetas = resultados['Tarjetas_Totales'].get(f'Over {l_tarjetas} Tarjetas', 0)
+                    over_tarjetas = resultados['Tarjetas_Totales'].get(f'Over {l_tarjetas} Tarjetas', resultados['Tarjetas_Totales'].get(f'Over {l_tarjetas}', 0))
                     col6.metric(f"Más de {l_tarjetas} Tarjetas", f"{over_tarjetas}%", f"Under: {round(100-over_tarjetas, 2)}%")
                     
                     st.markdown("---")
@@ -496,17 +496,26 @@ try:
                 st.markdown("##### 📊 Mercados de Goles, Córners y Tarjetas")
                 ml_col4, ml_col5, ml_col6 = st.columns(3)
                 
+                over_g_ml = preds_ml['Goles_Over_Under'].get(f'Over {l_goles}', 0)
+                under_g_ml = preds_ml['Goles_Over_Under'].get(f'Under {l_goles}', 0)
+                
+                over_c_ml = preds_ml['Corners_Totales'].get(f'Over {l_corners} Corners', preds_ml['Corners_Totales'].get(f'Over {l_corners}', 0))
+                under_c_ml = preds_ml['Corners_Totales'].get(f'Under {l_corners} Corners', preds_ml['Corners_Totales'].get(f'Under {l_corners}', 0))
+                
+                over_t_ml = preds_ml['Tarjetas_Totales'].get(f'Over {l_tarjetas} Tarjetas', preds_ml['Tarjetas_Totales'].get(f'Over {l_tarjetas}', 0))
+                under_t_ml = preds_ml['Tarjetas_Totales'].get(f'Under {l_tarjetas} Tarjetas', preds_ml['Tarjetas_Totales'].get(f'Under {l_tarjetas}', 0))
+                
                 with ml_col4:
-                    st.metric("Over 2.5 Goles", f"{preds_ml['Goles_Over_Under']['Over 2.5']}%")
-                    st.metric("Under 2.5 Goles", f"{preds_ml['Goles_Over_Under']['Under 2.5']}%")
+                    st.metric(f"Over {l_goles} Goles", f"{over_g_ml}%")
+                    st.metric(f"Under {l_goles} Goles", f"{under_g_ml}%")
                     
                 with ml_col5:
-                    st.metric("Over 9.5 Córners", f"{preds_ml['Corners_Totales']['Over 9.5 Corners']}%")
-                    st.metric("Under 9.5 Córners", f"{preds_ml['Corners_Totales']['Under 9.5 Corners']}%")
+                    st.metric(f"Over {l_corners} Córners", f"{over_c_ml}%")
+                    st.metric(f"Under {l_corners} Córners", f"{under_c_ml}%")
                     
                 with ml_col6:
-                    st.metric("Over 4.5 Tarjetas", f"{preds_ml['Tarjetas_Totales']['Over 4.5 Tarjetas']}%")
-                    st.metric("Under 4.5 Tarjetas", f"{preds_ml['Tarjetas_Totales']['Under 4.5 Tarjetas']}%")
+                    st.metric(f"Over {l_tarjetas} Tarjetas", f"{over_t_ml}%")
+                    st.metric(f"Under {l_tarjetas} Tarjetas", f"{under_t_ml}%")
             else:
                 st.warning("⚠️ El modelo ML no pudo generar predicciones. Revisa los datos históricos.")
     
