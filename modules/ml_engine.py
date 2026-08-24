@@ -1,134 +1,156 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.preprocessing import LabelEncoder
+from .feature_engineering import add_rolling_features, current_match_features, normalize_team
+
 
 class PredictorML:
-    def __init__(self):
-        self.model_1x2 = RandomForestClassifier(n_estimators=100, random_state=42)
-        self.model_goles = RandomForestRegressor(n_estimators=100, random_state=42)
-        self.model_corners = RandomForestRegressor(n_estimators=100, random_state=42)
-        self.model_tarjetas = RandomForestRegressor(n_estimators=100, random_state=42)
-        self.encoder_equipos = LabelEncoder()
+    """Modelo ML V2 entrenado solo con informacion disponible antes del partido."""
+
+    def __init__(self, random_state=42):
+        self.model_1x2 = RandomForestClassifier(
+            n_estimators=350, min_samples_leaf=8, max_features="sqrt",
+            class_weight="balanced_subsample", random_state=random_state, n_jobs=-1
+        )
+        self.reg_goles = RandomForestRegressor(
+            n_estimators=350, min_samples_leaf=8, max_features=0.7,
+            random_state=random_state, n_jobs=-1
+        )
+        self.reg_corners = RandomForestRegressor(
+            n_estimators=350, min_samples_leaf=8, max_features=0.7,
+            random_state=random_state, n_jobs=-1
+        )
+        self.reg_cards = RandomForestRegressor(
+            n_estimators=350, min_samples_leaf=8, max_features=0.7,
+            random_state=random_state, n_jobs=-1
+        )
+        self.features = []
+        self.resid_g = np.array([])
+        self.resid_c = np.array([])
+        self.resid_t = np.array([])
         self.is_trained = False
 
-    def entrenar(self, df_historico):
-        try:
-            if df_historico is None or len(df_historico) < 20:
-                return False
-                
-            df = df_historico.copy()
-            df['Local'] = df['Local'].astype(str).str.strip()
-            df['Visitante'] = df['Visitante'].astype(str).str.strip()
-            
-            todos_equipos = pd.concat([df['Local'], df['Visitante']]).unique()
-            self.encoder_equipos.fit(todos_equipos)
-            
-            df['Local_Encoded'] = self.encoder_equipos.transform(df['Local'])
-            df['Visita_Encoded'] = self.encoder_equipos.transform(df['Visitante'])
-            
-            def resultado_partido(row):
-                gl = row.get('Goles_L', row.get('Goles_Local', 0))
-                gv = row.get('Goles_V', row.get('Goles_Visita', 0))
-                if gl > gv: return 2
-                elif gl < gv: return 0
-                else: return 1
-                
-            df['Target_1X2'] = df.apply(resultado_partido, axis=1)
-            df['Total_Goles'] = df.get('Goles_L', df.get('Goles_Local', 0)) + df.get('Goles_V', df.get('Goles_Visita', 0))
-            
-            c_l = df.get('Corners_L', 5.0)
-            c_v = df.get('Corners_V', 4.5)
-            df['Total_Corners'] = c_l.fillna(5.0) + c_v.fillna(4.5)
+    def preparar_dataset(self, df):
+        d = add_rolling_features(df)
+        prefixes = ("H_", "A_")
+        self.features = ["Diff_ELO_Pre"] + [
+            c for c in d.columns
+            if c.startswith(prefixes) and not c.startswith(("H_idx", "A_idx"))
+        ]
+        self.features = [c for c in self.features if pd.api.types.is_numeric_dtype(d[c])]
 
-            am_l = df.get('Amarillas_L', 2.0).fillna(2.0)
-            rj_l = df.get('Rojas_L', 0.0).fillna(0.0)
-            am_v = df.get('Amarillas_V', 2.2).fillna(2.2)
-            rj_v = df.get('Rojas_V', 0.0).fillna(0.0)
-            df['Total_Tarjetas'] = (am_l + rj_l * 2) + (am_v + rj_v * 2)
+        d["Target_1X2"] = np.where(
+            d.Goles_L > d.Goles_V, 2,
+            np.where(d.Goles_L < d.Goles_V, 0, 1)
+        )
+        d["Total_Goles"] = d.Goles_L + d.Goles_V
+        d["Total_Corners"] = d.Corners_L + d.Corners_V
+        d["Total_Tarjetas"] = (
+            d.Amarillas_L + 2 * d.Rojas_L + d.Amarillas_V + 2 * d.Rojas_V
+        )
+        required = self.features + [
+            "Target_1X2", "Total_Goles", "Total_Corners", "Total_Tarjetas"
+        ]
+        return d.dropna(subset=required).reset_index(drop=True)
 
-            features = ['Local_Encoded', 'Visita_Encoded']
-            if 'ELO_Local' in df.columns and 'ELO_Visita' in df.columns:
-                df['Diff_ELO'] = df['ELO_Local'] - df['ELO_Visita']
-                features.append('Diff_ELO')
-            else:
-                df['Diff_ELO'] = 0.0
-                features.append('Diff_ELO')
+    # Alias temporal para compatibilidad interna.
+    def _prep(self, df):
+        return self.preparar_dataset(df)
 
-            X = df[features].fillna(0)
-            
-            self.model_1x2.fit(X, df['Target_1X2'])
-            self.model_goles.fit(X, df['Total_Goles'])
-            self.model_corners.fit(X, df['Total_Corners'])
-            self.model_tarjetas.fit(X, df['Total_Tarjetas'])
-            
-            self.is_trained = True
-            return True
-        except Exception as e:
-            print(f"Error entrenando ML: {e}")
+    def entrenar_preparado(self, d):
+        if d is None or len(d) < 300:
+            return False
+        if not self.features:
+            prefixes = ("H_", "A_")
+            self.features = ["Diff_ELO_Pre"] + [
+                c for c in d.columns
+                if c.startswith(prefixes) and not c.startswith(("H_idx", "A_idx"))
+            ]
+            self.features = [c for c in self.features if pd.api.types.is_numeric_dtype(d[c])]
+
+        split = max(int(len(d) * 0.8), len(d) - 300)
+        tr, cal = d.iloc[:split], d.iloc[split:]
+        if len(cal) < 50:
             return False
 
-    def predecir_mercados_completos(self, df_historico, equipo_local, equipo_visita, goles_sim_l, goles_sim_v, elo_local=1500, elo_visita=1500, linea_goles=2.5, linea_corners=9.5, linea_tarjetas=4.5):
+        X = tr[self.features]
+        self.model_1x2.fit(X, tr.Target_1X2)
+        self.reg_goles.fit(X, tr.Total_Goles)
+        self.reg_corners.fit(X, tr.Total_Corners)
+        self.reg_cards.fit(X, tr.Total_Tarjetas)
+
+        Xc = cal[self.features]
+        self.resid_g = (cal.Total_Goles - self.reg_goles.predict(Xc)).to_numpy()
+        self.resid_c = (cal.Total_Corners - self.reg_corners.predict(Xc)).to_numpy()
+        self.resid_t = (cal.Total_Tarjetas - self.reg_cards.predict(Xc)).to_numpy()
+        self.is_trained = True
+        return True
+
+    def entrenar(self, df_historico):
+        return self.entrenar_preparado(self.preparar_dataset(df_historico))
+
+    @staticmethod
+    def _market_probs(pred, line, resid):
+        if resid.size < 50:
+            raise ValueError("Muestra de calibracion insuficiente: NO BET")
+        line = float(line)
+        draws = np.clip(np.rint(float(pred) + resid), 0, None)
+        over = float(np.mean(draws > line) * 100.0)
+        push = float(np.mean(draws == line) * 100.0) if line.is_integer() else 0.0
+        under = max(0.0, 100.0 - over - push)
+        return round(over, 1), round(under, 1), round(push, 1)
+
+    def _predict_X(self, X, linea_goles, linea_corners, linea_tarjetas):
+        probs = dict(zip(self.model_1x2.classes_, self.model_1x2.predict_proba(X)[0]))
+        pg = float(self.reg_goles.predict(X)[0])
+        pc = float(self.reg_corners.predict(X)[0])
+        pt = float(self.reg_cards.predict(X)[0])
+
+        og, ug, pg_push = self._market_probs(pg, linea_goles, self.resid_g)
+        oc, uc, pc_push = self._market_probs(pc, linea_corners, self.resid_c)
+        ot, ut, pt_push = self._market_probs(pt, linea_tarjetas, self.resid_t)
+
+        return {
+            "Resultado_1X2": {
+                "Gana Local": round(probs.get(2, 0) * 100, 1),
+                "Empate": round(probs.get(1, 0) * 100, 1),
+                "Gana Visita": round(probs.get(0, 0) * 100, 1),
+            },
+            "Goles_Over_Under": {
+                f"Over {linea_goles}": og, f"Under {linea_goles}": ug,
+                f"Push {linea_goles}": pg_push,
+            },
+            "Corners_Totales": {
+                f"Over {linea_corners} Corners": oc,
+                f"Under {linea_corners} Corners": uc,
+                f"Push {linea_corners} Corners": pc_push,
+            },
+            "Tarjetas_Totales": {
+                f"Over {linea_tarjetas} Tarjetas": ot,
+                f"Under {linea_tarjetas} Tarjetas": ut,
+                f"Push {linea_tarjetas} Tarjetas": pt_push,
+            },
+            "Prediccion_Totales": {
+                "goles": round(pg, 2), "corners": round(pc, 2), "tarjetas": round(pt, 2)
+            },
+        }
+
+    def predecir_fila_preparada(self, fila, linea_goles=2.5, linea_corners=9.5, linea_tarjetas=4.5):
         if not self.is_trained:
-            if not self.entrenar(df_historico):
-                return {}
-                
-        try:
-            known_classes = set(self.encoder_equipos.classes_)
-            loc_enc = self.encoder_equipos.transform([equipo_local])[0] if equipo_local in known_classes else 0
-            vis_enc = self.encoder_equipos.transform([equipo_visita])[0] if equipo_visita in known_classes else 0
-            
-            diff_elo = elo_local - elo_visita
-            X_pred = pd.DataFrame([[loc_enc, vis_enc, diff_elo]], columns=['Local_Encoded', 'Visita_Encoded', 'Diff_ELO'])
-            
-            probs_1x2 = self.model_1x2.predict_proba(X_pred)[0]
-            classes = self.model_1x2.classes_
-            
-            p_visita, p_empate, p_local = 33.3, 33.3, 33.4
-            for cls, prob in zip(classes, probs_1x2):
-                if cls == 0: p_visita = round(float(prob) * 100, 1)
-                elif cls == 1: p_empate = round(float(prob) * 100, 1)
-                elif cls == 2: p_local = round(float(prob) * 100, 1)
+            raise ValueError("Modelo no entrenado")
+        X = pd.DataFrame([{c: fila.get(c, np.nan) for c in self.features}])
+        if X.isna().any(axis=None):
+            raise ValueError("Features prepartido incompletas: NO BET")
+        return self._predict_X(X, linea_goles, linea_corners, linea_tarjetas)
 
-            goles_totales_ml = float(self.model_goles.predict(X_pred)[0])
-            corners_totales_ml = float(self.model_corners.predict(X_pred)[0])
-            tarjetas_totales_ml = float(self.model_tarjetas.predict(X_pred)[0])
-            
-            # Asegurar que las líneas sean tratadas como flotantes para la matemática
-            l_goles = float(linea_goles)
-            l_corners = float(linea_corners)
-            l_tarjetas = float(linea_tarjetas)
-            
-            # Se respeta la proporción original del cálculo sumando ~0.3 a la línea de goles para la base
-            base_goles = l_goles + 0.3
-            over_goles_pct = round(min(95.0, max(5.0, (goles_totales_ml / base_goles) * 55.0)), 1)
-            under_goles_pct = round(100.0 - over_goles_pct, 1)
-
-            over_corners_pct = round(min(95.0, max(5.0, (corners_totales_ml / l_corners) * 50.0)), 1)
-            under_corners_pct = round(100.0 - over_corners_pct, 1)
-
-            over_tarjetas_pct = round(min(95.0, max(5.0, (tarjetas_totales_ml / l_tarjetas) * 50.0)), 1)
-            under_tarjetas_pct = round(100.0 - over_tarjetas_pct, 1)
-            
-            return {
-                "Resultado_1X2": {
-                    "Gana Local": p_local,
-                    "Empate": p_empate,
-                    "Gana Visita": p_visita
-                },
-                "Goles_Over_Under": {
-                    f"Over {linea_goles}": over_goles_pct,
-                    f"Under {linea_goles}": under_goles_pct
-                },
-                "Corners_Totales": {
-                    f"Over {linea_corners} Corners": over_corners_pct,
-                    f"Under {linea_corners} Corners": under_corners_pct
-                },
-                "Tarjetas_Totales": {
-                    f"Over {linea_tarjetas} Tarjetas": over_tarjetas_pct,
-                    f"Under {linea_tarjetas} Tarjetas": under_tarjetas_pct
-                }
-            }
-        except Exception as e:
-            print(f"Error en predicción ML: {e}")
+    def predecir_mercados_completos(
+        self, df_historico, equipo_local, equipo_visita,
+        goles_sim_l=None, goles_sim_v=None, elo_local=None, elo_visita=None,
+        linea_goles=2.5, linea_corners=9.5, linea_tarjetas=4.5
+    ):
+        if not self.is_trained and not self.entrenar(df_historico):
             return {}
+        f = current_match_features(
+            df_historico, normalize_team(equipo_local), normalize_team(equipo_visita)
+        )
+        return self.predecir_fila_preparada(f, linea_goles, linea_corners, linea_tarjetas)

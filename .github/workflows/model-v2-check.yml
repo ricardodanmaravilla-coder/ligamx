@@ -1,0 +1,66 @@
+name: Model V2 checks
+
+on:
+  push:
+    branches: [model-v2]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Compile Python files
+        run: python -m compileall -q app.py app_v2.py backtest.py modules
+      - name: V2 feature smoke test
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          from modules.feature_engineering import clean_history, add_rolling_features
+          from modules.ml_engine import PredictorML
+          df = clean_history(pd.read_csv('data/historico_ligamx_completo.csv'))
+          assert len(df) >= 300, 'Historico insuficiente'
+          feat = add_rolling_features(df)
+          assert 'Diff_ELO_Pre' in feat.columns
+          assert 'H_GF_5' in feat.columns
+          assert 'A_GA_5' in feat.columns
+          ml = PredictorML()
+          assert ml.entrenar(df), 'ML no pudo entrenar'
+          assert len(ml.features) >= 20, 'Muy pocas features prepartido'
+          print('V2 smoke test OK', len(df), len(ml.features))
+          PY
+      - name: Production Streamlit startup smoke test
+        run: |
+          streamlit run app.py --server.headless true --server.port 8501 >/tmp/streamlit-v2.log 2>&1 &
+          PID=$!
+          ok=0
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8501/_stcore/health >/dev/null; then
+              ok=1
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ok" -ne 1 ]; then
+            cat /tmp/streamlit-v2.log
+            kill $PID || true
+            exit 1
+          fi
+          curl -fsS http://127.0.0.1:8501/_stcore/health
+          kill $PID || true
+      - name: Walk-forward backtest
+        run: python backtest.py data/historico_ligamx_completo.csv | tee backtest_metrics.txt
+      - name: Upload backtest outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-v2-backtest
+          path: |
+            backtest_metrics.txt
+            backtest_predictions.csv
