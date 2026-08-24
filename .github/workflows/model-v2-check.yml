@@ -1,0 +1,36 @@
+name: Model V2 checks
+
+on:
+  push:
+    branches: [model-v2]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Compile Python files
+        run: python -m compileall -q app.py backtest.py modules
+      - name: V2 feature smoke test
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          from modules.feature_engineering import clean_history, add_rolling_features
+          from modules.ml_engine import PredictorML
+          df = clean_history(pd.read_csv('data/historico_ligamx_completo.csv'))
+          assert len(df) >= 300, 'Historico insuficiente'
+          feat = add_rolling_features(df)
+          assert 'Diff_ELO_Pre' in feat.columns
+          assert 'H_GF_5' in feat.columns
+          assert 'A_GA_5' in feat.columns
+          ml = PredictorML()
+          assert ml.entrenar(df), 'ML no pudo entrenar'
+          print('V2 smoke test OK', len(df), len(ml.features))
+          PY
