@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Compile Python files
-        run: python -m compileall -q app.py backtest.py modules
+        run: python -m compileall -q app.py app_v2.py backtest.py modules
       - name: V2 feature smoke test
         run: |
           python - <<'PY'
@@ -32,5 +32,6 @@ jobs:
           assert 'A_GA_5' in feat.columns
           ml = PredictorML()
           assert ml.entrenar(df), 'ML no pudo entrenar'
+          assert len(ml.features) >= 20, 'Muy pocas features prepartido'
           print('V2 smoke test OK', len(df), len(ml.features))
           PY
