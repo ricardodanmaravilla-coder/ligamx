@@ -1,58 +1,18 @@
 import pandas as pd
 
-def calcular_perfiles_arbitros():
-    def calcular_perfiles_arbitros():
-    url_github_raw = 'https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/data/historico_ligamx_completo.csv'
-    rutas_locales = ['data/historico_ligamx_completo.csv', 'historico_ligamx_completo.csv']
-    try:
-        df = None
-        for r in rutas_locales:
-            if os.path.exists(r):
-                df = pd.read_csv(r)
-                break
-        if df is None:
-            df = pd.read_csv(url_github_raw)
-        # Verificamos si la columna de árbitro existe en el CSV
-        if 'Arbitro' not in df.columns:
-            return {}
-            
-        # Limpiamos y sumamos las tarjetas totales del partido (Local + Visita)
-        df['Tarjetas_Totales'] = (
-            df['Amarillas_L'].fillna(0) + (df['Rojas_L'].fillna(0) * 2) + 
-            df['Amarillas_V'].fillna(0) + (df['Rojas_V'].fillna(0) * 2)
-        )
-        
-        # Promedio general de tarjetas en toda la liga para usarlo como base (1.0)
-        media_liga_tarjetas = df['Tarjetas_Totales'].mean()
-        if media_liga_tarjetas == 0:
-            return {}
+def calcular_perfiles_arbitros(df, min_matches=8, shrink=12):
+    if df is None or 'Arbitro' not in df.columns: return {}
+    d=df.copy(); d['Tarjetas_Totales']=d['Amarillas_L'].fillna(0)+2*d['Rojas_L'].fillna(0)+d['Amarillas_V'].fillna(0)+2*d['Rojas_V'].fillna(0)
+    lg=float(d.Tarjetas_Totales.mean())
+    if not lg: return {}
+    out={}
+    for ref,g in d.dropna(subset=['Arbitro']).groupby('Arbitro'):
+        n=len(g)
+        if n<min_matches: continue
+        mean=(g.Tarjetas_Totales.sum()+shrink*lg)/(n+shrink)
+        out[str(ref).strip()]=max(.85,min(1.15,mean/lg))
+    return out
 
-        # Agrupamos por árbitro para sacar su promedio personal de tarjetas por partido
-        perfiles = {}
-        grouped = df.groupby('Arbitro')['Tarjetas_Totales'].agg(['mean', 'count'])
-        
-        # Filtramos árbitros con al menos 3 partidos registrados para evitar datos falsos por muestra pequeña
-        for arbitro, row in grouped[grouped['count'] >= 3].iterrows():
-            if pd.notna(arbitro) and arbitro.strip() != "":
-                promedio_arbitro = row['mean']
-                # Factor = Promedio del árbitro / Promedio de la liga
-                factor = promedio_arbitro / media_liga_tarjetas
-                perfiles[arbitro.strip()] = round(factor, 3)
-                
-        return perfiles
-    except Exception:
-        return {}
-
-def obtener_factor_arbitro(nombre_arbitro):
-    """Obtiene el factor real calculado de la base de datos."""
-    if not nombre_arbitro or nombre_arbitro == "Sin Asignar / Neutral":
-        return 1.0
-        
-    perfiles = calcular_perfiles_arbitros()
-    # Si el árbitro existe en el historial real, devuelve su factor matemático. Si es nuevo, retorna 1.0 neutro.
-    return perfiles.get(nombre_arbitro, 1.0)
-
-def obtener_lista_arbitros_reales():
-    """Devuelve únicamente los árbitros que realmente tienen partidos registrados en el sistema."""
-    perfiles = calcular_perfiles_arbitros()
-    return sorted(list(perfiles.keys()))
+def obtener_factor_arbitro(nombre_arbitro, df=None):
+    if not nombre_arbitro or df is None: return 1.0
+    return calcular_perfiles_arbitros(df).get(str(nombre_arbitro).strip(),1.0)

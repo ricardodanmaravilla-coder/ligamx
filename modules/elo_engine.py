@@ -1,69 +1,28 @@
 import pandas as pd
-import numpy as np
+from .feature_engineering import add_pre_match_elo, clean_history, normalize_team
 
 class SistemaEloLigaMX:
-    def __init__(self, k_factor=32, base_rating=1500):
-        self.k_factor = k_factor
-        self.base_rating = base_rating
+    def __init__(self, k_factor=24, base_rating=1500, home_advantage=45):
+        self.k_factor=k_factor; self.base_rating=base_rating; self.home_advantage=home_advantage
 
     def calcular_historico(self, df_historico):
-        if df_historico is None or df_historico.empty:
-            return pd.DataFrame(columns=['Equipo', 'ELO_Rating', 'Partidos_Jugados'])
+        df=add_pre_match_elo(df_historico, self.k_factor, self.home_advantage, self.base_rating)
+        ratings={}; games={}
+        for _,r in df.iterrows():
+            h,a=r.Local,r.Visitante
+            rh,ra=ratings.get(h,self.base_rating),ratings.get(a,self.base_rating)
+            exp=1/(1+10**((ra-(rh+self.home_advantage))/400))
+            s=1 if r.Goles_L>r.Goles_V else 0 if r.Goles_L<r.Goles_V else .5
+            margin=abs(float(r.Goles_L)-float(r.Goles_V))
+            import numpy as np
+            delta=self.k_factor*(1+0.15*np.log1p(margin))*(s-exp)
+            ratings[h]=rh+delta; ratings[a]=ra-delta
+            games[h]=games.get(h,0)+1; games[a]=games.get(a,0)+1
+        return pd.DataFrame([{'Equipo':k,'ELO_Rating':round(v,1),'Partidos_Jugados':games[k]} for k,v in ratings.items()]).sort_values('ELO_Rating',ascending=False).reset_index(drop=True)
 
-        df = df_historico.copy()
-        
-        if 'Fecha' in df.columns:
-            df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
-            df = df.sort_values('Fecha').reset_index(drop=True)
-
-        ratings = {}
-        partidos_jugados = {}
-
-        def get_rating(eq):
-            if eq not in ratings:
-                ratings[eq] = self.base_rating
-                partidos_jugados[eq] = 0
-            return ratings[eq]
-
-        for idx, row in df.iterrows():
-            local = str(row['Local']).strip()
-            visita = str(row['Visitante']).strip()
-            
-            gl = row.get('Goles_L', row.get('Goles_Local', 0))
-            gv = row.get('Goles_V', row.get('Goles_Visita', 0))
-            
-            if pd.isna(gl) or pd.isna(gv):
-                continue
-
-            elo_l = get_rating(local)
-            elo_v = get_rating(visita)
-
-            elo_l_adj = elo_l + 35
-
-            exp_l = 1 / (1 + 10 ** ((elo_v - elo_l_adj) / 400))
-            exp_v = 1 / (1 + 10 ** ((elo_l_adj - elo_v) / 400))
-
-            if gl > gv:
-                s_l, s_v = 1.0, 0.0
-            elif gl < gv:
-                s_l, s_v = 0.0, 1.0
-            else:
-                s_l, s_v = 0.5, 0.5
-
-            ratings[local] = elo_l + self.k_factor * (s_l - exp_l)
-            ratings[visita] = elo_v + self.k_factor * (s_v - exp_v)
-
-            partidos_jugados[local] = partidos_jugados.get(local, 0) + 1
-            partidos_jugados[visita] = partidos_jugados.get(visita, 0) + 1
-
-        data_ranking = []
-        for eq, rating in ratings.items():
-            data_ranking.append({
-                'Equipo': eq,
-                'ELO_Rating': round(float(rating), 1),
-                'Partidos_Jugados': partidos_jugados.get(eq, 0)
-            })
-
-        df_ranking = pd.DataFrame(data_ranking)
-        df_ranking = df_ranking.sort_values(by='ELO_Rating', ascending=False).reset_index(drop=True)
-        return df_ranking
+    def elo_prepartido(self, df_historico, local, visita):
+        local,visita=normalize_team(local),normalize_team(visita)
+        table=self.calcular_historico(df_historico)
+        d=dict(zip(table.Equipo,table.ELO_Rating))
+        if local not in d or visita not in d: raise ValueError('Equipo sin ELO suficiente')
+        return float(d[local]), float(d[visita])
