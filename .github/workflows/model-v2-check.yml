@@ -35,3 +35,12 @@ jobs:
           assert len(ml.features) >= 20, 'Muy pocas features prepartido'
           print('V2 smoke test OK', len(df), len(ml.features))
           PY
+      - name: Walk-forward backtest
+        run: python backtest.py data/historico_ligamx_completo.csv | tee backtest_metrics.txt
+      - name: Upload backtest outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-v2-backtest
+          path: |
+            backtest_metrics.txt
+            backtest_predictions.csv
