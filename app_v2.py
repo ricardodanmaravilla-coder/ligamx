@@ -14,7 +14,7 @@ from modules.scanner_engine import evaluar_fixture, escanear_jornada_actual
 
 st.set_page_config(page_title="Liga MX Analytics V2", layout="wide")
 st.title("Liga MX Analytics — Model V2")
-st.caption("Datos API-Football · ELO prepartido · rolling features · ML calibrado · Monte Carlo · value betting")
+st.caption("Datos API-Football · ELO prepartido · rolling features · ML · Monte Carlo · value betting 1X2")
 
 API_KEY = os.environ.get("API_SPORTS_KEY")
 BASE_URL = "https://v3.football.api-sports.io"
@@ -94,6 +94,7 @@ st.sidebar.header("Estado del modelo")
 st.sidebar.metric("Partidos historicos", f"{len(df):,}")
 st.sidebar.write(f"Desde **{df.Fecha.min().date()}** hasta **{df.Fecha.max().date()}**")
 st.sidebar.write("Regla de seguridad: si falta cuota, equipo o muestra suficiente → **NO BET**")
+st.sidebar.warning("Backtest actual: solo 1X2 queda habilitado para picks. Totales = experimentales.")
 
 fixtures = proximos_partidos()
 
@@ -123,8 +124,6 @@ else:
                 lc = line_or_none(cuotas, "corners")
                 lt = line_or_none(cuotas, "tarjetas")
 
-                # Las lineas tecnicas solo permiten construir las estructuras internas.
-                # Nunca se presentan como cuotas/mercados si la API no las entrego.
                 tech_g = lg if lg is not None else 2.5
                 tech_c = lc if lc is not None else 9.5
                 tech_t = lt if lt is not None else 4.5
@@ -160,7 +159,7 @@ else:
                 c2.metric("ELO visitante", f"{elo_map[visita]:.1f}")
                 c3.metric("Diferencia ELO", f"{elo_map[local]-elo_map[visita]:+.1f}")
 
-                st.markdown("### 1X2 — comparación de modelos")
+                st.markdown("### 1X2 — mercado habilitado para evaluación")
                 rows = []
                 for market in ["Gana Local", "Empate", "Gana Visita"]:
                     rows.append({
@@ -171,55 +170,33 @@ else:
                     })
                 st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
-                st.markdown("### Mercados con linea real")
+                st.markdown("### Totales — SOLO EXPERIMENTALES, NO GENERAN PICKS")
+                st.caption("El walk-forward actual no supera el baseline Brier en goles, corners ni tarjetas. Se muestran para diagnóstico, no para apostar.")
                 gcol, ccol, tcol = st.columns(3)
                 if lg is None:
                     gcol.info("Goles: sin linea real")
                 else:
-                    metric_market(
-                        gcol,
-                        f"Goles {lg}",
-                        mc["Goles_Over_Under"],
-                        f"Over {lg}", f"Under {lg}", f"Push {lg}"
-                    )
+                    metric_market(gcol, f"Goles {lg}", mc["Goles_Over_Under"], f"Over {lg}", f"Under {lg}", f"Push {lg}")
                 if lc is None:
                     ccol.info("Corners: sin linea real")
                 else:
-                    metric_market(
-                        ccol,
-                        f"Corners {lc}",
-                        mc["Corners_Totales"],
-                        f"Over {lc} Corners", f"Under {lc} Corners", f"Push {lc} Corners"
-                    )
+                    metric_market(ccol, f"Corners {lc}", mc["Corners_Totales"], f"Over {lc} Corners", f"Under {lc} Corners", f"Push {lc} Corners")
                 if lt is None:
                     tcol.info("Tarjetas: sin linea real")
                 else:
-                    metric_market(
-                        tcol,
-                        f"Tarjetas {lt}",
-                        mc["Tarjetas_Totales"],
-                        f"Over {lt} Tarjetas", f"Under {lt} Tarjetas", f"Push {lt} Tarjetas"
-                    )
+                    metric_market(tcol, f"Tarjetas {lt}", mc["Tarjetas_Totales"], f"Over {lt} Tarjetas", f"Under {lt} Tarjetas", f"Push {lt} Tarjetas")
 
-                st.markdown("### Value betting")
-                picks = evaluar_fixture(
-                    local,
-                    visita,
-                    fixture_id,
-                    df,
-                    cuotas=cuotas,
-                    ml=ml,
-                    elo_map=elo_map,
-                )
+                st.markdown("### Value betting 1X2")
+                picks = evaluar_fixture(local, visita, fixture_id, df, cuotas=cuotas, ml=ml, elo_map=elo_map)
                 if picks:
-                    st.success(f"{len(picks)} oportunidad(es) superaron todos los filtros V2")
+                    st.success(f"{len(picks)} oportunidad(es) 1X2 superaron todos los filtros V2")
                     st.dataframe(pd.DataFrame(picks), use_container_width=True, hide_index=True)
                 else:
-                    st.info("NO BET — ninguna opcion supero probabilidad, edge, EV y acuerdo entre modelos.")
+                    st.info("NO BET — ninguna opcion 1X2 supero probabilidad, edge, EV y acuerdo entre modelos.")
 
                 with st.expander("Detalle tecnico"):
                     st.write("Cuotas observadas", cuotas)
-                    st.write("Totales previstos por ML", mlp.get("Prediccion_Totales", {}))
+                    st.write("Totales previstos por ML (experimentales)", mlp.get("Prediccion_Totales", {}))
                     st.write("Expectativas Monte Carlo", {
                         "goles_local": mc["Goles_Individuales"][local]["goles"],
                         "goles_visita": mc["Goles_Individuales"][visita]["goles"],
@@ -231,15 +208,15 @@ else:
                 st.error(f"NO BET / error de validacion: {exc}")
 
 st.markdown("---")
-st.subheader("Scanner de jornada V2")
-st.caption("Entrena ML/ELO una sola vez y solo devuelve apuestas con cuota real, probabilidad no-vig, edge, EV y acuerdo entre modelos.")
+st.subheader("Scanner de jornada V2 — solo 1X2")
+st.caption("Solo devuelve apuestas con las 3 cuotas 1X2 reales, mercado no-vig, edge, EV, probabilidad mínima y acuerdo entre modelos.")
 if st.button("Escanear jornada completa V2"):
     with st.spinner("Escaneando proximos partidos..."):
         picks = escanear_jornada_actual(df)
     if picks:
         st.dataframe(pd.DataFrame(picks), use_container_width=True, hide_index=True)
     else:
-        st.info("NO BET — no hay oportunidades que cumplan todos los filtros V2.")
+        st.info("NO BET — no hay oportunidades 1X2 que cumplan todos los filtros V2.")
 
 st.markdown("---")
 st.subheader("Ranking ELO actual")
