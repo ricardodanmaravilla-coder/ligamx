@@ -59,3 +59,27 @@ def evaluar_mercado(prob_pct,cuota,market_prob_pct=None):
     edge=None if market_prob_pct is None else prob_pct-market_prob_pct
     b=cuota-1; kelly=max(0,((b*p)-(1-p))/b)*100 if b>0 else 0
     return {'cuota':cuota,'prob_modelo':prob_pct,'prob_mercado_no_vig':market_prob_pct,'edge_pp':edge,'ev_pct':ev,'kelly_pct':kelly}
+
+def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=None):
+    """Compatibilidad con app.py: evalua solo cuotas presentes; nunca inventa mercados."""
+    import pandas as pd
+    cuotas = cuotas_personalizadas or obtener_cuotas_partido(fixture_id) or {}
+    rows=[]
+    markets=[]
+    r1=resultados_montecarlo.get('Resultado_1X2',{})
+    for name,key in [('Gana Local','1'),('Empate','X'),('Gana Visita','2')]: markets.append((name,r1.get(name),key))
+    for section,suffix in [('Goles_Over_Under',''),('Corners_Totales',' Corners'),('Tarjetas_Totales',' Tarjetas')]:
+        for k,p in resultados_montecarlo.get(section,{}).items():
+            if k.startswith(('Over ','Under ')):
+                key=k if suffix else k
+                markets.append((k,p,key))
+    for name,p,key in markets:
+        odd=cuotas.get(key)
+        if not odd or p is None:
+            rows.append([name,f'{p or 0}%','Sin Cuota','N/A','N/A','0%','NO BET'])
+            continue
+        ev=evaluar_mercado(float(p),float(odd))
+        verdict='VALUE BET' if ev['ev_pct']>=3 and float(p)>=55 else 'NO BET'
+        stake=min(ev['kelly_pct']*.25,2.0) if verdict=='VALUE BET' else 0
+        rows.append([name,f'{float(p):.1f}%',float(odd),f"{ev['ev_pct']:.1f}%",'Controlado' if verdict=='VALUE BET' else 'Alto',f'{stake:.1f}%',verdict])
+    return pd.DataFrame(rows,columns=['Mercado','Prob. Modelo','Cuota','EV','Riesgo','Stake (Bankroll)','Veredicto'])

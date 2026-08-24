@@ -46,3 +46,26 @@ def evaluar_fixture(local,visita,fixture_id,df_historico,cuotas=None,min_prob=55
         if pe>=min_prob and edge>=min_edge and ev>=min_ev:
             out.append({'Partido':f'{local} vs {visita}','Mercado':name,'P_Estadistico':round(float(p1),1),'P_ML':round(float(p2),1),'P_Ensemble':round(pe,1),'Cuota':round(float(odd),2),'P_Mercado':round(market_p,1),'Edge_pp':round(edge,1),'EV_pct':round(ev,1),'Veredicto':'VALUE BET'})
     return sorted(out,key=lambda x:(x['EV_pct'],x['Edge_pp']),reverse=True)
+
+def escanear_jornada_actual(df_historico=None):
+    """Compatibilidad con app.py. Escanea próximos fixtures y devuelve solo VALUE BET verificadas."""
+    import requests
+    from .stats_engine import cargar_datos
+    if df_historico is None:
+        df_historico=cargar_datos()
+    api_key=os.environ.get('API_SPORTS_KEY')
+    if not api_key: return []
+    try:
+        r=requests.get('https://v3.football.api-sports.io/fixtures',headers={'x-apisports-key':api_key},params={'league':262,'next':15},timeout=12)
+        if r.status_code!=200: return []
+        fixtures=r.json().get('response',[])
+    except Exception:
+        return []
+    out=[]
+    for f in fixtures:
+        try:
+            local=f['teams']['home']['name']; visita=f['teams']['away']['name']; fid=f['fixture']['id']
+            out.extend(evaluar_fixture(local,visita,fid,df_historico))
+        except Exception:
+            continue
+    return sorted(out,key=lambda x:(x.get('EV_pct',0),x.get('Edge_pp',0)),reverse=True)
