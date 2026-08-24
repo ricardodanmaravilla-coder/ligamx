@@ -9,6 +9,7 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -35,6 +36,25 @@ jobs:
           assert len(ml.features) >= 20, 'Muy pocas features prepartido'
           print('V2 smoke test OK', len(df), len(ml.features))
           PY
+      - name: Streamlit startup smoke test
+        run: |
+          streamlit run app_v2.py --server.headless true --server.port 8501 >/tmp/streamlit-v2.log 2>&1 &
+          PID=$!
+          ok=0
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8501/_stcore/health >/dev/null; then
+              ok=1
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ok" -ne 1 ]; then
+            cat /tmp/streamlit-v2.log
+            kill $PID || true
+            exit 1
+          fi
+          curl -fsS http://127.0.0.1:8501/_stcore/health
+          kill $PID || true
       - name: Walk-forward backtest
         run: python backtest.py data/historico_ligamx_completo.csv | tee backtest_metrics.txt
       - name: Upload backtest outputs
