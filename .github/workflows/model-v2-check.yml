@@ -2,7 +2,7 @@ name: Model V2 checks
 
 on:
   push:
-    branches: [model-v2]
+    branches: [model-v2, totals-v3]
   pull_request:
     branches: [main]
 
@@ -35,6 +35,27 @@ jobs:
           assert ml.entrenar(df), 'ML no pudo entrenar'
           assert len(ml.features) >= 20, 'Muy pocas features prepartido'
           print('V2 smoke test OK', len(df), len(ml.features))
+          PY
+      - name: V3 totals math smoke test
+        run: |
+          python - <<'PY'
+          from modules.scanner_engine import _evaluate_total_side, _supported_total_line
+          assert _supported_total_line(2.5)
+          assert _supported_total_line(3.0)
+          assert not _supported_total_line(2.25)
+          pick, diag = _evaluate_total_side(
+              'Test A vs Test B', 'Goles O/U', 'Over 2.5',
+              68.0, 64.0, 0.0, 0.0, 1.80, 55.0, 'TestBook'
+          )
+          assert pick is not None, diag
+          assert pick['EV_pct'] > 0
+          # Línea entera: 10% push no debe contarse como pérdida.
+          pick2, diag2 = _evaluate_total_side(
+              'Test A vs Test B', 'Goles O/U', 'Over 3.0',
+              66.0, 62.0, 10.0, 10.0, 1.95, 54.0, 'TestBook'
+          )
+          assert diag2['P_Push'] == 10.0
+          print('V3 totals smoke test OK')
           PY
       - name: Production Streamlit startup smoke test
         run: |
