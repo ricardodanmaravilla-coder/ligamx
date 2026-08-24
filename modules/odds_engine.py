@@ -31,8 +31,7 @@ def obtener_cuotas_partido(fixture_id):
             if not books:
                 continue
 
-            candidate = {}
-            candidate["bookmaker_id"] = bookmaker_id
+            candidate = {"bookmaker_id": bookmaker_id}
             for market in books[0].get("bets", []):
                 name = market.get("name", "")
                 vals = market.get("values", [])
@@ -101,7 +100,7 @@ def remove_vig_two_way(odd_a, odd_b):
 
 
 def remove_vig_three_way(odd_home, odd_draw, odd_away):
-    implied = np = [
+    implied = [
         1.0 / float(odd_home),
         1.0 / float(odd_draw),
         1.0 / float(odd_away),
@@ -130,7 +129,13 @@ def evaluar_mercado(prob_pct, cuota, market_prob_pct=None):
 
 
 def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=None):
-    """Compatibilidad con la interfaz manual. Solo evalua cuotas presentes."""
+    """
+    Compatibilidad con la interfaz manual V1.
+
+    Por seguridad V2 solo puede devolver VALUE BET en 1X2. Los mercados de
+    goles/corners/tarjetas se muestran como EXPERIMENTAL / NO BET hasta que
+    superen su baseline en backtest walk-forward OOS.
+    """
     import pandas as pd
 
     cuotas = cuotas_personalizadas or obtener_cuotas_partido(fixture_id) or {}
@@ -139,12 +144,12 @@ def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=N
     r1 = resultados_montecarlo.get("Resultado_1X2", {})
 
     for name, key in [("Gana Local", "1"), ("Empate", "X"), ("Gana Visita", "2")]:
-        markets.append((name, r1.get(name), key))
+        markets.append((name, r1.get(name), key, True))
 
     for section in ["Goles_Over_Under", "Corners_Totales", "Tarjetas_Totales"]:
         for key, p in resultados_montecarlo.get(section, {}).items():
             if key.startswith(("Over ", "Under ")):
-                markets.append((key, p, key))
+                markets.append((key, p, key, False))
 
     no_vig_1x2 = None
     if all(cuotas.get(k) for k in ("1", "X", "2")):
@@ -153,32 +158,48 @@ def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=N
             remove_vig_three_way(cuotas["1"], cuotas["X"], cuotas["2"]),
         ))
 
-    for name, p, key in markets:
+    for name, p, key, enabled_for_bet in markets:
         odd = cuotas.get(key)
         if not odd or p is None:
             rows.append([name, f"{p or 0}%", "Sin Cuota", "N/A", "N/A", "0%", "NO BET"])
             continue
 
-        market_p = no_vig_1x2.get(key) if no_vig_1x2 and key in no_vig_1x2 else None
-        if key.startswith("Over "):
-            opp = "Under " + key[5:]
-            if cuotas.get(opp):
-                market_p = remove_vig_two_way(odd, cuotas[opp])[0]
-        elif key.startswith("Under "):
-            opp = "Over " + key[6:]
-            if cuotas.get(opp):
-                market_p = remove_vig_two_way(odd, cuotas[opp])[0]
+        if not enabled_for_bet:
+            rows.append([
+                name,
+                f"{float(p):.1f}%",
+                float(odd),
+                "Experimental",
+                "No validado OOS",
+                "0%",
+                "NO BET — EXPERIMENTAL",
+            ])
+            continue
+
+        # Para 1X2 exigimos siempre las tres cuotas reales para poder quitar vig.
+        market_p = no_vig_1x2.get(key) if no_vig_1x2 else None
+        if market_p is None:
+            rows.append([
+                name,
+                f"{float(p):.1f}%",
+                float(odd),
+                "N/A",
+                "Sin no-vig 1X2",
+                "0%",
+                "NO BET",
+            ])
+            continue
 
         ev = evaluar_mercado(float(p), float(odd), market_p)
-        edge_ok = ev["edge_pp"] is None or ev["edge_pp"] >= 3.0
-        verdict = "VALUE BET" if ev["ev_pct"] >= 3.0 and float(p) >= 55.0 and edge_ok else "NO BET"
-        stake = min(ev["kelly_pct"] * 0.25, 2.0) if verdict == "VALUE BET" else 0.0
+        edge_ok = ev["edge_pp"] is not None and ev["edge_pp"] >= 4.0
+        verdict = "VALUE BET 1X2" if ev["ev_pct"] >= 3.0 and float(p) >= 58.0 and edge_ok else "NO BET"
+        stake = min(ev["kelly_pct"] * 0.25, 1.5) if verdict == "VALUE BET 1X2" else 0.0
         rows.append([
             name,
             f"{float(p):.1f}%",
             float(odd),
             f"{ev['ev_pct']:.1f}%",
-            "Controlado" if verdict == "VALUE BET" else "Alto",
+            "Controlado" if verdict == "VALUE BET 1X2" else "Alto",
             f"{stake:.1f}%",
             verdict,
         ])
