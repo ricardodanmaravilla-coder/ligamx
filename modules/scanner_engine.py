@@ -10,12 +10,10 @@ LIGA_MX_SEASON = 2026
 
 
 def combinar_probabilidades(p_stat, p_ml, w_stat=0.55, w_ml=0.45):
-    """Ensemble provisional; no interpreta los modelos como evidencia independiente."""
     return w_stat * float(p_stat) + w_ml * float(p_ml)
 
 
 def _market_probabilities_no_vig_1x2(cuotas):
-    """Probabilidades 1X2 sin margen. Requiere las tres cuotas reales."""
     if not all(cuotas.get(k) for k in ("1", "X", "2")):
         return {}
     ph, pd, pa = remove_vig_three_way(cuotas["1"], cuotas["X"], cuotas["2"])
@@ -23,13 +21,6 @@ def _market_probabilities_no_vig_1x2(cuotas):
 
 
 def _disagreement_limit(p_stat, p_ml, base_limit=10.0):
-    """
-    Límite adaptativo de desacuerdo entre modelos.
-
-    Si ambos modelos tienen convicción alta en la misma selección, permitimos
-    una diferencia mayor en la intensidad de esa convicción. Si uno está cerca
-    del umbral mínimo, mantenemos el filtro conservador.
-    """
     min_model = min(float(p_stat), float(p_ml))
     if min_model >= 60.0:
         return 15.0
@@ -50,8 +41,13 @@ def evaluar_fixture(
     min_edge=4.0,
     min_ev=3.0,
     max_disagreement=10.0,
+    return_diagnostics=False,
 ):
-    """Scanner V2 conservador; solo recomienda 1X2 validado OOS."""
+    """
+    Evalúa 1X2 y, opcionalmente, devuelve diagnóstico de por qué cada mercado
+    pasó o falló. `return_diagnostics=False` mantiene compatibilidad existente.
+    """
+    diagnostics = []
     df = clean_history(df_historico)
     local, visita = normalize_team(local), normalize_team(visita)
 
@@ -59,40 +55,40 @@ def evaluar_fixture(
         table = SistemaEloLigaMX().calcular_historico(df)
         elo_map = dict(zip(table.Equipo, table.ELO_Rating))
     if local not in elo_map or visita not in elo_map:
-        return []
+        diagnostics.append({"Mercado": "1X2", "Estado": "NO BET", "Motivo": "Equipo sin ELO histórico"})
+        return ([], diagnostics) if return_diagnostics else []
 
     cuotas = cuotas or obtener_cuotas_partido(fixture_id)
     if not cuotas:
-        return []
+        diagnostics.append({"Mercado": "1X2", "Estado": "NO BET", "Motivo": "API-Football no devolvió cuotas para el fixture"})
+        return ([], diagnostics) if return_diagnostics else []
 
     market_probs = _market_probabilities_no_vig_1x2(cuotas)
     if not market_probs:
-        return []
+        diagnostics.append({
+            "Mercado": "1X2",
+            "Estado": "NO BET",
+            "Motivo": "No hay las tres cuotas 1/X/2 en una misma casa; no se puede calcular no-vig",
+            "Bookmaker": cuotas.get("bookmaker_name", cuotas.get("bookmaker_id", "N/A")),
+            "Cuota 1": cuotas.get("1"), "Cuota X": cuotas.get("X"), "Cuota 2": cuotas.get("2"),
+        })
+        return ([], diagnostics) if return_diagnostics else []
 
     if ml is None:
         ml = PredictorML()
         if not ml.entrenar(df):
-            return []
+            diagnostics.append({"Mercado": "1X2", "Estado": "NO BET", "Motivo": "ML no pudo entrenar"})
+            return ([], diagnostics) if return_diagnostics else []
 
     mc = simular_partido_montecarlo(
-        local,
-        visita,
-        df_historico=df,
-        elo_local=elo_map[local],
-        elo_visita=elo_map[visita],
-        linea_goles=2.5,
-        linea_corners=9.5,
-        linea_tarjetas=4.5,
+        local, visita, df_historico=df,
+        elo_local=elo_map[local], elo_visita=elo_map[visita],
+        linea_goles=2.5, linea_corners=9.5, linea_tarjetas=4.5,
     )
     mlp = ml.predecir_mercados_completos(
-        df,
-        local,
-        visita,
-        elo_local=elo_map[local],
-        elo_visita=elo_map[visita],
-        linea_goles=2.5,
-        linea_corners=9.5,
-        linea_tarjetas=4.5,
+        df, local, visita,
+        elo_local=elo_map[local], elo_visita=elo_map[visita],
+        linea_goles=2.5, linea_corners=9.5, linea_tarjetas=4.5,
     )
 
     markets = [
@@ -103,29 +99,54 @@ def evaluar_fixture(
 
     out = []
     for name, key, p_stat, p_ml in markets:
-        odd = cuotas.get(key)
-        if not odd or float(odd) <= 1.01:
-            continue
-
         p_stat = float(p_stat)
         p_ml = float(p_ml)
-
-        # Ningún modelo puede estar débil: el desacuerdo adaptativo solo amplía
-        # tolerancia cuando ambos sostienen la misma selección con confianza.
-        if min(p_stat, p_ml) < 52.0:
-            continue
-
+        odd = cuotas.get(key)
+        market_p = market_probs.get(key)
         disagreement = abs(p_stat - p_ml)
         allowed_disagreement = _disagreement_limit(p_stat, p_ml, max_disagreement)
-        if disagreement > allowed_disagreement:
-            continue
-
         p_ensemble = combinar_probabilidades(p_stat, p_ml)
-        market_p = market_probs[key]
-        edge = p_ensemble - market_p
-        ev = (p_ensemble / 100.0 * float(odd) - 1.0) * 100.0
 
-        if p_ensemble >= min_prob and edge >= min_edge and ev >= min_ev:
+        diag = {
+            "Mercado": name,
+            "Bookmaker": cuotas.get("bookmaker_name", cuotas.get("bookmaker_id", "N/A")),
+            "P_Estadistico": round(p_stat, 1),
+            "P_ML": round(p_ml, 1),
+            "P_Ensemble": round(p_ensemble, 1),
+            "Desacuerdo_pp": round(disagreement, 1),
+            "Limite_Desacuerdo_pp": round(allowed_disagreement, 1),
+            "Cuota": round(float(odd), 2) if odd else None,
+            "P_Mercado_NoVig": round(float(market_p), 1) if market_p is not None else None,
+            "Edge_pp": None,
+            "EV_pct": None,
+        }
+
+        reasons = []
+        if not odd or float(odd) <= 1.01:
+            reasons.append("sin cuota válida")
+        if min(p_stat, p_ml) < 52.0:
+            reasons.append("uno de los modelos <52%")
+        if disagreement > allowed_disagreement:
+            reasons.append(f"desacuerdo {disagreement:.1f}>{allowed_disagreement:.1f} pp")
+        if p_ensemble < min_prob:
+            reasons.append(f"ensemble {p_ensemble:.1f}<{min_prob:.1f}%")
+
+        if odd and float(odd) > 1.01 and market_p is not None:
+            edge = p_ensemble - float(market_p)
+            ev = (p_ensemble / 100.0 * float(odd) - 1.0) * 100.0
+            diag["Edge_pp"] = round(edge, 1)
+            diag["EV_pct"] = round(ev, 1)
+            if edge < min_edge:
+                reasons.append(f"edge {edge:.1f}<{min_edge:.1f} pp")
+            if ev < min_ev:
+                reasons.append(f"EV {ev:.1f}<{min_ev:.1f}%")
+
+        if reasons:
+            diag["Estado"] = "NO BET"
+            diag["Motivo"] = "; ".join(reasons)
+        else:
+            diag["Estado"] = "VALUE BET 1X2"
+            diag["Motivo"] = "Supera todos los filtros"
             out.append({
                 "Partido": f"{local} vs {visita}",
                 "Mercado": name,
@@ -135,17 +156,20 @@ def evaluar_fixture(
                 "Limite_Desacuerdo_pp": round(allowed_disagreement, 1),
                 "P_Ensemble": round(p_ensemble, 1),
                 "Cuota": round(float(odd), 2),
-                "P_Mercado_NoVig": round(market_p, 1),
-                "Edge_pp": round(edge, 1),
-                "EV_pct": round(ev, 1),
+                "P_Mercado_NoVig": round(float(market_p), 1),
+                "Edge_pp": diag["Edge_pp"],
+                "EV_pct": diag["EV_pct"],
+                "Bookmaker": diag["Bookmaker"],
                 "Veredicto": "VALUE BET 1X2",
             })
 
-    return sorted(out, key=lambda x: (x["EV_pct"], x["Edge_pp"]), reverse=True)
+        diagnostics.append(diag)
+
+    out = sorted(out, key=lambda x: (x["EV_pct"], x["Edge_pp"]), reverse=True)
+    return (out, diagnostics) if return_diagnostics else out
 
 
 def escanear_jornada_actual(df_historico=None):
-    """Escanea próximos fixtures; entrena ML/ELO una sola vez por ejecución."""
     import requests
     from .stats_engine import cargar_datos
 
