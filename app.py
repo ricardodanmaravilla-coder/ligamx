@@ -82,6 +82,38 @@ def metric_market(container,title,mc_section,ml_section,over_key,under_key,push_
     container.write(f"Monte Carlo: Over {mo:.1f}% · Under {mu:.1f}%" + (f" · Push {mp:.1f}%" if mp else ""))
     container.write(f"ML: Over {lo:.1f}% · Under {lu:.1f}%" + (f" · Push {lp:.1f}%" if lp else ""))
 
+
+def filtrar_picks_publicables(picks):
+    """Política final basada en el walk-forward selectivo de 880 partidos."""
+    publicados=[]
+    for p in picks or []:
+        mercado=str(p.get("Mercado", ""))
+        if "Corners O/U" in mercado or "Tarjetas O/U" in mercado:
+            continue
+        if "Goles O/U" in mercado:
+            if float(p.get("P_Condicional", 0) or 0) < 65.0:
+                continue
+            if float(p.get("Edge_pp", 0) or 0) < 5.0 or float(p.get("EV_pct", 0) or 0) < 4.0:
+                continue
+        publicados.append(p)
+    return publicados
+
+
+def ajustar_diagnosticos(diagnostics):
+    out=[]
+    for item in diagnostics or []:
+        d=dict(item)
+        mercado=str(d.get("Mercado", ""))
+        if "Corners O/U" in mercado or "Tarjetas O/U" in mercado:
+            d["Estado"]="ANÁLISIS SOLO"
+            d["Motivo"]="Mercado integrado, pero no habilitado como pick: backtest selectivo aún insuficiente"
+        elif "Goles O/U" in mercado and d.get("Estado", "").startswith("VALUE"):
+            if float(d.get("P_Condicional", 0) or 0) < 65.0:
+                d["Estado"]="NO BET"
+                d["Motivo"]="Filtro final V3: goles O/U exige probabilidad condicional >=65%"
+        out.append(d)
+    return out
+
 try:
     df=cargar_historico()
 except Exception as exc:
@@ -91,8 +123,8 @@ st.sidebar.header("Estado del modelo")
 st.sidebar.metric("Partidos historicos",f"{len(df):,}")
 st.sidebar.write(f"Desde **{df.Fecha.min().date()}** hasta **{df.Fecha.max().date()}**")
 st.sidebar.write(f"Liga MX API: **league {LIGA_MX_ID} · season {LIGA_MX_SEASON}**")
-st.sidebar.write("1X2 = validado OOS. O/U V3 = integrado con filtros más estrictos y diagnóstico separado.")
-st.sidebar.warning("O/U V3 todavía no debe interpretarse con la misma confianza histórica que 1X2.")
+st.sidebar.write("1X2 = validado OOS. Goles O/U = V3 selectivo. Corners/tarjetas = análisis integrado.")
+st.sidebar.info("Backtest ML selectivo >=65%: goles 65.6% (61 casos); corners 41.7%; tarjetas 56.6%.")
 
 fixtures,fixtures_error=proximos_partidos()
 if not API_KEY:
@@ -153,12 +185,14 @@ else:
                     metric_market(tcol,f"Tarjetas {lt}",mc["Tarjetas_Totales"],mlp["Tarjetas_Totales"],f"Over {lt} Tarjetas",f"Under {lt} Tarjetas",f"Push {lt} Tarjetas")
 
                 st.markdown("### Picks del modelo")
-                picks,diagnostics=evaluar_fixture(local,visita,fixture_id,df,cuotas=cuotas,ml=ml,elo_map=elo_map,return_diagnostics=True)
+                raw_picks,diagnostics=evaluar_fixture(local,visita,fixture_id,df,cuotas=cuotas,ml=ml,elo_map=elo_map,return_diagnostics=True)
+                picks=filtrar_picks_publicables(raw_picks)
+                diagnostics=ajustar_diagnosticos(diagnostics)
                 if picks:
-                    st.success(f"{len(picks)} oportunidad(es) superaron todos los filtros")
+                    st.success(f"{len(picks)} oportunidad(es) superaron la política final")
                     st.dataframe(pd.DataFrame(picks),use_container_width=True,hide_index=True)
                 else:
-                    st.info("NO BET — ninguna opción superó todos los filtros.")
+                    st.info("NO BET — ninguna opción publicable superó todos los filtros.")
 
                 st.markdown("#### Diagnóstico completo 1X2 + O/U")
                 if diagnostics:
@@ -177,15 +211,16 @@ else:
                 st.error(f"NO BET / error de validación: {exc}")
 
 st.markdown("---")
-st.subheader("Scanner de jornada V3 — 1X2 + O/U")
-st.caption("1X2 usa filtros V2 validados. O/U V3 exige línea y ambas cuotas reales, no-vig, probabilidad, edge, EV y acuerdo entre modelos.")
+st.subheader("Scanner de jornada V3")
+st.caption("Publica 1X2 y goles O/U selectivos; corners/tarjetas se analizan pero no se publican como picks todavía.")
 if st.button("Escanear jornada completa V3"):
     with st.spinner("Escaneando próximos partidos..."):
-        picks=escanear_jornada_actual(df)
+        raw_picks=escanear_jornada_actual(df)
+        picks=filtrar_picks_publicables(raw_picks)
     if picks:
         st.dataframe(pd.DataFrame(picks),use_container_width=True,hide_index=True)
     else:
-        st.info("NO BET — no hay oportunidades que cumplan todos los filtros.")
+        st.info("NO BET — no hay oportunidades publicables que cumplan todos los filtros.")
 
 st.markdown("---")
 st.subheader("Ranking ELO actual")
