@@ -22,6 +22,22 @@ def _market_probabilities_no_vig_1x2(cuotas):
     return {"1": ph, "X": pd, "2": pa}
 
 
+def _disagreement_limit(p_stat, p_ml, base_limit=10.0):
+    """
+    Límite adaptativo de desacuerdo entre modelos.
+
+    Si ambos modelos tienen convicción alta en la misma selección, permitimos
+    una diferencia mayor en la intensidad de esa convicción. Si uno está cerca
+    del umbral mínimo, mantenemos el filtro conservador.
+    """
+    min_model = min(float(p_stat), float(p_ml))
+    if min_model >= 60.0:
+        return 15.0
+    if min_model >= 55.0:
+        return 12.0
+    return float(base_limit)
+
+
 def evaluar_fixture(
     local,
     visita,
@@ -93,10 +109,15 @@ def evaluar_fixture(
 
         p_stat = float(p_stat)
         p_ml = float(p_ml)
-        disagreement = abs(p_stat - p_ml)
-        if disagreement > max_disagreement:
-            continue
+
+        # Ningún modelo puede estar débil: el desacuerdo adaptativo solo amplía
+        # tolerancia cuando ambos sostienen la misma selección con confianza.
         if min(p_stat, p_ml) < 52.0:
+            continue
+
+        disagreement = abs(p_stat - p_ml)
+        allowed_disagreement = _disagreement_limit(p_stat, p_ml, max_disagreement)
+        if disagreement > allowed_disagreement:
             continue
 
         p_ensemble = combinar_probabilidades(p_stat, p_ml)
@@ -111,6 +132,7 @@ def evaluar_fixture(
                 "P_Estadistico": round(p_stat, 1),
                 "P_ML": round(p_ml, 1),
                 "Desacuerdo_pp": round(disagreement, 1),
+                "Limite_Desacuerdo_pp": round(allowed_disagreement, 1),
                 "P_Ensemble": round(p_ensemble, 1),
                 "Cuota": round(float(odd), 2),
                 "P_Mercado_NoVig": round(market_p, 1),
