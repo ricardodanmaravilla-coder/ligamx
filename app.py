@@ -20,6 +20,7 @@ API_KEY = os.environ.get("API_SPORTS_KEY")
 BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {"x-apisports-key": API_KEY}
 LIGA_MX_ID = 262
+LIGA_MX_SEASON = 2026
 
 
 @st.cache_data(ttl=3600)
@@ -33,25 +34,45 @@ def cargar_historico():
     raise RuntimeError("No se pudo cargar el historico")
 
 
-@st.cache_data(ttl=900)
+@st.cache_data(ttl=300)
 def proximos_partidos():
+    """Obtiene próximos partidos y devuelve diagnóstico explícito de API-Football."""
     if not API_KEY:
-        return []
+        return [], "Falta la variable API_SPORTS_KEY"
+
     hoy = datetime.date.today().strftime("%Y-%m-%d")
     futuro = (datetime.date.today() + datetime.timedelta(days=45)).strftime("%Y-%m-%d")
+    params = {
+        "league": LIGA_MX_ID,
+        "season": LIGA_MX_SEASON,
+        "from": hoy,
+        "to": futuro,
+        "timezone": "America/Mexico_City",
+    }
+
     try:
         r = requests.get(
             f"{BASE_URL}/fixtures",
             headers=HEADERS,
-            params={"league": LIGA_MX_ID, "from": hoy, "to": futuro},
+            params=params,
             timeout=12,
         )
-        if r.status_code != 200:
-            return []
-        data = r.json().get("response", [])
-    except Exception:
-        return []
+    except Exception as exc:
+        return [], f"Error de conexión con API-Football: {exc}"
 
+    if r.status_code != 200:
+        return [], f"API-Football HTTP {r.status_code}: {r.text[:250]}"
+
+    try:
+        payload = r.json()
+    except Exception:
+        return [], "API-Football devolvió una respuesta que no es JSON"
+
+    api_errors = payload.get("errors") or []
+    if api_errors:
+        return [], f"API-Football reportó error: {api_errors}"
+
+    data = payload.get("response", [])
     out = []
     for f in data:
         status = f.get("fixture", {}).get("status", {}).get("short", "")
@@ -63,7 +84,16 @@ def proximos_partidos():
             "local": normalize_team(f["teams"]["home"]["name"]),
             "visita": normalize_team(f["teams"]["away"]["name"]),
         })
-    return out
+
+    if not out:
+        results = payload.get("results", 0)
+        return [], (
+            f"API-Football respondió correctamente pero no devolvió próximos partidos "
+            f"para league={LIGA_MX_ID}, season={LIGA_MX_SEASON}, {hoy} a {futuro}. "
+            f"results={results}"
+        )
+
+    return out, None
 
 
 def line_or_none(cuotas, kind):
@@ -93,15 +123,18 @@ except Exception as exc:
 st.sidebar.header("Estado del modelo")
 st.sidebar.metric("Partidos historicos", f"{len(df):,}")
 st.sidebar.write(f"Desde **{df.Fecha.min().date()}** hasta **{df.Fecha.max().date()}**")
+st.sidebar.write(f"Liga MX API: **league {LIGA_MX_ID} · season {LIGA_MX_SEASON}**")
 st.sidebar.write("Regla de seguridad: si falta cuota, equipo o muestra suficiente → **NO BET**")
 st.sidebar.warning("Backtest actual: solo 1X2 queda habilitado para picks. Totales = experimentales.")
 
-fixtures = proximos_partidos()
+fixtures, fixtures_error = proximos_partidos()
 
 if not API_KEY:
-    st.warning("No se encontro API_SPORTS_KEY. La V2 no inventa fixtures ni cuotas.")
+    st.warning("No se encontró API_SPORTS_KEY. La V2 no inventa fixtures ni cuotas.")
+elif fixtures_error:
+    st.error(fixtures_error)
 elif not fixtures:
-    st.warning("No se encontraron proximos partidos con API-Football.")
+    st.warning("No se encontraron próximos partidos con API-Football.")
 else:
     labels = [f"{p['fecha']} | {p['local']} vs {p['visita']}" for p in fixtures]
     choice = st.selectbox("Selecciona un partido", range(len(fixtures)), format_func=lambda i: labels[i])
@@ -192,9 +225,9 @@ else:
                     st.success(f"{len(picks)} oportunidad(es) 1X2 superaron todos los filtros V2")
                     st.dataframe(pd.DataFrame(picks), use_container_width=True, hide_index=True)
                 else:
-                    st.info("NO BET — ninguna opcion 1X2 supero probabilidad, edge, EV y acuerdo entre modelos.")
+                    st.info("NO BET — ninguna opción 1X2 superó probabilidad, edge, EV y acuerdo entre modelos.")
 
-                with st.expander("Detalle tecnico"):
+                with st.expander("Detalle técnico"):
                     st.write("Cuotas observadas", cuotas)
                     st.write("Totales previstos por ML (experimentales)", mlp.get("Prediccion_Totales", {}))
                     st.write("Expectativas Monte Carlo", {
@@ -205,13 +238,13 @@ else:
                     })
 
             except Exception as exc:
-                st.error(f"NO BET / error de validacion: {exc}")
+                st.error(f"NO BET / error de validación: {exc}")
 
 st.markdown("---")
 st.subheader("Scanner de jornada V2 — solo 1X2")
 st.caption("Solo devuelve apuestas con las 3 cuotas 1X2 reales, mercado no-vig, edge, EV, probabilidad mínima y acuerdo entre modelos.")
 if st.button("Escanear jornada completa V2"):
-    with st.spinner("Escaneando proximos partidos..."):
+    with st.spinner("Escaneando próximos partidos..."):
         picks = escanear_jornada_actual(df)
     if picks:
         st.dataframe(pd.DataFrame(picks), use_container_width=True, hide_index=True)

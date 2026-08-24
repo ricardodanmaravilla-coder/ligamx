@@ -5,6 +5,9 @@ from .ml_engine import PredictorML
 from .montecarlo_sim import simular_partido_montecarlo
 from .odds_engine import obtener_cuotas_partido, remove_vig_three_way
 
+LIGA_MX_ID = 262
+LIGA_MX_SEASON = 2026
+
 
 def combinar_probabilidades(p_stat, p_ml, w_stat=0.55, w_ml=0.45):
     """Ensemble provisional; no interpreta los modelos como evidencia independiente."""
@@ -32,14 +35,7 @@ def evaluar_fixture(
     min_ev=3.0,
     max_disagreement=10.0,
 ):
-    """
-    Scanner V2 conservador.
-
-    Solo recomienda 1X2 porque el walk-forward OOS actual demuestra habilidad
-    modesta en 1X2, mientras que goles/corners/tarjetas todavía no superan su
-    baseline Brier. Los totales siguen disponibles como información experimental
-    en los motores, pero NO generan picks automáticos.
-    """
+    """Scanner V2 conservador; solo recomienda 1X2 validado OOS."""
     df = clean_history(df_historico)
     local, visita = normalize_team(local), normalize_team(visita)
 
@@ -62,7 +58,6 @@ def evaluar_fixture(
         if not ml.entrenar(df):
             return []
 
-    # Líneas técnicas solo satisfacen la firma del simulador; no se evalúan como picks.
     mc = simular_partido_montecarlo(
         local,
         visita,
@@ -101,9 +96,6 @@ def evaluar_fixture(
         disagreement = abs(p_stat - p_ml)
         if disagreement > max_disagreement:
             continue
-
-        # Además del ensemble, exigimos que ninguno de los dos modelos esté por
-        # debajo de 52%; evita que un modelo fuerte arrastre a otro claramente débil.
         if min(p_stat, p_ml) < 52.0:
             continue
 
@@ -153,12 +145,15 @@ def escanear_jornada_actual(df_historico=None):
         r = requests.get(
             "https://v3.football.api-sports.io/fixtures",
             headers={"x-apisports-key": api_key},
-            params={"league": 262, "next": 15},
+            params={"league": LIGA_MX_ID, "season": LIGA_MX_SEASON, "next": 15},
             timeout=12,
         )
         if r.status_code != 200:
             return []
-        fixtures = r.json().get("response", [])
+        payload = r.json()
+        if payload.get("errors"):
+            return []
+        fixtures = payload.get("response", [])
     except Exception:
         return []
 
