@@ -1,5 +1,7 @@
 PyGithub
 streamlit
+Flask
+gunicorn
 pandas
 requests
 numpy
