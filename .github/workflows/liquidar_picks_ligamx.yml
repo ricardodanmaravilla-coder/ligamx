@@ -1,0 +1,22 @@
+name: Liquidar Picks Liga MX
+
+on:
+  schedule:
+    # 09:30 UTC = 03:30 America/Mexico_City (aprox.; GitHub usa UTC)
+    - cron: '30 9 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  liquidar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Liquidar picks pendientes en Cloud Run
+        run: |
+          set -euo pipefail
+          curl --fail --show-error --silent \
+            --retry 3 --retry-delay 10 \
+            -X POST \
+            https://liga-mx-446430563361.us-central1.run.app/api/settle
