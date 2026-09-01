@@ -11,6 +11,11 @@ SHEET_NAME = os.environ.get("LIGAMX_SHEET_TAB", "LigaMX_Picks")
 MODEL_VERSION = "ligamx-v4-cloudrun"
 BANKROLL_MXN = float(os.environ.get("LIGAMX_BANKROLL_MXN", "5000"))
 
+SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive",
+]
+
 HEADERS = [
     "record_key", "snapshot_utc", "game_date", "fixture_id", "league",
     "away", "home", "market", "selection", "odds", "prob_ml", "prob_mc",
@@ -20,27 +25,39 @@ HEADERS = [
 ]
 
 
-def _access_token():
-    credentials, _ = google.auth.default(
-        scopes=["https://www.googleapis.com/auth/spreadsheets"]
-    )
+def _credentials():
+    credentials, project_id = google.auth.default(scopes=SCOPES)
+    if hasattr(credentials, "with_scopes") and getattr(credentials, "requires_scopes", False):
+        credentials = credentials.with_scopes(SCOPES)
     if not credentials.valid:
         credentials.refresh(Request())
-    return credentials.token
+    return credentials, project_id
 
 
 def _headers():
+    credentials, _ = _credentials()
     return {
-        "Authorization": f"Bearer {_access_token()}",
+        "Authorization": f"Bearer {credentials.token}",
         "Content-Type": "application/json",
     }
+
+
+def _raise_google_error(response, action):
+    if response.ok:
+        return
+    body = (response.text or "").strip()
+    if len(body) > 1200:
+        body = body[:1200] + "..."
+    raise RuntimeError(
+        f"Google Sheets {action} fallo HTTP {response.status_code}: {body or response.reason}"
+    )
 
 
 def _existing_keys():
     rng = quote(f"'{SHEET_NAME}'!A2:A2000", safe="")
     url = f"https://sheets.googleapis.com/v4/spreadsheets/{SPREADSHEET_ID}/values/{rng}"
     r = requests.get(url, headers=_headers(), timeout=15)
-    r.raise_for_status()
+    _raise_google_error(r, "lectura")
     values = r.json().get("values", [])
     return {str(row[0]) for row in values if row and row[0]}
 
@@ -66,7 +83,6 @@ def _kelly_fraction(prob_pct, odds):
         if b <= 0:
             return 0.0
         full = (b * p - (1.0 - p)) / b
-        # Mismo enfoque conservador usado en el seguimiento de Fut Europa: 20% Kelly.
         return max(0.0, full) * 0.20
     except Exception:
         return 0.0
@@ -93,43 +109,20 @@ def _pick_row(pick, now_utc):
         game_date, fixture_id, "Liga MX", away, home, selection, MODEL_VERSION
     ])
     return [
-        record_key,
-        now_utc,
-        game_date,
-        fixture_id,
-        "Liga MX",
-        away,
-        home,
-        market,
-        selection,
-        round(odds, 2),
-        round(p_ml, 1),
-        round(p_mc, 1),
-        round(p_combined, 1),
-        round(disagreement, 1),
-        round(ev, 2),
-        round(kelly * 100.0, 2),
-        round(BANKROLL_MXN, 2),
-        stake,
-        verdict,
-        MODEL_VERSION,
-        "pending",
-        "",
-        "",
-        "",
-        "",
+        record_key, now_utc, game_date, fixture_id, "Liga MX", away, home,
+        market, selection, round(odds, 2), round(p_ml, 1), round(p_mc, 1),
+        round(p_combined, 1), round(disagreement, 1), round(ev, 2),
+        round(kelly * 100.0, 2), round(BANKROLL_MXN, 2), stake, verdict,
+        MODEL_VERSION, "pending", "", "", "", "",
     ]
 
 
 def guardar_picks_ligamx(picks):
-    """Guarda picks nuevos en LigaMX_Picks sin duplicar record_key.
-
-    Nunca debe romper el scanner: devuelve un diagnóstico aunque Sheets falle.
-    """
     picks = list(picks or [])
     if not picks:
         return {"ok": True, "saved": 0, "skipped": 0, "message": "Sin picks para guardar"}
     try:
+        credentials, project_id = _credentials()
         existing = _existing_keys()
         now_utc = datetime.datetime.now(datetime.timezone.utc).isoformat()
         rows = []
@@ -151,16 +144,17 @@ def guardar_picks_ligamx(picks):
         )
         r = requests.post(
             url,
-            headers=_headers(),
+            headers={"Authorization": f"Bearer {credentials.token}", "Content-Type": "application/json"},
             json={"majorDimension": "ROWS", "values": rows},
             timeout=20,
         )
-        r.raise_for_status()
+        _raise_google_error(r, "escritura")
         return {
             "ok": True,
             "saved": len(rows),
             "skipped": skipped,
             "message": f"{len(rows)} pick(s) guardados en {SHEET_NAME}",
+            "auth_project": project_id,
         }
     except Exception as exc:
         return {
