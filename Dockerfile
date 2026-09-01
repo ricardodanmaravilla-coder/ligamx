@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD exec gunicorn --bind :${PORT} --workers 1 --threads 4 --timeout 900 app_cloudrun_integrated:app
+CMD exec gunicorn --bind :${PORT} --workers 1 --threads 4 --timeout 900 app_cloudrun_v5:app
