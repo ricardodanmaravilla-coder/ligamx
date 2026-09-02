@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+*.log
+.git/
+.github/
+.devcontainer/
+.venv/
+venv/
+.env
+.streamlit/
