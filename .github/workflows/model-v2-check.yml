@@ -2,7 +2,7 @@ name: Model V2 checks
 
 on:
   push:
-    branches: [model-v2, totals-v3]
+    branches: [model-v2, totals-v3, cloud-run-migration]
   pull_request:
     branches: [main]
 
@@ -18,7 +18,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Compile Python files
-        run: python -m compileall -q app.py app_v2.py backtest.py modules
+        run: python -m compileall -q app.py app_v2.py app_cloudrun.py app_cloudrun_integrated.py app_cloudrun_v5.py backtest.py modules
       - name: V2 feature smoke test
         run: |
           python - <<'PY'
@@ -36,6 +36,27 @@ jobs:
           assert len(ml.features) >= 20, 'Muy pocas features prepartido'
           print('V2 smoke test OK', len(df), len(ml.features))
           PY
+      - name: Odds market-coherence smoke test
+        run: |
+          python - <<'PY'
+          from modules.odds_engine import _candidate_from_book, _best_1x2, _best_total
+          books = [
+            {'id': 8, 'name': 'Book A', 'bets': [
+              {'name': 'Match Winner', 'values': [
+                {'value':'Home','odd':'2.10'}, {'value':'Draw','odd':'3.20'}, {'value':'Away','odd':'3.40'}
+              ]}
+            ]},
+            {'id': 99, 'name': 'Book B', 'bets': [
+              {'name': 'Goals Over/Under', 'values': [
+                {'value':'Over 2.5','odd':'1.91'}, {'value':'Under 2.5','odd':'1.93'}
+              ]}
+            ]}
+          ]
+          c = [_candidate_from_book(x) for x in books]
+          assert _best_1x2(c)['bookmaker_name'] == 'Book A'
+          assert _best_total(c, 'goles', 'Goles')['bookmaker_name'] == 'Book B'
+          print('Odds coherence smoke test OK')
+          PY
       - name: V3 totals math smoke test
         run: |
           python - <<'PY'
@@ -49,7 +70,6 @@ jobs:
           )
           assert pick is not None, diag
           assert pick['EV_pct'] > 0
-          # Línea entera: 10% push no debe contarse como pérdida.
           pick2, diag2 = _evaluate_total_side(
               'Test A vs Test B', 'Goles O/U', 'Over 3.0',
               66.0, 62.0, 10.0, 10.0, 1.95, 54.0, 'TestBook'
@@ -57,25 +77,17 @@ jobs:
           assert diag2['P_Push'] == 10.0
           print('V3 totals smoke test OK')
           PY
-      - name: Production Streamlit startup smoke test
+      - name: Production Flask import smoke test
         run: |
-          streamlit run app.py --server.headless true --server.port 8501 >/tmp/streamlit-v2.log 2>&1 &
-          PID=$!
-          ok=0
-          for i in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:8501/_stcore/health >/dev/null; then
-              ok=1
-              break
-            fi
-            sleep 1
-          done
-          if [ "$ok" -ne 1 ]; then
-            cat /tmp/streamlit-v2.log
-            kill $PID || true
-            exit 1
-          fi
-          curl -fsS http://127.0.0.1:8501/_stcore/health
-          kill $PID || true
+          python - <<'PY'
+          from app_cloudrun_v5 import app
+          rules = {r.rule for r in app.url_map.iter_rules()}
+          assert '/health' in rules
+          assert '/api/fixtures' in rules
+          assert '/api/analyze' in rules
+          assert '/api/scan' in rules
+          print('Cloud Run Flask import OK')
+          PY
       - name: Walk-forward backtest
         run: python backtest.py data/historico_ligamx_completo.csv | tee backtest_metrics.txt
       - name: Upload backtest outputs
