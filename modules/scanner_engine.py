@@ -70,8 +70,6 @@ def _evaluate_total_side(partido, market_name, side, p_stat, p_ml, push_stat, pu
     allowed = _disagreement_limit(p_stat, p_ml, max_disagreement)
     p_ensemble = combinar_probabilidades(p_stat, p_ml)
 
-    # Para líneas enteras comparamos el mercado con probabilidad condicional
-    # sobre decisiones (win/loss), ya que el push devuelve el stake.
     decisive = max(1e-9, 100.0 - p_push)
     p_cond = p_ensemble / decisive * 100.0
     edge = p_cond - float(market_p)
@@ -175,15 +173,12 @@ def evaluar_fixture(local, visita, fixture_id, df_historico, cuotas=None, ml=Non
         linea_goles=tech_g, linea_corners=tech_c, linea_tarjetas=tech_t,
     )
 
-    bookmaker = cuotas.get("bookmaker_name", cuotas.get("bookmaker_id", "N/A"))
+    bookmaker_1x2 = cuotas.get("bookmaker_name", cuotas.get("bookmaker_id", "N/A"))
     out = []
 
-    # 1X2 validado OOS
     market_probs = _market_probabilities_no_vig_1x2(cuotas)
     if market_probs:
-        markets = [
-            ("Gana Local", "1"), ("Empate", "X"), ("Gana Visita", "2")
-        ]
+        markets = [("Gana Local", "1"), ("Empate", "X"), ("Gana Visita", "2")]
         for name, key in markets:
             p_stat = float(mc["Resultado_1X2"][name])
             p_ml = float(mlp["Resultado_1X2"][name])
@@ -202,7 +197,7 @@ def evaluar_fixture(local, visita, fixture_id, df_historico, cuotas=None, ml=Non
             if edge < min_edge: reasons.append(f"edge {edge:.1f}<{min_edge:.1f} pp")
             if ev < min_ev: reasons.append(f"EV {ev:.1f}<{min_ev:.1f}%")
             diag = {
-                "Mercado": name, "Bookmaker": bookmaker,
+                "Mercado": name, "Bookmaker": bookmaker_1x2,
                 "P_Estadistico": round(p_stat,1), "P_ML": round(p_ml,1),
                 "P_Ensemble": round(p_ensemble,1), "Desacuerdo_pp": round(disagreement,1),
                 "Limite_Desacuerdo_pp": round(allowed,1), "Cuota": round(float(odd),2) if odd else None,
@@ -217,24 +212,27 @@ def evaluar_fixture(local, visita, fixture_id, df_historico, cuotas=None, ml=Non
     else:
         diagnostics.append({"Mercado":"1X2","Estado":"NO BET","Motivo":"No hay 1/X/2 completo para no-vig"})
 
-    # O/U V3: exige línea real y ambas cuotas de la misma casa.
     for kind, line in (("goles", lg), ("corners", lc), ("tarjetas", lt)):
+        market_bookmaker = cuotas.get(
+            f"bookmaker_{kind}_name",
+            cuotas.get(f"bookmaker_{kind}_id", bookmaker_1x2),
+        )
         if line is None:
-            diagnostics.append({"Mercado":f"{kind.title()} O/U","Estado":"NO BET","Motivo":"Sin línea real en API-Football"})
+            diagnostics.append({"Mercado":f"{kind.title()} O/U","Bookmaker":market_bookmaker,"Estado":"NO BET","Motivo":"Sin línea real en API-Football"})
             continue
         line = float(line)
         if not _supported_total_line(line):
-            diagnostics.append({"Mercado":f"{kind.title()} O/U {line}","Estado":"NO BET","Motivo":"Línea asiática de cuarto aún no soportada"})
+            diagnostics.append({"Mercado":f"{kind.title()} O/U {line}","Bookmaker":market_bookmaker,"Estado":"NO BET","Motivo":"Línea asiática de cuarto aún no soportada"})
             continue
         market_name, section, over_model_key, under_model_key, push_key, over_odd_key, under_odd_key = _total_spec(kind, line)
         over_odd, under_odd = cuotas.get(over_odd_key), cuotas.get(under_odd_key)
         if not over_odd or not under_odd:
-            diagnostics.append({"Mercado":f"{market_name} {line}","Estado":"NO BET","Motivo":"Faltan cuotas Over/Under completas"})
+            diagnostics.append({"Mercado":f"{market_name} {line}","Bookmaker":market_bookmaker,"Estado":"NO BET","Motivo":"Faltan cuotas Over/Under completas"})
             continue
         market_over, market_under = remove_vig_two_way(over_odd, under_odd)
         mcsec, mlsec = mc.get(section, {}), mlp.get(section, {})
         if over_model_key not in mcsec or over_model_key not in mlsec:
-            diagnostics.append({"Mercado":f"{market_name} {line}","Estado":"NO BET","Motivo":"Modelo no produjo la línea solicitada"})
+            diagnostics.append({"Mercado":f"{market_name} {line}","Bookmaker":market_bookmaker,"Estado":"NO BET","Motivo":"Modelo no produjo la línea solicitada"})
             continue
         push_mc, push_ml = mcsec.get(push_key,0.0), mlsec.get(push_key,0.0)
         for side, mk, odd, mp in (
@@ -244,7 +242,7 @@ def evaluar_fixture(local, visita, fixture_id, df_historico, cuotas=None, ml=Non
             pick, diag = _evaluate_total_side(
                 partido, market_name, side,
                 mcsec[mk], mlsec[mk], push_mc, push_ml,
-                odd, mp, bookmaker,
+                odd, mp, market_bookmaker,
             )
             diagnostics.append(diag)
             if pick:
