@@ -5,22 +5,27 @@ API_KEY = os.environ.get("API_SPORTS_KEY")
 BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {"x-apisports-key": API_KEY}
 
-# Preferencia histórica, pero ya NO limita la búsqueda.
+# Preferencia histórica. Se usa como desempate, nunca como filtro duro.
 PREFERRED_BOOKMAKER_IDS = [8, 6, 11, 1]
 
 
+def _norm_market_name(name):
+    return " ".join(str(name or "").strip().lower().replace("/", " ").split())
+
+
 def _candidate_from_book(book):
-    """Extrae mercados de una sola casa; nunca mezcla cuotas entre bookmakers."""
+    """Extrae mercados de una casa sin mezclar lados entre bookmakers."""
     candidate = {
         "bookmaker_id": book.get("id"),
         "bookmaker_name": book.get("name", "Desconocido"),
     }
 
     for market in book.get("bets", []):
-        name = market.get("name", "")
+        raw_name = market.get("name", "")
+        name = _norm_market_name(raw_name)
         vals = market.get("values", [])
 
-        if name == "Match Winner":
+        if name in {"match winner", "1x2", "winner"}:
             mp = {"Home": "1", "Draw": "X", "Away": "2"}
             for v in vals:
                 key = mp.get(v.get("value"))
@@ -29,23 +34,82 @@ def _candidate_from_book(book):
                         candidate[key] = float(v["odd"])
                     except (TypeError, ValueError, KeyError):
                         pass
-        elif name == "Goals Over/Under":
+        elif name in {"goals over under", "total goals", "goals over under fulltime"}:
             _extract_total(vals, candidate, "goles", "Goles")
-        elif name in ["Corners Over Under", "Corners", "Total Corners"]:
+        elif name in {"corners over under", "corners", "total corners", "corners total"}:
             _extract_total(vals, candidate, "corners", "Corners")
-        elif name in ["Cards Over/Under", "Cards", "Total Cards"]:
+        elif name in {"cards over under", "cards", "total cards", "cards total"}:
             _extract_total(vals, candidate, "tarjetas", "Tarjetas")
 
     return candidate
 
 
+def _preferred_rank(candidate):
+    bid = candidate.get("bookmaker_id")
+    preferred = PREFERRED_BOOKMAKER_IDS.index(bid) if bid in PREFERRED_BOOKMAKER_IDS else 999
+    return preferred
+
+
+def _best_1x2(candidates):
+    complete = [c for c in candidates if all(c.get(k) for k in ("1", "X", "2"))]
+    if not complete:
+        return None
+    return sorted(complete, key=lambda c: (_preferred_rank(c), -len(c)))[0]
+
+
+def _best_total(candidates, kind, label):
+    line_key = f"linea_{kind}_detectada"
+    valid = []
+    for c in candidates:
+        line = c.get(line_key)
+        if line is None:
+            continue
+        over_key = f"Over {line} {label}"
+        under_key = f"Under {line} {label}"
+        if kind == "goles":
+            over_key = f"Over {line}"
+            under_key = f"Under {line}"
+        if c.get(over_key) and c.get(under_key):
+            # Preferimos cuota equilibrada (línea principal) y después bookmaker preferido.
+            balance = abs(float(c[over_key]) - float(c[under_key]))
+            valid.append((balance, _preferred_rank(c), c))
+    if not valid:
+        return None
+    valid.sort(key=lambda x: (x[0], x[1]))
+    return valid[0][2]
+
+
+def _merge_total(out, source, kind, label):
+    if not source:
+        return
+    line_key = f"linea_{kind}_detectada"
+    line = source.get(line_key)
+    if line is None:
+        return
+    out[line_key] = line
+    if kind == "goles":
+        for key in (f"Over {line}", f"Under {line}"):
+            if source.get(key):
+                out[key] = source[key]
+    else:
+        for key in (f"Over {line} {label}", f"Under {line} {label}"):
+            if source.get(key):
+                out[key] = source[key]
+    out[f"bookmaker_{kind}_id"] = source.get("bookmaker_id")
+    out[f"bookmaker_{kind}_name"] = source.get("bookmaker_name", "Desconocido")
+
+
 def obtener_cuotas_partido(fixture_id):
     """
-    Devuelve un snapshot coherente de UNA sola casa.
+    Snapshot de cuotas por mercado.
 
-    V2 anterior consultaba únicamente cuatro bookmaker IDs. Eso podía devolver
-    cuotas vacías aunque API-Football tuviera mercado 1X2 en otra casa. Ahora
-    consultamos todas las casas del fixture y priorizamos una con 1/X/2 completo.
+    Regla de coherencia:
+    - 1X2 sale completo de una sola casa.
+    - Cada O/U sale con Over y Under de una sola casa.
+    - Distintos mercados sí pueden venir de casas distintas para no perder cobertura.
+
+    Esto evita el fallo anterior: elegir una casa por 1X2 y descartar goles/corners/
+    tarjetas aunque otra casa tuviera el mercado completo.
     """
     if not fixture_id or not API_KEY:
         return {}
@@ -75,37 +139,49 @@ def obtener_cuotas_partido(fixture_id):
     if not response:
         return {}
 
-    books = response[0].get("bookmakers", [])
+    books = []
+    seen = set()
+    for item in response:
+        for book in item.get("bookmakers", []):
+            marker = (book.get("id"), book.get("name"))
+            if marker in seen:
+                continue
+            seen.add(marker)
+            books.append(book)
     if not books:
         return {}
 
     candidates = [_candidate_from_book(book) for book in books]
+    out = {
+        "bookmakers_seen": len(candidates),
+    }
 
-    # Primero exigimos 1X2 completo para que el scanner pueda calcular no-vig.
-    complete_1x2 = [c for c in candidates if all(c.get(k) for k in ("1", "X", "2"))]
-    if complete_1x2:
-        def rank(c):
-            bid = c.get("bookmaker_id")
-            preferred = PREFERRED_BOOKMAKER_IDS.index(bid) if bid in PREFERRED_BOOKMAKER_IDS else 999
-            # Desempate: preferimos el snapshot que además tenga más mercados útiles.
-            richness = len(c)
-            return (preferred, -richness)
+    best_1x2 = _best_1x2(candidates)
+    if best_1x2:
+        out.update({
+            "1": best_1x2["1"], "X": best_1x2["X"], "2": best_1x2["2"],
+            "bookmaker_id": best_1x2.get("bookmaker_id"),
+            "bookmaker_name": best_1x2.get("bookmaker_name", "Desconocido"),
+        })
 
-        return sorted(complete_1x2, key=rank)[0]
+    _merge_total(out, _best_total(candidates, "goles", "Goles"), "goles", "Goles")
+    _merge_total(out, _best_total(candidates, "corners", "Corners"), "corners", "Corners")
+    _merge_total(out, _best_total(candidates, "tarjetas", "Tarjetas"), "tarjetas", "Tarjetas")
 
-    # Si no existe 1X2 completo, devolvemos el snapshot más rico SOLO para diagnóstico.
-    # El scanner seguirá respondiendo NO BET porque no puede quitar el vig 1X2.
-    candidates = [c for c in candidates if len(c) > 2]
-    return max(candidates, key=len) if candidates else {}
+    # Si no hubo ningún mercado útil, devolvemos {} para mantener compatibilidad.
+    useful = any(k in out for k in ("1", "linea_goles_detectada", "linea_corners_detectada", "linea_tarjetas_detectada"))
+    return out if useful else {}
 
 
 def _extract_total(vals, out, kind, label):
     pairs = {}
     for v in vals:
-        s = str(v.get("value", ""))
-        if not (s.startswith("Over ") or s.startswith("Under ")):
+        s = str(v.get("value", "")).strip()
+        low = s.lower()
+        if not (low.startswith("over ") or low.startswith("under ")):
             continue
-        side, line = s.split(" ", 1)
+        side_raw, line = s.split(" ", 1)
+        side = "Over" if side_raw.lower() == "over" else "Under"
         try:
             odd = float(v.get("odd"))
             float(line)
@@ -117,6 +193,7 @@ def _extract_total(vals, out, kind, label):
     if not complete:
         return
 
+    # La línea principal suele ser la que tiene precios más equilibrados.
     line, p = min(complete, key=lambda x: abs(x[1]["Over"] - x[1]["Under"]))
     out[f"linea_{kind}_detectada"] = line
     out[f"Over {line} {label}"] = p["Over"]
@@ -158,7 +235,7 @@ def evaluar_mercado(prob_pct, cuota, market_prob_pct=None):
 
 
 def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=None):
-    """Compatibilidad V1; solo 1X2 puede generar VALUE BET en V2."""
+    """Compatibilidad V1; solo 1X2 puede generar VALUE BET aquí."""
     import pandas as pd
 
     cuotas = cuotas_personalizadas or obtener_cuotas_partido(fixture_id) or {}
