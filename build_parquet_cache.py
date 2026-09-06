@@ -3,7 +3,11 @@ import pandas as pd
 
 from modules.feature_engineering import clean_history
 from modules.ml_engine import PredictorML
-from modules.parquet_cache import HISTORY_PARQUET, FEATURES_PARQUET, HISTORY_CSV_CANDIDATES
+from modules.mc_context import build_mc_context
+from modules.parquet_cache import (
+    HISTORY_PARQUET, FEATURES_PARQUET, MC_CONTEXT_PARQUET,
+    HISTORY_CSV_CANDIDATES,
+)
 
 
 def main():
@@ -19,9 +23,13 @@ def main():
     prepared = ml.preparar_dataset(df)
     prepared.to_parquet(FEATURES_PARQUET, index=False, compression="zstd")
 
+    mc_context = build_mc_context(df)
+    mc_context.to_parquet(MC_CONTEXT_PARQUET, index=False, compression="zstd")
+
     print(
         f"Parquet cache OK: history={len(df)} rows, "
-        f"features={len(prepared)} rows, feature_cols={len(ml.features)}"
+        f"features={len(prepared)} rows, feature_cols={len(ml.features)}, "
+        f"mc_teams={len(mc_context)}"
     )
 
 
