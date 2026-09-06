@@ -89,9 +89,13 @@ def _market_payload(x, line, suffix=""):
     }
 
 
-def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_local=None, elo_visita=None, linea_goles=2.5, linea_corners=9.5, linea_tarjetas=4.5, num_simulaciones=250000, arbitro=None):
+def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_local=None, elo_visita=None, linea_goles=2.5, linea_corners=9.5, linea_tarjetas=4.5, num_simulaciones=250000, arbitro=None, mc_context=None):
     local, visita = normalize_team(local_raw), normalize_team(visita_raw)
-    e = calcular_expectativa_partido(local, visita, arbitro=arbitro, df=df_historico)
+    if mc_context is not None:
+        from .mc_context import calcular_expectativa_contexto
+        e = calcular_expectativa_contexto(local, visita, mc_context, arbitro=arbitro, df=df_historico)
+    else:
+        e = calcular_expectativa_partido(local, visita, arbitro=arbitro, df=df_historico)
     gh, ga = e['lambda_goles_local'], e['lambda_goles_visita']
     if elo_local is not None and elo_visita is not None:
         d = max(-300, min(300, float(elo_local) - float(elo_visita)))
@@ -117,5 +121,5 @@ def simular_partido_montecarlo(local_raw, visita_raw, df_historico=None, elo_loc
         'Goles_Individuales': {local_raw: {'goles': round(gh, 2)}, visita_raw: {'goles': round(ga, 2)}},
         'Corners_Individuales': {local_raw: {'corners': round(e['exp_corners_local'], 2)}, visita_raw: {'corners': round(e['exp_corners_visita'], 2)}},
         'Tarjetas_Individuales': {local_raw: {'tarjetas': round(e['exp_tarjetas_local'], 2)}, visita_raw: {'tarjetas': round(e['exp_tarjetas_visita'], 2)}},
-        'Contexto_Muestra': {'fallback_stats': bool(e.get('fallback_stats', False))},
+        'Contexto_Muestra': {'fallback_stats': bool(e.get('fallback_stats', False)), 'cache_mc': mc_context is not None},
     }
