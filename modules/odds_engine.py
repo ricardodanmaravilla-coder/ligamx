@@ -5,12 +5,20 @@ API_KEY = os.environ.get("API_SPORTS_KEY")
 BASE_URL = "https://v3.football.api-sports.io"
 HEADERS = {"x-apisports-key": API_KEY}
 
-# Preferencia histórica. Se usa como desempate, nunca como filtro duro.
+# Política de bookmaker:
+# 1) Bet365 es la casa principal siempre que tenga el mercado COMPLETO.
+# 2) Si Bet365 no ofrece ese mercado completo, se usa la siguiente casa disponible.
+# 3) Nunca se mezclan lados de distintas casas dentro del mismo mercado.
+PREFERRED_BOOKMAKER_NAMES = ["bet365", "1xbet", "pinnacle"]
 PREFERRED_BOOKMAKER_IDS = [8, 6, 11, 1]
 
 
 def _norm_market_name(name):
     return " ".join(str(name or "").strip().lower().replace("/", " ").split())
+
+
+def _norm_bookmaker_name(name):
+    return "".join(ch for ch in str(name or "").strip().lower() if ch.isalnum())
 
 
 def _candidate_from_book(book):
@@ -45,9 +53,15 @@ def _candidate_from_book(book):
 
 
 def _preferred_rank(candidate):
+    name = _norm_bookmaker_name(candidate.get("bookmaker_name"))
+    for idx, preferred_name in enumerate(PREFERRED_BOOKMAKER_NAMES):
+        if _norm_bookmaker_name(preferred_name) in name:
+            return idx
+
     bid = candidate.get("bookmaker_id")
-    preferred = PREFERRED_BOOKMAKER_IDS.index(bid) if bid in PREFERRED_BOOKMAKER_IDS else 999
-    return preferred
+    if bid in PREFERRED_BOOKMAKER_IDS:
+        return len(PREFERRED_BOOKMAKER_NAMES) + PREFERRED_BOOKMAKER_IDS.index(bid)
+    return 999
 
 
 def _best_1x2(candidates):
@@ -70,9 +84,10 @@ def _best_total(candidates, kind, label):
             over_key = f"Over {line}"
             under_key = f"Under {line}"
         if c.get(over_key) and c.get(under_key):
-            # Preferimos cuota equilibrada (línea principal) y después bookmaker preferido.
             balance = abs(float(c[over_key]) - float(c[under_key]))
-            valid.append((balance, _preferred_rank(c), c))
+            # IMPORTANTE: bookmaker primero, balance después.
+            # Así Bet365 conserva su línea principal si la ofrece completa.
+            valid.append((_preferred_rank(c), balance, c))
     if not valid:
         return None
     valid.sort(key=lambda x: (x[0], x[1]))
@@ -106,10 +121,9 @@ def obtener_cuotas_partido(fixture_id):
     Regla de coherencia:
     - 1X2 sale completo de una sola casa.
     - Cada O/U sale con Over y Under de una sola casa.
+    - Bet365 tiene prioridad por mercado si el mercado está completo.
+    - Si Bet365 no tiene ese mercado completo, se usa otra casa.
     - Distintos mercados sí pueden venir de casas distintas para no perder cobertura.
-
-    Esto evita el fallo anterior: elegir una casa por 1X2 y descartar goles/corners/
-    tarjetas aunque otra casa tuviera el mercado completo.
     """
     if not fixture_id or not API_KEY:
         return {}
@@ -168,7 +182,6 @@ def obtener_cuotas_partido(fixture_id):
     _merge_total(out, _best_total(candidates, "corners", "Corners"), "corners", "Corners")
     _merge_total(out, _best_total(candidates, "tarjetas", "Tarjetas"), "tarjetas", "Tarjetas")
 
-    # Si no hubo ningún mercado útil, devolvemos {} para mantener compatibilidad.
     useful = any(k in out for k in ("1", "linea_goles_detectada", "linea_corners_detectada", "linea_tarjetas_detectada"))
     return out if useful else {}
 
@@ -193,7 +206,7 @@ def _extract_total(vals, out, kind, label):
     if not complete:
         return
 
-    # La línea principal suele ser la que tiene precios más equilibrados.
+    # Dentro de una misma casa, la línea principal suele ser la más equilibrada.
     line, p = min(complete, key=lambda x: abs(x[1]["Over"] - x[1]["Under"]))
     out[f"linea_{kind}_detectada"] = line
     out[f"Over {line} {label}"] = p["Over"]
