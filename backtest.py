@@ -65,7 +65,14 @@ def walk_forward(csv_path, min_train=800, step=150):
     if out.empty:
         return out, {}
 
-    probs = out[["pA", "pD", "pH"]].to_numpy()
+    # _predict_X redondea 1X2 a una décima para la UI. Por ese redondeo una
+    # fila puede sumar 0.999 o 1.001. Normalizamos antes de log-loss para que
+    # la métrica mida al modelo y no el formato de presentación.
+    probs = out[["pA", "pD", "pH"]].to_numpy(dtype=float)
+    row_sum = probs.sum(axis=1, keepdims=True)
+    if np.any(~np.isfinite(probs)) or np.any(row_sum <= 0):
+        raise ValueError("Probabilidades 1X2 inválidas en backtest")
+    probs = probs / row_sum
     y = out.y.to_numpy()
     metrics = {
         "n": len(out),

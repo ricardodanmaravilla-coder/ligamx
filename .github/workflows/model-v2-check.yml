@@ -1,8 +1,8 @@
-name: Model V2 checks
+name: Model V3 checks
 
 on:
   push:
-    branches: [model-v2, totals-v3]
+    branches: [model-v2, totals-v3, cloud-run-migration]
   pull_request:
     branches: [main]
 
@@ -18,70 +18,133 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Compile Python files
-        run: python -m compileall -q app.py app_v2.py backtest.py modules
-      - name: V2 feature smoke test
+        run: python -m compileall -q app.py app_v2.py app_cloudrun.py app_cloudrun_integrated.py app_cloudrun_v5.py backtest.py modules
+      - name: V3 recency feature smoke test
         run: |
           python - <<'PY'
+          import numpy as np
           import pandas as pd
           from modules.feature_engineering import clean_history, add_rolling_features
           from modules.ml_engine import PredictorML
           df = clean_history(pd.read_csv('data/historico_ligamx_completo.csv'))
           assert len(df) >= 300, 'Historico insuficiente'
           feat = add_rolling_features(df)
-          assert 'Diff_ELO_Pre' in feat.columns
-          assert 'H_GF_5' in feat.columns
-          assert 'A_GA_5' in feat.columns
+          for col in ('Diff_ELO_Pre','H_GF_5','A_GA_5','H_GF_EWM5','A_GA_EWM5','Diff_GF_EWM5'):
+              assert col in feat.columns, f'Falta feature {col}'
+          # Verifica ausencia de leakage: cambiar el resultado de una fila no puede
+          # modificar las features prepartido de esa misma fila.
+          idx = min(250, len(df)-1)
+          base = add_rolling_features(df.iloc[:idx+1].copy()).iloc[-1]
+          alt_df = df.iloc[:idx+1].copy()
+          alt_df.loc[alt_df.index[-1], 'Goles_L'] = 99
+          alt = add_rolling_features(alt_df).iloc[-1]
+          assert np.isclose(base['H_GF_EWM5'], alt['H_GF_EWM5'], equal_nan=True)
           ml = PredictorML()
           assert ml.entrenar(df), 'ML no pudo entrenar'
-          assert len(ml.features) >= 20, 'Muy pocas features prepartido'
-          print('V2 smoke test OK', len(df), len(ml.features))
+          assert len(ml.features) >= 30, 'Muy pocas features prepartido'
+          d = ml.preparar_dataset(df)
+          w = ml._training_weights(d['Fecha'].iloc[:200])
+          assert len(w) == 200 and w[-1] >= w[0] and np.all(w > 0)
+          print('V3 recency smoke test OK', len(df), len(ml.features), float(w[0]), float(w[-1]))
           PY
-      - name: V3 totals math smoke test
+      - name: Odds market-coherence smoke test
         run: |
           python - <<'PY'
+          from modules.odds_engine import _candidate_from_book, _best_1x2, _best_total
+          books = [
+            {'id': 8, 'name': 'Bet365', 'bets': [
+              {'name': 'Match Winner', 'values': [
+                {'value':'Home','odd':'2.10'}, {'value':'Draw','odd':'3.20'}, {'value':'Away','odd':'3.40'}
+              ]},
+              {'name': 'Goals Over/Under', 'values': [
+                {'value':'Over 3.5','odd':'1.91'}, {'value':'Under 3.5','odd':'1.93'}
+              ]}
+            ]},
+            {'id': 99, 'name': 'Other Book', 'bets': [
+              {'name': 'Goals Over/Under', 'values': [
+                {'value':'Over 3.25','odd':'1.99'}, {'value':'Under 3.25','odd':'1.99'}
+              ]}
+            ]}
+          ]
+          c = [_candidate_from_book(x) for x in books]
+          assert _best_1x2(c)['bookmaker_name'] == 'Bet365'
+          assert _best_total(c, 'goles', 'Goles')['bookmaker_name'] == 'Bet365'
+          print('Odds coherence smoke test OK')
+          PY
+      - name: Asian totals math smoke test
+        run: |
+          python - <<'PY'
+          import numpy as np
+          from modules.montecarlo_sim import _asian_side_probs
           from modules.scanner_engine import _evaluate_total_side, _supported_total_line
           assert _supported_total_line(2.5)
           assert _supported_total_line(3.0)
-          assert not _supported_total_line(2.25)
+          assert _supported_total_line(2.25)
+          assert _supported_total_line(2.75)
+          x = np.array([2, 3, 4, 3])
+          o225 = _asian_side_probs(x, 2.25, 'over')
+          assert o225['half_loss'] == 25.0 and o225['win'] == 75.0, o225
+          o275 = _asian_side_probs(x, 2.75, 'over')
+          assert o275['half_win'] == 50.0 and o275['win'] == 25.0, o275
           pick, diag = _evaluate_total_side(
-              'Test A vs Test B', 'Goles O/U', 'Over 2.5',
-              68.0, 64.0, 0.0, 0.0, 1.80, 55.0, 'TestBook'
+              'Test A vs Test B', 'Goles O/U', 'Over 2.75',
+              58.0, 56.0, 0.0, 0.0, 2.00, 50.0, 'TestBook',
+              min_prob=50.0, min_edge=0.0, min_ev=0.0,
+              half_win_stat=20.0, half_win_ml=18.0,
+              half_loss_stat=0.0, half_loss_ml=0.0,
+              loss_stat=22.0, loss_ml=26.0,
           )
-          assert pick is not None, diag
-          assert pick['EV_pct'] > 0
-          # Línea entera: 10% push no debe contarse como pérdida.
-          pick2, diag2 = _evaluate_total_side(
-              'Test A vs Test B', 'Goles O/U', 'Over 3.0',
-              66.0, 62.0, 10.0, 10.0, 1.95, 54.0, 'TestBook'
-          )
-          assert diag2['P_Push'] == 10.0
-          print('V3 totals smoke test OK')
+          assert diag['P_HalfWin'] > 0
+          assert diag['Cuota_Justa_Modelo'] is not None
+          print('Asian totals smoke test OK', diag)
           PY
-      - name: Production Streamlit startup smoke test
+      - name: Short-sample stats fallback smoke test
         run: |
-          streamlit run app.py --server.headless true --server.port 8501 >/tmp/streamlit-v2.log 2>&1 &
-          PID=$!
-          ok=0
-          for i in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:8501/_stcore/health >/dev/null; then
-              ok=1
-              break
-            fi
-            sleep 1
-          done
-          if [ "$ok" -ne 1 ]; then
-            cat /tmp/streamlit-v2.log
-            kill $PID || true
-            exit 1
-          fi
-          curl -fsS http://127.0.0.1:8501/_stcore/health
-          kill $PID || true
+          python - <<'PY'
+          import pandas as pd
+          from modules.feature_engineering import clean_history
+          from modules.stats_engine import calcular_expectativa_partido
+          df = clean_history(pd.read_csv('data/historico_ligamx_completo.csv'))
+          teams = sorted(set(df.Local) | set(df.Visitante))
+          candidate = None
+          for h in teams:
+              for a in teams:
+                  if h == a:
+                      continue
+                  hs = int((df.Local == h).sum())
+                  aas = int((df.Visitante == a).sum())
+                  ht = int(((df.Local == h) | (df.Visitante == h)).sum())
+                  at = int(((df.Local == a) | (df.Visitante == a)).sum())
+                  if ht >= 5 and at >= 5 and (hs < 8 or aas < 8):
+                      candidate = (h, a)
+                      break
+              if candidate:
+                  break
+          if candidate:
+              e = calcular_expectativa_partido(candidate[0], candidate[1], df=df)
+              assert e['fallback_stats'] is True
+              assert e['lambda_goles_local'] > 0 and e['lambda_goles_visita'] > 0
+              print('Fallback smoke test OK', candidate)
+          else:
+              print('No natural short-sample pair in current history; fallback code compiled')
+          PY
+      - name: Production Flask import smoke test
+        run: |
+          python - <<'PY'
+          from app_cloudrun_v5 import app
+          rules = {r.rule for r in app.url_map.iter_rules()}
+          assert '/health' in rules
+          assert '/api/fixtures' in rules
+          assert '/api/analyze' in rules
+          assert '/api/scan' in rules
+          print('Cloud Run Flask import OK')
+          PY
       - name: Walk-forward backtest
         run: python backtest.py data/historico_ligamx_completo.csv | tee backtest_metrics.txt
       - name: Upload backtest outputs
         uses: actions/upload-artifact@v4
         with:
-          name: model-v2-backtest
+          name: model-v3-backtest
           path: |
             backtest_metrics.txt
             backtest_predictions.csv

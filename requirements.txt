@@ -1,6 +1,10 @@
 PyGithub
 streamlit
+Flask
+gunicorn
 pandas
+pyarrow
 requests
 numpy
 scikit-learn
+google-auth

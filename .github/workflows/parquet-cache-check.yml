@@ -1,0 +1,84 @@
+name: Parquet cache checks
+
+on:
+  push:
+    branches: [cloud-run-migration]
+  pull_request:
+    branches: [main]
+
+jobs:
+  parquet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Build Parquet caches
+        run: python build_parquet_cache.py
+      - name: Verify Parquet loading and fast feature path
+        run: |
+          python - <<'PY'
+          import os
+          import numpy as np
+          from modules.parquet_cache import load_history_fast, load_prepared_features, load_mc_context
+          from modules.feature_engineering import build_current_team_feature_cache, current_match_features
+          from modules.elo_engine import SistemaEloLigaMX
+          from modules.ml_engine import PredictorML
+          from modules.stats_engine import calcular_expectativa_partido
+          from modules.mc_context import calcular_expectativa_contexto
+
+          assert os.path.exists('data/historico_ligamx_completo.parquet')
+          assert os.path.exists('data/ligamx_features_v3.parquet')
+          assert os.path.exists('data/ligamx_mc_context_v1.parquet')
+          df = load_history_fast()
+          prepared = load_prepared_features()
+          mc_context = load_mc_context()
+          assert len(df) >= 300 and prepared is not None and len(prepared) >= 300
+          assert mc_context and len(mc_context) >= 10
+
+          elo = SistemaEloLigaMX().calcular_historico(df)
+          em = dict(zip(elo.Equipo, elo.ELO_Rating))
+          teams = [t for t in em if ((df.Local == t) | (df.Visitante == t)).sum() >= 10]
+          home, away = teams[0], teams[1]
+          cache = build_current_team_feature_cache(df)
+          fast = current_match_features(df, home, away, team_cache=cache, elo_local=em[home], elo_visita=em[away])
+          assert np.isfinite(float(fast['Diff_ELO_Pre']))
+          assert np.isfinite(float(fast['H_GF_EWM5']))
+          assert np.isfinite(float(fast['A_GF_EWM5']))
+
+          ml = PredictorML()
+          assert ml.entrenar_preparado(prepared)
+          ml.set_current_context(df)
+          p = ml.predecir_mercados_completos(df, home, away, elo_local=em[home], elo_visita=em[away])
+          assert 'Resultado_1X2' in p and 'Corners_Totales' in p
+
+          # El cache MC debe reproducir exactamente la expectativa estadística previa.
+          legacy = calcular_expectativa_partido(home, away, df=df)
+          cached = calcular_expectativa_contexto(home, away, mc_context, df=df)
+          keys = [
+              'lambda_goles_local','lambda_goles_visita',
+              'exp_corners_local','exp_corners_visita',
+              'exp_tarjetas_local','exp_tarjetas_visita',
+          ]
+          for k in keys:
+              assert abs(float(legacy[k]) - float(cached[k])) < 1e-10, (k, legacy[k], cached[k])
+          assert legacy['fallback_stats'] == cached['fallback_stats']
+          print('Parquet/fast/MC cache OK', len(df), len(prepared), len(mc_context), home, away)
+          PY
+      - name: Production import
+        run: |
+          python - <<'PY'
+          from app_cloudrun_v5 import app, core
+          s = core.model_state()
+          assert s['cache']['history_parquet'] is True
+          assert s['cache']['features_parquet'] is True
+          assert s['cache']['mc_context_parquet'] is True
+          assert s.get('mc_context')
+          rules = {r.rule for r in app.url_map.iter_rules()}
+          assert '/api/scan' in rules and '/api/settle' in rules
+          print('Production Parquet state OK')
+          PY

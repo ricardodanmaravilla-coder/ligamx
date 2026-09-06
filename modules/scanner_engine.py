@@ -32,7 +32,7 @@ def _market_probabilities_no_vig_1x2(cuotas):
 def _supported_total_line(line):
     try:
         q = round(float(line) * 4) / 4
-        return abs(q - float(line)) < 1e-9 and (abs((float(line) * 2) - round(float(line) * 2)) < 1e-9)
+        return abs(q - float(line)) < 1e-9
     except Exception:
         return False
 
@@ -58,34 +58,64 @@ def _total_spec(kind, line):
     )
 
 
-def _evaluate_total_side(partido, market_name, side, p_stat, p_ml, push_stat, push_ml,
-                         odd, market_p, bookmaker, min_prob=60.0, min_edge=5.0,
-                         min_ev=4.0, max_disagreement=12.0):
+def _evaluate_total_side(
+    partido, market_name, side, p_stat, p_ml, push_stat, push_ml,
+    odd, market_p, bookmaker, min_prob=60.0, min_edge=5.0,
+    min_ev=4.0, max_disagreement=12.0,
+    half_win_stat=0.0, half_win_ml=0.0,
+    half_loss_stat=0.0, half_loss_ml=0.0,
+    loss_stat=None, loss_ml=None,
+):
     p_stat = float(p_stat)
     p_ml = float(p_ml)
     push_stat = float(push_stat or 0.0)
     push_ml = float(push_ml or 0.0)
+    half_win_stat = float(half_win_stat or 0.0)
+    half_win_ml = float(half_win_ml or 0.0)
+    half_loss_stat = float(half_loss_stat or 0.0)
+    half_loss_ml = float(half_loss_ml or 0.0)
+    if loss_stat is None:
+        loss_stat = max(0.0, 100.0 - p_stat - push_stat - half_win_stat - half_loss_stat)
+    if loss_ml is None:
+        loss_ml = max(0.0, 100.0 - p_ml - push_ml - half_win_ml - half_loss_ml)
+    loss_stat = float(loss_stat)
+    loss_ml = float(loss_ml)
+
     p_push = combinar_probabilidades(push_stat, push_ml)
-    disagreement = abs(p_stat - p_ml)
-    allowed = _disagreement_limit(p_stat, p_ml, max_disagreement)
+    p_half_win = combinar_probabilidades(half_win_stat, half_win_ml)
+    p_half_loss = combinar_probabilidades(half_loss_stat, half_loss_ml)
+    p_loss = combinar_probabilidades(loss_stat, loss_ml)
     p_ensemble = combinar_probabilidades(p_stat, p_ml)
 
-    # Para líneas enteras comparamos el mercado con probabilidad condicional
-    # sobre decisiones (win/loss), ya que el push devuelve el stake.
-    decisive = max(1e-9, 100.0 - p_push)
-    p_cond = p_ensemble / decisive * 100.0
-    edge = p_cond - float(market_p)
-    loss_prob = max(0.0, 100.0 - p_ensemble - p_push)
-    ev = (p_ensemble / 100.0) * (float(odd) - 1.0) - (loss_prob / 100.0)
-    ev *= 100.0
+    score_stat = p_stat + 0.5 * half_win_stat
+    score_ml = p_ml + 0.5 * half_win_ml
+    disagreement = abs(score_stat - score_ml)
+    allowed = _disagreement_limit(score_stat, score_ml, max_disagreement)
+
+    win_units = p_ensemble + 0.5 * p_half_win
+    loss_units = p_loss + 0.5 * p_half_loss
+    if win_units <= 1e-9:
+        fair_odds = 999.0
+        p_fair = 0.0
+    else:
+        fair_odds = 1.0 + loss_units / win_units
+        p_fair = 100.0 / fair_odds
+
+    edge = p_fair - float(market_p)
+    ev = (
+        (p_ensemble / 100.0) * (float(odd) - 1.0)
+        + (p_half_win / 100.0) * 0.5 * (float(odd) - 1.0)
+        - (p_half_loss / 100.0) * 0.5
+        - (p_loss / 100.0)
+    ) * 100.0
 
     reasons = []
-    if min(p_stat, p_ml) < 52.0:
+    if min(score_stat, score_ml) < 52.0:
         reasons.append("uno de los modelos <52%")
     if disagreement > allowed:
         reasons.append(f"desacuerdo {disagreement:.1f}>{allowed:.1f} pp")
-    if p_cond < min_prob:
-        reasons.append(f"prob. condicional {p_cond:.1f}<{min_prob:.1f}%")
+    if p_fair < min_prob:
+        reasons.append(f"prob. efectiva {p_fair:.1f}<{min_prob:.1f}%")
     if edge < min_edge:
         reasons.append(f"edge {edge:.1f}<{min_edge:.1f} pp")
     if ev < min_ev:
@@ -96,9 +126,13 @@ def _evaluate_total_side(partido, market_name, side, p_stat, p_ml, push_stat, pu
         "Bookmaker": bookmaker,
         "P_Estadistico": round(p_stat, 1),
         "P_ML": round(p_ml, 1),
+        "P_HalfWin": round(p_half_win, 1),
         "P_Push": round(p_push, 1),
+        "P_HalfLoss": round(p_half_loss, 1),
+        "P_Loss": round(p_loss, 1),
         "P_Ensemble": round(p_ensemble, 1),
-        "P_Condicional": round(p_cond, 1),
+        "P_Condicional": round(p_fair, 1),
+        "Cuota_Justa_Modelo": round(fair_odds, 3) if fair_odds < 999 else None,
         "Desacuerdo_pp": round(disagreement, 1),
         "Limite_Desacuerdo_pp": round(allowed, 1),
         "Cuota": round(float(odd), 2),
@@ -111,23 +145,9 @@ def _evaluate_total_side(partido, market_name, side, p_stat, p_ml, push_stat, pu
         diag["Motivo"] = "; ".join(reasons)
         return None, diag
 
-    pick = {
-        "Partido": partido,
-        "Mercado": f"{market_name} {side}",
-        "P_Estadistico": round(p_stat, 1),
-        "P_ML": round(p_ml, 1),
-        "P_Ensemble": round(p_ensemble, 1),
-        "P_Condicional": round(p_cond, 1),
-        "P_Push": round(p_push, 1),
-        "Cuota": round(float(odd), 2),
-        "P_Mercado_NoVig": round(float(market_p), 1),
-        "Edge_pp": round(edge, 1),
-        "EV_pct": round(ev, 1),
-        "Bookmaker": bookmaker,
-        "Veredicto": "VALUE BET O/U — V3",
-    }
-    diag["Estado"] = "VALUE BET O/U — V3"
-    diag["Motivo"] = "Supera filtros V3"
+    diag["Estado"] = "VALUE BET O/U — ASIAN V4"
+    diag["Motivo"] = "Supera filtros con liquidación asiática correcta"
+    pick = {"Partido": partido, **diag, "Veredicto": "VALUE BET O/U — ASIAN V4"}
     return pick, diag
 
 
@@ -164,26 +184,33 @@ def evaluar_fixture(local, visita, fixture_id, df_historico, cuotas=None, ml=Non
     tech_c = float(lc) if lc is not None else 9.5
     tech_t = float(lt) if lt is not None else 4.5
 
-    mc = simular_partido_montecarlo(
-        local, visita, df_historico=df,
-        elo_local=elo_map[local], elo_visita=elo_map[visita],
-        linea_goles=tech_g, linea_corners=tech_c, linea_tarjetas=tech_t,
-    )
-    mlp = ml.predecir_mercados_completos(
-        df, local, visita,
-        elo_local=elo_map[local], elo_visita=elo_map[visita],
-        linea_goles=tech_g, linea_corners=tech_c, linea_tarjetas=tech_t,
-    )
+    try:
+        mc = simular_partido_montecarlo(
+            local, visita, df_historico=df,
+            elo_local=elo_map[local], elo_visita=elo_map[visita],
+            linea_goles=tech_g, linea_corners=tech_c, linea_tarjetas=tech_t,
+        )
+        mlp = ml.predecir_mercados_completos(
+            df, local, visita,
+            elo_local=elo_map[local], elo_visita=elo_map[visita],
+            linea_goles=tech_g, linea_corners=tech_c, linea_tarjetas=tech_t,
+        )
+    except ValueError as exc:
+        diagnostics.append({"Mercado": "Todos", "Estado": "NO BET", "Motivo": str(exc)})
+        return ([], diagnostics) if return_diagnostics else []
 
-    bookmaker = cuotas.get("bookmaker_name", cuotas.get("bookmaker_id", "N/A"))
+    if mc.get("Contexto_Muestra", {}).get("fallback_stats"):
+        diagnostics.append({
+            "Mercado": "Contexto", "Estado": "INFO",
+            "Motivo": "Muestra local/visitante corta: estadísticas encogidas hacia forma global y media de liga",
+        })
+
+    bookmaker_1x2 = cuotas.get("bookmaker_name", cuotas.get("bookmaker_id", "N/A"))
     out = []
 
-    # 1X2 validado OOS
     market_probs = _market_probabilities_no_vig_1x2(cuotas)
     if market_probs:
-        markets = [
-            ("Gana Local", "1"), ("Empate", "X"), ("Gana Visita", "2")
-        ]
+        markets = [("Gana Local", "1"), ("Empate", "X"), ("Gana Visita", "2")]
         for name, key in markets:
             p_stat = float(mc["Resultado_1X2"][name])
             p_ml = float(mlp["Resultado_1X2"][name])
@@ -202,7 +229,7 @@ def evaluar_fixture(local, visita, fixture_id, df_historico, cuotas=None, ml=Non
             if edge < min_edge: reasons.append(f"edge {edge:.1f}<{min_edge:.1f} pp")
             if ev < min_ev: reasons.append(f"EV {ev:.1f}<{min_ev:.1f}%")
             diag = {
-                "Mercado": name, "Bookmaker": bookmaker,
+                "Mercado": name, "Bookmaker": bookmaker_1x2,
                 "P_Estadistico": round(p_stat,1), "P_ML": round(p_ml,1),
                 "P_Ensemble": round(p_ensemble,1), "Desacuerdo_pp": round(disagreement,1),
                 "Limite_Desacuerdo_pp": round(allowed,1), "Cuota": round(float(odd),2) if odd else None,
@@ -217,24 +244,27 @@ def evaluar_fixture(local, visita, fixture_id, df_historico, cuotas=None, ml=Non
     else:
         diagnostics.append({"Mercado":"1X2","Estado":"NO BET","Motivo":"No hay 1/X/2 completo para no-vig"})
 
-    # O/U V3: exige línea real y ambas cuotas de la misma casa.
     for kind, line in (("goles", lg), ("corners", lc), ("tarjetas", lt)):
+        market_bookmaker = cuotas.get(
+            f"bookmaker_{kind}_name",
+            cuotas.get(f"bookmaker_{kind}_id", bookmaker_1x2),
+        )
         if line is None:
-            diagnostics.append({"Mercado":f"{kind.title()} O/U","Estado":"NO BET","Motivo":"Sin línea real en API-Football"})
+            diagnostics.append({"Mercado":f"{kind.title()} O/U","Bookmaker":market_bookmaker,"Estado":"NO BET","Motivo":"Sin línea real en API-Football"})
             continue
         line = float(line)
         if not _supported_total_line(line):
-            diagnostics.append({"Mercado":f"{kind.title()} O/U {line}","Estado":"NO BET","Motivo":"Línea asiática de cuarto aún no soportada"})
+            diagnostics.append({"Mercado":f"{kind.title()} O/U {line}","Bookmaker":market_bookmaker,"Estado":"NO BET","Motivo":"Línea fuera de incrementos asiáticos de 0.25"})
             continue
         market_name, section, over_model_key, under_model_key, push_key, over_odd_key, under_odd_key = _total_spec(kind, line)
         over_odd, under_odd = cuotas.get(over_odd_key), cuotas.get(under_odd_key)
         if not over_odd or not under_odd:
-            diagnostics.append({"Mercado":f"{market_name} {line}","Estado":"NO BET","Motivo":"Faltan cuotas Over/Under completas"})
+            diagnostics.append({"Mercado":f"{market_name} {line}","Bookmaker":market_bookmaker,"Estado":"NO BET","Motivo":"Faltan cuotas Over/Under completas"})
             continue
         market_over, market_under = remove_vig_two_way(over_odd, under_odd)
         mcsec, mlsec = mc.get(section, {}), mlp.get(section, {})
         if over_model_key not in mcsec or over_model_key not in mlsec:
-            diagnostics.append({"Mercado":f"{market_name} {line}","Estado":"NO BET","Motivo":"Modelo no produjo la línea solicitada"})
+            diagnostics.append({"Mercado":f"{market_name} {line}","Bookmaker":market_bookmaker,"Estado":"NO BET","Motivo":"Modelo no produjo la línea solicitada"})
             continue
         push_mc, push_ml = mcsec.get(push_key,0.0), mlsec.get(push_key,0.0)
         for side, mk, odd, mp in (
@@ -244,7 +274,13 @@ def evaluar_fixture(local, visita, fixture_id, df_historico, cuotas=None, ml=Non
             pick, diag = _evaluate_total_side(
                 partido, market_name, side,
                 mcsec[mk], mlsec[mk], push_mc, push_ml,
-                odd, mp, bookmaker,
+                odd, mp, market_bookmaker,
+                half_win_stat=mcsec.get(f"HalfWin {mk}", 0.0),
+                half_win_ml=mlsec.get(f"HalfWin {mk}", 0.0),
+                half_loss_stat=mcsec.get(f"HalfLoss {mk}", 0.0),
+                half_loss_ml=mlsec.get(f"HalfLoss {mk}", 0.0),
+                loss_stat=mcsec.get(f"Loss {mk}"),
+                loss_ml=mlsec.get(f"Loss {mk}"),
             )
             diagnostics.append(diag)
             if pick:
