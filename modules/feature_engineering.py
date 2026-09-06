@@ -20,6 +20,7 @@ NUMERIC_COLS = [
     'Goles_L','Goles_V','Corners_L','Corners_V','Amarillas_L','Amarillas_V','Rojas_L','Rojas_V',
     'xG_L','xG_V','Atajadas_L','Atajadas_V','Tiros_Al_Arco_L','Tiros_Al_Arco_V'
 ]
+METRICS = ['GF','GA','CF','CA','CardsF','CardsA','SOTF','SOTA','Pts','SavePct']
 
 
 def normalize_team(name):
@@ -88,7 +89,6 @@ def _team_long(df):
 
 
 def _shifted_ewm(series, span, min_periods):
-    """EWMA prepartido: el partido actual nunca entra en su propia feature."""
     return series.shift(1).ewm(span=span, adjust=False, min_periods=min_periods).mean()
 
 
@@ -96,24 +96,16 @@ def add_rolling_features(df: pd.DataFrame, windows=(5, 10), ewm_spans=(5, 10)) -
     df = add_pre_match_elo(df)
     long = _team_long(df)
 
-    # xG no se incluye como feature V2 hasta disponer de una marca de procedencia
-    # fiable por fila. En el historico actual gran parte coincide exactamente con
-    # goles, por lo que usar ambos duplicaria la misma señal.
-    metrics = ['GF','GA','CF','CA','CardsF','CardsA','SOTF','SOTA','Pts','SavePct']
-
-    # Ventanas simples: estabilidad estructural a corto/medio plazo.
     for w in windows:
-        for m in metrics:
+        for m in METRICS:
             long[f'{m}_{w}'] = long.groupby('Equipo')[m].transform(
                 lambda s: s.shift(1).rolling(w, min_periods=max(2, w // 2)).mean()
             )
         long[f'MatchesBefore_{w}'] = long.groupby('Equipo').cumcount()
 
-    # Forma reciente ponderada: los últimos partidos pesan más que los anteriores,
-    # sin eliminar el contexto que aportan las ventanas 5/10.
     for span in ewm_spans:
         minp = max(2, span // 2)
-        for m in metrics:
+        for m in METRICS:
             long[f'{m}_EWM{span}'] = long.groupby('Equipo')[m].transform(
                 lambda s, sp=span, mp=minp: _shifted_ewm(s, sp, mp)
             )
@@ -128,15 +120,12 @@ def add_rolling_features(df: pd.DataFrame, windows=(5, 10), ewm_spans=(5, 10)) -
     a = long[long.Es_Local == 0][keep].drop(columns=['Es_Local','Equipo']).set_index('idx').add_prefix('A_')
     out = df.join(h).join(a)
 
-    # Diferencias directas de forma ayudan al bosque a comparar equipos sin tener
-    # que aprender cada resta de manera implícita.
     for span in ewm_spans:
-        for m in metrics:
+        for m in METRICS:
             hc, ac = f'H_{m}_EWM{span}', f'A_{m}_EWM{span}'
             if hc in out.columns and ac in out.columns:
                 out[f'Diff_{m}_EWM{span}'] = out[hc] - out[ac]
 
-    # Solo auditoria: no entra en self.features del ML.
     if 'xG_L' in out.columns and 'xG_V' in out.columns:
         out['xG_real_flag'] = (
             ((out['xG_L'] - out['Goles_L']).abs() > 1e-9) |
@@ -147,9 +136,62 @@ def add_rolling_features(df: pd.DataFrame, windows=(5, 10), ewm_spans=(5, 10)) -
     return out
 
 
-def current_match_features(df, home, away, min_matches=5):
+def build_current_team_feature_cache(df, windows=(5, 10), ewm_spans=(5, 10)):
+    """Precalcula una sola vez la forma vigente de cada equipo para el scanner."""
+    long = _team_long(clean_history(df))
+    cache = {}
+    for team, g in long.groupby('Equipo', sort=False):
+        g = g.sort_values(['Fecha', 'idx'])
+        snap = {}
+        for w in windows:
+            minp = max(2, w // 2)
+            for m in METRICS:
+                s = g[m].dropna()
+                snap[f'{m}_{w}'] = float(s.tail(w).mean()) if len(s) >= minp else np.nan
+            snap[f'MatchesBefore_{w}'] = int(len(g))
+        for span in ewm_spans:
+            minp = max(2, span // 2)
+            for m in METRICS:
+                s = g[m]
+                if s.notna().sum() >= minp:
+                    val = s.ewm(span=span, adjust=False, min_periods=minp).mean().iloc[-1]
+                    snap[f'{m}_EWM{span}'] = float(val) if pd.notna(val) else np.nan
+                else:
+                    snap[f'{m}_EWM{span}'] = np.nan
+        cache[team] = snap
+    return cache
+
+
+def current_match_features(df, home, away, min_matches=5, team_cache=None,
+                           elo_local=None, elo_visita=None, windows=(5, 10), ewm_spans=(5, 10)):
     home, away = normalize_team(home), normalize_team(away)
-    hist = add_rolling_features(df)
+
+    if team_cache is not None and elo_local is not None and elo_visita is not None:
+        if home not in team_cache or away not in team_cache:
+            raise ValueError(f'Equipo desconocido: {home if home not in team_cache else away}')
+        hs, as_ = team_cache[home], team_cache[away]
+        if hs.get('MatchesBefore_5', 0) < min_matches or as_.get('MatchesBefore_5', 0) < min_matches:
+            raise ValueError('Muestra historica insuficiente para uno de los equipos')
+        feat = {
+            'ELO_Local_Pre': float(elo_local),
+            'ELO_Visita_Pre': float(elo_visita),
+            'Diff_ELO_Pre': float(elo_local) - float(elo_visita),
+        }
+        for k, v in hs.items():
+            feat[f'H_{k}'] = v
+        for k, v in as_.items():
+            feat[f'A_{k}'] = v
+        for span in ewm_spans:
+            for m in METRICS:
+                hv, av = hs.get(f'{m}_EWM{span}'), as_.get(f'{m}_EWM{span}')
+                feat[f'Diff_{m}_EWM{span}'] = (
+                    float(hv) - float(av)
+                    if hv is not None and av is not None and pd.notna(hv) and pd.notna(av)
+                    else np.nan
+                )
+        return pd.Series(feat)
+
+    hist = add_rolling_features(df, windows=windows, ewm_spans=ewm_spans)
     teams = set(hist['Local']) | set(hist['Visitante'])
     if home not in teams or away not in teams:
         raise ValueError(f'Equipo desconocido: {home if home not in teams else away}')
@@ -164,7 +206,7 @@ def current_match_features(df, home, away, min_matches=5):
         'Tiros_Al_Arco_L': 0, 'Tiros_Al_Arco_V': 0, 'Arbitro': ''
     })
     tmp = pd.concat([clean_history(df), pd.DataFrame([row])], ignore_index=True)
-    feat = add_rolling_features(tmp).iloc[-1]
+    feat = add_rolling_features(tmp, windows=windows, ewm_spans=ewm_spans).iloc[-1]
     if feat.get('H_MatchesBefore_5', 0) < min_matches or feat.get('A_MatchesBefore_5', 0) < min_matches:
         raise ValueError('Muestra historica insuficiente para uno de los equipos')
     return feat
