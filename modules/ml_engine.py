@@ -53,7 +53,6 @@ class PredictorML:
         ]
         return d.dropna(subset=required).reset_index(drop=True)
 
-    # Alias temporal para compatibilidad interna.
     def _prep(self, df):
         return self.preparar_dataset(df)
 
@@ -90,15 +89,83 @@ class PredictorML:
         return self.entrenar_preparado(self.preparar_dataset(df_historico))
 
     @staticmethod
-    def _market_probs(pred, line, resid):
+    def _asian_side_probs(draws, line, side):
+        draws = np.asarray(draws)
+        line = float(line)
+        side = str(side).lower()
+        frac = round(line - np.floor(line), 2)
+
+        if frac in (0.25, 0.75):
+            if frac == 0.25:
+                n = int(np.floor(line))
+                if side == "over":
+                    full_win = draws >= n + 1
+                    half_win = np.zeros_like(draws, dtype=bool)
+                    push = np.zeros_like(draws, dtype=bool)
+                    half_loss = draws == n
+                    full_loss = draws <= n - 1
+                else:
+                    full_win = draws <= n - 1
+                    half_win = draws == n
+                    push = np.zeros_like(draws, dtype=bool)
+                    half_loss = np.zeros_like(draws, dtype=bool)
+                    full_loss = draws >= n + 1
+            else:
+                n = int(np.floor(line))
+                split_int = n + 1
+                if side == "over":
+                    full_win = draws >= split_int + 1
+                    half_win = draws == split_int
+                    push = np.zeros_like(draws, dtype=bool)
+                    half_loss = np.zeros_like(draws, dtype=bool)
+                    full_loss = draws <= n
+                else:
+                    full_win = draws <= n
+                    half_win = np.zeros_like(draws, dtype=bool)
+                    push = np.zeros_like(draws, dtype=bool)
+                    half_loss = draws == split_int
+                    full_loss = draws >= split_int + 1
+        else:
+            if side == "over":
+                full_win = draws > line
+                full_loss = draws < line
+            else:
+                full_win = draws < line
+                full_loss = draws > line
+            push = draws == line if line.is_integer() else np.zeros_like(draws, dtype=bool)
+            half_win = np.zeros_like(draws, dtype=bool)
+            half_loss = np.zeros_like(draws, dtype=bool)
+
+        pct = lambda mask: round(float(np.mean(mask) * 100.0), 1)
+        return {
+            "win": pct(full_win),
+            "half_win": pct(half_win),
+            "push": pct(push),
+            "half_loss": pct(half_loss),
+            "loss": pct(full_loss),
+        }
+
+    @classmethod
+    def _market_payload(cls, pred, line, resid, suffix=""):
         if resid.size < 50:
             raise ValueError("Muestra de calibracion insuficiente: NO BET")
-        line = float(line)
         draws = np.clip(np.rint(float(pred) + resid), 0, None)
-        over = float(np.mean(draws > line) * 100.0)
-        push = float(np.mean(draws == line) * 100.0) if line.is_integer() else 0.0
-        under = max(0.0, 100.0 - over - push)
-        return round(over, 1), round(under, 1), round(push, 1)
+        over = cls._asian_side_probs(draws, line, "over")
+        under = cls._asian_side_probs(draws, line, "under")
+        o = f"Over {line}{suffix}"
+        u = f"Under {line}{suffix}"
+        p = f"Push {line}{suffix}"
+        return {
+            o: over["win"],
+            u: under["win"],
+            p: max(over["push"], under["push"]),
+            f"HalfWin {o}": over["half_win"],
+            f"HalfLoss {o}": over["half_loss"],
+            f"Loss {o}": over["loss"],
+            f"HalfWin {u}": under["half_win"],
+            f"HalfLoss {u}": under["half_loss"],
+            f"Loss {u}": under["loss"],
+        }
 
     def _predict_X(self, X, linea_goles, linea_corners, linea_tarjetas):
         probs = dict(zip(self.model_1x2.classes_, self.model_1x2.predict_proba(X)[0]))
@@ -106,30 +173,15 @@ class PredictorML:
         pc = float(self.reg_corners.predict(X)[0])
         pt = float(self.reg_cards.predict(X)[0])
 
-        og, ug, pg_push = self._market_probs(pg, linea_goles, self.resid_g)
-        oc, uc, pc_push = self._market_probs(pc, linea_corners, self.resid_c)
-        ot, ut, pt_push = self._market_probs(pt, linea_tarjetas, self.resid_t)
-
         return {
             "Resultado_1X2": {
                 "Gana Local": round(probs.get(2, 0) * 100, 1),
                 "Empate": round(probs.get(1, 0) * 100, 1),
                 "Gana Visita": round(probs.get(0, 0) * 100, 1),
             },
-            "Goles_Over_Under": {
-                f"Over {linea_goles}": og, f"Under {linea_goles}": ug,
-                f"Push {linea_goles}": pg_push,
-            },
-            "Corners_Totales": {
-                f"Over {linea_corners} Corners": oc,
-                f"Under {linea_corners} Corners": uc,
-                f"Push {linea_corners} Corners": pc_push,
-            },
-            "Tarjetas_Totales": {
-                f"Over {linea_tarjetas} Tarjetas": ot,
-                f"Under {linea_tarjetas} Tarjetas": ut,
-                f"Push {linea_tarjetas} Tarjetas": pt_push,
-            },
+            "Goles_Over_Under": self._market_payload(pg, linea_goles, self.resid_g),
+            "Corners_Totales": self._market_payload(pc, linea_corners, self.resid_c, " Corners"),
+            "Tarjetas_Totales": self._market_payload(pt, linea_tarjetas, self.resid_t, " Tarjetas"),
             "Prediccion_Totales": {
                 "goles": round(pg, 2), "corners": round(pc, 2), "tarjetas": round(pt, 2)
             },
