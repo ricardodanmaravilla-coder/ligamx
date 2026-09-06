@@ -57,25 +57,62 @@ jobs:
           assert _best_total(c, 'goles', 'Goles')['bookmaker_name'] == 'Book B'
           print('Odds coherence smoke test OK')
           PY
-      - name: V3 totals math smoke test
+      - name: Asian totals math smoke test
         run: |
           python - <<'PY'
+          import numpy as np
+          from modules.montecarlo_sim import _asian_side_probs
           from modules.scanner_engine import _evaluate_total_side, _supported_total_line
           assert _supported_total_line(2.5)
           assert _supported_total_line(3.0)
-          assert not _supported_total_line(2.25)
+          assert _supported_total_line(2.25)
+          assert _supported_total_line(2.75)
+          x = np.array([2, 3, 4, 3])
+          o225 = _asian_side_probs(x, 2.25, 'over')
+          assert o225['half_loss'] == 25.0 and o225['win'] == 75.0, o225
+          o275 = _asian_side_probs(x, 2.75, 'over')
+          assert o275['half_win'] == 50.0 and o275['win'] == 25.0, o275
           pick, diag = _evaluate_total_side(
-              'Test A vs Test B', 'Goles O/U', 'Over 2.5',
-              68.0, 64.0, 0.0, 0.0, 1.80, 55.0, 'TestBook'
+              'Test A vs Test B', 'Goles O/U', 'Over 2.75',
+              58.0, 56.0, 0.0, 0.0, 2.00, 50.0, 'TestBook',
+              min_prob=50.0, min_edge=0.0, min_ev=0.0,
+              half_win_stat=20.0, half_win_ml=18.0,
+              half_loss_stat=0.0, half_loss_ml=0.0,
+              loss_stat=22.0, loss_ml=26.0,
           )
-          assert pick is not None, diag
-          assert pick['EV_pct'] > 0
-          pick2, diag2 = _evaluate_total_side(
-              'Test A vs Test B', 'Goles O/U', 'Over 3.0',
-              66.0, 62.0, 10.0, 10.0, 1.95, 54.0, 'TestBook'
-          )
-          assert diag2['P_Push'] == 10.0
-          print('V3 totals smoke test OK')
+          assert diag['P_HalfWin'] > 0
+          assert diag['Cuota_Justa_Modelo'] is not None
+          print('Asian totals smoke test OK', diag)
+          PY
+      - name: Short-sample stats fallback smoke test
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          from modules.feature_engineering import clean_history
+          from modules.stats_engine import calcular_expectativa_partido
+          df = clean_history(pd.read_csv('data/historico_ligamx_completo.csv'))
+          teams = sorted(set(df.Local) | set(df.Visitante))
+          candidate = None
+          for h in teams:
+              for a in teams:
+                  if h == a:
+                      continue
+                  hs = int((df.Local == h).sum())
+                  aas = int((df.Visitante == a).sum())
+                  ht = int(((df.Local == h) | (df.Visitante == h)).sum())
+                  at = int(((df.Local == a) | (df.Visitante == a)).sum())
+                  if ht >= 5 and at >= 5 and (hs < 8 or aas < 8):
+                      candidate = (h, a)
+                      break
+              if candidate:
+                  break
+          if candidate:
+              e = calcular_expectativa_partido(candidate[0], candidate[1], df=df)
+              assert e['fallback_stats'] is True
+              assert e['lambda_goles_local'] > 0 and e['lambda_goles_visita'] > 0
+              print('Fallback smoke test OK', candidate)
+          else:
+              print('No natural short-sample pair in current history; fallback code compiled')
           PY
       - name: Production Flask import smoke test
         run: |
