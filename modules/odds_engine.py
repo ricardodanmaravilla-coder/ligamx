@@ -21,6 +21,16 @@ def _norm_bookmaker_name(name):
     return "".join(ch for ch in str(name or "").strip().lower() if ch.isalnum())
 
 
+def _line_text(value):
+    """Formato canónico para líneas: 10, 10.0 y 10.00 -> '10.0'; 9.5 -> '9.5'."""
+    x = float(value)
+    # Mantener al menos una decimal porque scanner/modelos trabajan con float.
+    if abs(x - round(x)) < 1e-9:
+        return f"{x:.1f}"
+    s = f"{x:.2f}".rstrip("0")
+    return s
+
+
 def _candidate_from_book(book):
     """Extrae mercados de una casa sin mezclar lados entre bookmakers."""
     candidate = {
@@ -78,6 +88,7 @@ def _best_total(candidates, kind, label):
         line = c.get(line_key)
         if line is None:
             continue
+        line = _line_text(line)
         over_key = f"Over {line} {label}"
         under_key = f"Under {line} {label}"
         if kind == "goles":
@@ -85,8 +96,6 @@ def _best_total(candidates, kind, label):
             under_key = f"Under {line}"
         if c.get(over_key) and c.get(under_key):
             balance = abs(float(c[over_key]) - float(c[under_key]))
-            # IMPORTANTE: bookmaker primero, balance después.
-            # Así Bet365 conserva su línea principal si la ofrece completa.
             valid.append((_preferred_rank(c), balance, c))
     if not valid:
         return None
@@ -98,33 +107,24 @@ def _merge_total(out, source, kind, label):
     if not source:
         return
     line_key = f"linea_{kind}_detectada"
-    line = source.get(line_key)
-    if line is None:
+    raw_line = source.get(line_key)
+    if raw_line is None:
         return
+    line = _line_text(raw_line)
     out[line_key] = line
     if kind == "goles":
         for key in (f"Over {line}", f"Under {line}"):
-            if source.get(key):
+            if source.get(key) is not None:
                 out[key] = source[key]
     else:
         for key in (f"Over {line} {label}", f"Under {line} {label}"):
-            if source.get(key):
+            if source.get(key) is not None:
                 out[key] = source[key]
     out[f"bookmaker_{kind}_id"] = source.get("bookmaker_id")
     out[f"bookmaker_{kind}_name"] = source.get("bookmaker_name", "Desconocido")
 
 
 def obtener_cuotas_partido(fixture_id):
-    """
-    Snapshot de cuotas por mercado.
-
-    Regla de coherencia:
-    - 1X2 sale completo de una sola casa.
-    - Cada O/U sale con Over y Under de una sola casa.
-    - Bet365 tiene prioridad por mercado si el mercado está completo.
-    - Si Bet365 no tiene ese mercado completo, se usa otra casa.
-    - Distintos mercados sí pueden venir de casas distintas para no perder cobertura.
-    """
     if not fixture_id or not API_KEY:
         return {}
 
@@ -166,9 +166,7 @@ def obtener_cuotas_partido(fixture_id):
         return {}
 
     candidates = [_candidate_from_book(book) for book in books]
-    out = {
-        "bookmakers_seen": len(candidates),
-    }
+    out = {"bookmakers_seen": len(candidates)}
 
     best_1x2 = _best_1x2(candidates)
     if best_1x2:
@@ -193,11 +191,11 @@ def _extract_total(vals, out, kind, label):
         low = s.lower()
         if not (low.startswith("over ") or low.startswith("under ")):
             continue
-        side_raw, line = s.split(" ", 1)
+        side_raw, raw_line = s.split(" ", 1)
         side = "Over" if side_raw.lower() == "over" else "Under"
         try:
             odd = float(v.get("odd"))
-            float(line)
+            line = _line_text(raw_line)
         except (TypeError, ValueError):
             continue
         pairs.setdefault(line, {})[side] = odd
@@ -206,7 +204,6 @@ def _extract_total(vals, out, kind, label):
     if not complete:
         return
 
-    # Dentro de una misma casa, la línea principal suele ser la más equilibrada.
     line, p = min(complete, key=lambda x: abs(x[1]["Over"] - x[1]["Under"]))
     out[f"linea_{kind}_detectada"] = line
     out[f"Over {line} {label}"] = p["Over"]
@@ -248,7 +245,6 @@ def evaluar_mercado(prob_pct, cuota, market_prob_pct=None):
 
 
 def analizar_apuestas(resultados_montecarlo, fixture_id, cuotas_personalizadas=None):
-    """Compatibilidad V1; solo 1X2 puede generar VALUE BET aquí."""
     import pandas as pd
 
     cuotas = cuotas_personalizadas or obtener_cuotas_partido(fixture_id) or {}
