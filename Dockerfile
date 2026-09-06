@@ -13,5 +13,6 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
+RUN python build_parquet_cache.py
 
 CMD exec gunicorn --bind :${PORT} --workers 1 --threads 4 --timeout 900 app_cloudrun_v5:app
