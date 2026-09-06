@@ -46,6 +46,11 @@ def _auth_headers(force_refresh=False):
     }
 
 
+def _headers():
+    """Compatibilidad con settler_ligamx y otros módulos existentes."""
+    return _auth_headers()
+
+
 def _raise_google_error(response, action):
     if response.ok:
         return
@@ -77,14 +82,12 @@ def _google_request(method, url, action, *, json=None, timeout=20):
             if r.ok:
                 return r
 
-            # Un 401 puede ser token vencido/inválido: refrescamos una vez y reintentamos.
             if r.status_code == 401 and attempt < MAX_GOOGLE_ATTEMPTS:
                 force_refresh = True
                 time.sleep(0.5)
                 continue
 
             if r.status_code in RETRYABLE_STATUS and attempt < MAX_GOOGLE_ATTEMPTS:
-                # Backoff exponencial acotado: 1, 2, 4, 8 s.
                 time.sleep(min(8.0, float(2 ** (attempt - 1))))
                 force_refresh = False
                 continue
