@@ -1,7 +1,12 @@
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from .feature_engineering import add_rolling_features, current_match_features, normalize_team
+from .feature_engineering import (
+    add_rolling_features,
+    build_current_team_feature_cache,
+    current_match_features,
+    normalize_team,
+)
 
 
 class PredictorML:
@@ -30,6 +35,7 @@ class PredictorML:
         self.resid_t = np.array([])
         self.is_trained = False
         self.training_half_life_days = float(training_half_life_days)
+        self.current_team_cache = None
 
     def preparar_dataset(self, df):
         d = add_rolling_features(df)
@@ -60,15 +66,18 @@ class PredictorML:
         return self.preparar_dataset(df)
 
     def _training_weights(self, dates):
-        """Peso temporal suave; conserva histórico pero favorece partidos recientes."""
         dates = pd.to_datetime(dates, errors="coerce")
         if dates.isna().all() or self.training_half_life_days <= 0:
             return np.ones(len(dates), dtype=float)
         latest = dates.max()
         age_days = (latest - dates).dt.days.clip(lower=0).astype(float)
         weights = np.power(0.5, age_days / self.training_half_life_days)
-        # Evita que observaciones antiguas desaparezcan por completo.
         return np.clip(weights.to_numpy(dtype=float), 0.10, 1.0)
+
+    def set_current_context(self, df_historico):
+        """Precalcula forma vigente una vez; evita rehacer todo el histórico por fixture."""
+        self.current_team_cache = build_current_team_feature_cache(df_historico)
+        return self.current_team_cache
 
     def entrenar_preparado(self, d):
         if d is None or len(d) < 300:
@@ -95,8 +104,6 @@ class PredictorML:
         self.reg_corners.fit(X, tr.Total_Corners, sample_weight=sample_weight)
         self.reg_cards.fit(X, tr.Total_Tarjetas, sample_weight=sample_weight)
 
-        # Calibración siempre cronológicamente posterior al entrenamiento. No se
-        # pondera: queremos residuos que representen el comportamiento reciente.
         Xc = cal[self.features]
         self.resid_g = (cal.Total_Goles - self.reg_goles.predict(Xc)).to_numpy()
         self.resid_c = (cal.Total_Corners - self.reg_corners.predict(Xc)).to_numpy()
@@ -105,7 +112,10 @@ class PredictorML:
         return True
 
     def entrenar(self, df_historico):
-        return self.entrenar_preparado(self.preparar_dataset(df_historico))
+        ok = self.entrenar_preparado(self.preparar_dataset(df_historico))
+        if ok:
+            self.set_current_context(df_historico)
+        return ok
 
     @staticmethod
     def _asian_side_probs(draws, line, side):
@@ -222,6 +232,11 @@ class PredictorML:
         if not self.is_trained and not self.entrenar(df_historico):
             return {}
         f = current_match_features(
-            df_historico, normalize_team(equipo_local), normalize_team(equipo_visita)
+            df_historico,
+            normalize_team(equipo_local),
+            normalize_team(equipo_visita),
+            team_cache=self.current_team_cache,
+            elo_local=elo_local,
+            elo_visita=elo_visita,
         )
         return self.predecir_fila_preparada(f, linea_goles, linea_corners, linea_tarjetas)
