@@ -1,9 +1,47 @@
 from flask import jsonify
 
 import app_cloudrun_integrated as core
+from modules.elo_engine import SistemaEloLigaMX
+from modules.ml_engine import PredictorML
+from modules.parquet_cache import load_history_fast, load_prepared_features, cache_info
 from modules.settler_ligamx import liquidar_picks_pendientes
 
 app = core.app
+
+
+def optimized_model_state():
+    """Carga histórico/features desde Parquet y precalcula forma una sola vez."""
+    if core._state["df"] is not None and core._state["ml"] is not None:
+        return core._state
+    with core._lock:
+        if core._state["df"] is None:
+            df = load_history_fast()
+            elo = SistemaEloLigaMX().calcular_historico(df)
+            elo_map = dict(zip(elo.Equipo, elo.ELO_Rating))
+            ml = PredictorML()
+            prepared = load_prepared_features()
+            if prepared is not None:
+                trained = ml.entrenar_preparado(prepared)
+                if trained:
+                    ml.set_current_context(df)
+            else:
+                trained = ml.entrenar(df)
+            if not trained:
+                raise RuntimeError("El modelo ML no pudo entrenar")
+            core._state.update({
+                "df": df,
+                "elo_table": elo,
+                "elo_map": elo_map,
+                "ml": ml,
+                "cache": cache_info(),
+            })
+    return core._state
+
+
+# Las rutas registradas en app_cloudrun_integrated resuelven estas funciones en
+# el namespace del módulo en tiempo de ejecución, así que el reemplazo es seguro.
+core.load_history = load_history_fast
+core.model_state = optimized_model_state
 
 
 # Mejora visual sin duplicar el HTML completo de la app integrada: cuando el
@@ -59,6 +97,7 @@ def scan_with_diagnostics():
             "diagnostics": diagnostics,
             "sheet": sheet_status,
             "errores": errors[:20],
+            "cache": s.get("cache", {}),
         }))
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
