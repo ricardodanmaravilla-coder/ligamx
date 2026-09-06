@@ -5,9 +5,9 @@ from .feature_engineering import add_rolling_features, current_match_features, n
 
 
 class PredictorML:
-    """Modelo ML V2 entrenado solo con informacion disponible antes del partido."""
+    """Modelo ML V3: solo información prepartido y mayor peso a datos recientes."""
 
-    def __init__(self, random_state=42):
+    def __init__(self, random_state=42, training_half_life_days=365.0):
         self.model_1x2 = RandomForestClassifier(
             n_estimators=350, min_samples_leaf=8, max_features="sqrt",
             class_weight="balanced_subsample", random_state=random_state, n_jobs=-1
@@ -29,13 +29,16 @@ class PredictorML:
         self.resid_c = np.array([])
         self.resid_t = np.array([])
         self.is_trained = False
+        self.training_half_life_days = float(training_half_life_days)
 
     def preparar_dataset(self, df):
         d = add_rolling_features(df)
-        prefixes = ("H_", "A_")
+        prefixes = ("H_", "A_", "Diff_")
         self.features = ["Diff_ELO_Pre"] + [
             c for c in d.columns
-            if c.startswith(prefixes) and not c.startswith(("H_idx", "A_idx"))
+            if c.startswith(prefixes)
+            and c not in {"Diff_ELO_Pre"}
+            and not c.startswith(("H_idx", "A_idx"))
         ]
         self.features = [c for c in self.features if pd.api.types.is_numeric_dtype(d[c])]
 
@@ -49,21 +52,34 @@ class PredictorML:
             d.Amarillas_L + 2 * d.Rojas_L + d.Amarillas_V + 2 * d.Rojas_V
         )
         required = self.features + [
-            "Target_1X2", "Total_Goles", "Total_Corners", "Total_Tarjetas"
+            "Fecha", "Target_1X2", "Total_Goles", "Total_Corners", "Total_Tarjetas"
         ]
         return d.dropna(subset=required).reset_index(drop=True)
 
     def _prep(self, df):
         return self.preparar_dataset(df)
 
+    def _training_weights(self, dates):
+        """Peso temporal suave; conserva histórico pero favorece partidos recientes."""
+        dates = pd.to_datetime(dates, errors="coerce")
+        if dates.isna().all() or self.training_half_life_days <= 0:
+            return np.ones(len(dates), dtype=float)
+        latest = dates.max()
+        age_days = (latest - dates).dt.days.clip(lower=0).astype(float)
+        weights = np.power(0.5, age_days / self.training_half_life_days)
+        # Evita que observaciones antiguas desaparezcan por completo.
+        return np.clip(weights.to_numpy(dtype=float), 0.10, 1.0)
+
     def entrenar_preparado(self, d):
         if d is None or len(d) < 300:
             return False
         if not self.features:
-            prefixes = ("H_", "A_")
+            prefixes = ("H_", "A_", "Diff_")
             self.features = ["Diff_ELO_Pre"] + [
                 c for c in d.columns
-                if c.startswith(prefixes) and not c.startswith(("H_idx", "A_idx"))
+                if c.startswith(prefixes)
+                and c not in {"Diff_ELO_Pre"}
+                and not c.startswith(("H_idx", "A_idx"))
             ]
             self.features = [c for c in self.features if pd.api.types.is_numeric_dtype(d[c])]
 
@@ -73,11 +89,14 @@ class PredictorML:
             return False
 
         X = tr[self.features]
-        self.model_1x2.fit(X, tr.Target_1X2)
-        self.reg_goles.fit(X, tr.Total_Goles)
-        self.reg_corners.fit(X, tr.Total_Corners)
-        self.reg_cards.fit(X, tr.Total_Tarjetas)
+        sample_weight = self._training_weights(tr["Fecha"])
+        self.model_1x2.fit(X, tr.Target_1X2, sample_weight=sample_weight)
+        self.reg_goles.fit(X, tr.Total_Goles, sample_weight=sample_weight)
+        self.reg_corners.fit(X, tr.Total_Corners, sample_weight=sample_weight)
+        self.reg_cards.fit(X, tr.Total_Tarjetas, sample_weight=sample_weight)
 
+        # Calibración siempre cronológicamente posterior al entrenamiento. No se
+        # pondera: queremos residuos que representen el comportamiento reciente.
         Xc = cal[self.features]
         self.resid_g = (cal.Total_Goles - self.reg_goles.predict(Xc)).to_numpy()
         self.resid_c = (cal.Total_Corners - self.reg_corners.predict(Xc)).to_numpy()
