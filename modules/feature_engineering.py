@@ -87,7 +87,12 @@ def _team_long(df):
     return long
 
 
-def add_rolling_features(df: pd.DataFrame, windows=(5, 10)) -> pd.DataFrame:
+def _shifted_ewm(series, span, min_periods):
+    """EWMA prepartido: el partido actual nunca entra en su propia feature."""
+    return series.shift(1).ewm(span=span, adjust=False, min_periods=min_periods).mean()
+
+
+def add_rolling_features(df: pd.DataFrame, windows=(5, 10), ewm_spans=(5, 10)) -> pd.DataFrame:
     df = add_pre_match_elo(df)
     long = _team_long(df)
 
@@ -96,6 +101,7 @@ def add_rolling_features(df: pd.DataFrame, windows=(5, 10)) -> pd.DataFrame:
     # goles, por lo que usar ambos duplicaria la misma señal.
     metrics = ['GF','GA','CF','CA','CardsF','CardsA','SOTF','SOTA','Pts','SavePct']
 
+    # Ventanas simples: estabilidad estructural a corto/medio plazo.
     for w in windows:
         for m in metrics:
             long[f'{m}_{w}'] = long.groupby('Equipo')[m].transform(
@@ -103,13 +109,32 @@ def add_rolling_features(df: pd.DataFrame, windows=(5, 10)) -> pd.DataFrame:
             )
         long[f'MatchesBefore_{w}'] = long.groupby('Equipo').cumcount()
 
+    # Forma reciente ponderada: los últimos partidos pesan más que los anteriores,
+    # sin eliminar el contexto que aportan las ventanas 5/10.
+    for span in ewm_spans:
+        minp = max(2, span // 2)
+        for m in metrics:
+            long[f'{m}_EWM{span}'] = long.groupby('Equipo')[m].transform(
+                lambda s, sp=span, mp=minp: _shifted_ewm(s, sp, mp)
+            )
+
     keep = ['idx','Equipo','Es_Local'] + [
         c for c in long.columns
-        if any(c.endswith(f'_{w}') for w in windows) or c.startswith('MatchesBefore_')
+        if any(c.endswith(f'_{w}') for w in windows)
+        or any(c.endswith(f'_EWM{span}') for span in ewm_spans)
+        or c.startswith('MatchesBefore_')
     ]
     h = long[long.Es_Local == 1][keep].drop(columns=['Es_Local','Equipo']).set_index('idx').add_prefix('H_')
     a = long[long.Es_Local == 0][keep].drop(columns=['Es_Local','Equipo']).set_index('idx').add_prefix('A_')
     out = df.join(h).join(a)
+
+    # Diferencias directas de forma ayudan al bosque a comparar equipos sin tener
+    # que aprender cada resta de manera implícita.
+    for span in ewm_spans:
+        for m in metrics:
+            hc, ac = f'H_{m}_EWM{span}', f'A_{m}_EWM{span}'
+            if hc in out.columns and ac in out.columns:
+                out[f'Diff_{m}_EWM{span}'] = out[hc] - out[ac]
 
     # Solo auditoria: no entra en self.features del ML.
     if 'xG_L' in out.columns and 'xG_V' in out.columns:
