@@ -1,4 +1,4 @@
-name: Model V2 checks
+name: Model V3 checks
 
 on:
   push:
@@ -19,42 +19,56 @@ jobs:
         run: pip install -r requirements.txt
       - name: Compile Python files
         run: python -m compileall -q app.py app_v2.py app_cloudrun.py app_cloudrun_integrated.py app_cloudrun_v5.py backtest.py modules
-      - name: V2 feature smoke test
+      - name: V3 recency feature smoke test
         run: |
           python - <<'PY'
+          import numpy as np
           import pandas as pd
           from modules.feature_engineering import clean_history, add_rolling_features
           from modules.ml_engine import PredictorML
           df = clean_history(pd.read_csv('data/historico_ligamx_completo.csv'))
           assert len(df) >= 300, 'Historico insuficiente'
           feat = add_rolling_features(df)
-          assert 'Diff_ELO_Pre' in feat.columns
-          assert 'H_GF_5' in feat.columns
-          assert 'A_GA_5' in feat.columns
+          for col in ('Diff_ELO_Pre','H_GF_5','A_GA_5','H_GF_EWM5','A_GA_EWM5','Diff_GF_EWM5'):
+              assert col in feat.columns, f'Falta feature {col}'
+          # Verifica ausencia de leakage: cambiar el resultado de una fila no puede
+          # modificar las features prepartido de esa misma fila.
+          idx = min(250, len(df)-1)
+          base = add_rolling_features(df.iloc[:idx+1].copy()).iloc[-1]
+          alt_df = df.iloc[:idx+1].copy()
+          alt_df.loc[alt_df.index[-1], 'Goles_L'] = 99
+          alt = add_rolling_features(alt_df).iloc[-1]
+          assert np.isclose(base['H_GF_EWM5'], alt['H_GF_EWM5'], equal_nan=True)
           ml = PredictorML()
           assert ml.entrenar(df), 'ML no pudo entrenar'
-          assert len(ml.features) >= 20, 'Muy pocas features prepartido'
-          print('V2 smoke test OK', len(df), len(ml.features))
+          assert len(ml.features) >= 30, 'Muy pocas features prepartido'
+          d = ml.preparar_dataset(df)
+          w = ml._training_weights(d['Fecha'].iloc[:200])
+          assert len(w) == 200 and w[-1] >= w[0] and np.all(w > 0)
+          print('V3 recency smoke test OK', len(df), len(ml.features), float(w[0]), float(w[-1]))
           PY
       - name: Odds market-coherence smoke test
         run: |
           python - <<'PY'
           from modules.odds_engine import _candidate_from_book, _best_1x2, _best_total
           books = [
-            {'id': 8, 'name': 'Book A', 'bets': [
+            {'id': 8, 'name': 'Bet365', 'bets': [
               {'name': 'Match Winner', 'values': [
                 {'value':'Home','odd':'2.10'}, {'value':'Draw','odd':'3.20'}, {'value':'Away','odd':'3.40'}
+              ]},
+              {'name': 'Goals Over/Under', 'values': [
+                {'value':'Over 3.5','odd':'1.91'}, {'value':'Under 3.5','odd':'1.93'}
               ]}
             ]},
-            {'id': 99, 'name': 'Book B', 'bets': [
+            {'id': 99, 'name': 'Other Book', 'bets': [
               {'name': 'Goals Over/Under', 'values': [
-                {'value':'Over 2.5','odd':'1.91'}, {'value':'Under 2.5','odd':'1.93'}
+                {'value':'Over 3.25','odd':'1.99'}, {'value':'Under 3.25','odd':'1.99'}
               ]}
             ]}
           ]
           c = [_candidate_from_book(x) for x in books]
-          assert _best_1x2(c)['bookmaker_name'] == 'Book A'
-          assert _best_total(c, 'goles', 'Goles')['bookmaker_name'] == 'Book B'
+          assert _best_1x2(c)['bookmaker_name'] == 'Bet365'
+          assert _best_total(c, 'goles', 'Goles')['bookmaker_name'] == 'Bet365'
           print('Odds coherence smoke test OK')
           PY
       - name: Asian totals math smoke test
@@ -130,7 +144,7 @@ jobs:
       - name: Upload backtest outputs
         uses: actions/upload-artifact@v4
         with:
-          name: model-v2-backtest
+          name: model-v3-backtest
           path: |
             backtest_metrics.txt
             backtest_predictions.csv
