@@ -1,5 +1,6 @@
 import datetime
 import os
+import time
 from urllib.parse import quote
 
 import google.auth
@@ -24,18 +25,21 @@ HEADERS = [
     "profit_units", "profit_mxn", "settled_utc",
 ]
 
+RETRYABLE_STATUS = {429, 500, 502, 503, 504}
+MAX_GOOGLE_ATTEMPTS = 5
 
-def _credentials():
+
+def _credentials(force_refresh=False):
     credentials, project_id = google.auth.default(scopes=SCOPES)
     if hasattr(credentials, "with_scopes") and getattr(credentials, "requires_scopes", False):
         credentials = credentials.with_scopes(SCOPES)
-    if not credentials.valid:
+    if force_refresh or not credentials.valid:
         credentials.refresh(Request())
     return credentials, project_id
 
 
-def _headers():
-    credentials, _ = _credentials()
+def _auth_headers(force_refresh=False):
+    credentials, _ = _credentials(force_refresh=force_refresh)
     return {
         "Authorization": f"Bearer {credentials.token}",
         "Content-Type": "application/json",
@@ -53,11 +57,58 @@ def _raise_google_error(response, action):
     )
 
 
+def _google_request(method, url, action, *, json=None, timeout=20):
+    """Ejecuta una llamada a Google con reintentos para fallos transitorios."""
+    last_response = None
+    last_exc = None
+    force_refresh = False
+
+    for attempt in range(1, MAX_GOOGLE_ATTEMPTS + 1):
+        try:
+            r = requests.request(
+                method,
+                url,
+                headers=_auth_headers(force_refresh=force_refresh),
+                json=json,
+                timeout=timeout,
+            )
+            last_response = r
+
+            if r.ok:
+                return r
+
+            # Un 401 puede ser token vencido/inválido: refrescamos una vez y reintentamos.
+            if r.status_code == 401 and attempt < MAX_GOOGLE_ATTEMPTS:
+                force_refresh = True
+                time.sleep(0.5)
+                continue
+
+            if r.status_code in RETRYABLE_STATUS and attempt < MAX_GOOGLE_ATTEMPTS:
+                # Backoff exponencial acotado: 1, 2, 4, 8 s.
+                time.sleep(min(8.0, float(2 ** (attempt - 1))))
+                force_refresh = False
+                continue
+
+            _raise_google_error(r, action)
+
+        except requests.RequestException as exc:
+            last_exc = exc
+            if attempt < MAX_GOOGLE_ATTEMPTS:
+                time.sleep(min(8.0, float(2 ** (attempt - 1))))
+                continue
+            raise RuntimeError(f"Google Sheets {action} fallo de red: {type(exc).__name__}: {exc}")
+
+    if last_response is not None:
+        _raise_google_error(last_response, action)
+    if last_exc is not None:
+        raise RuntimeError(f"Google Sheets {action} fallo de red: {type(last_exc).__name__}: {last_exc}")
+    raise RuntimeError(f"Google Sheets {action} fallo desconocido")
+
+
 def _existing_keys():
     rng = quote(f"'{SHEET_NAME}'!A2:A2000", safe="")
     url = f"https://sheets.googleapis.com/v4/spreadsheets/{SPREADSHEET_ID}/values/{rng}"
-    r = requests.get(url, headers=_headers(), timeout=15)
-    _raise_google_error(r, "lectura")
+    r = _google_request("GET", url, "lectura", timeout=15)
     values = r.json().get("values", [])
     return {str(row[0]) for row in values if row and row[0]}
 
@@ -122,7 +173,7 @@ def guardar_picks_ligamx(picks):
     if not picks:
         return {"ok": True, "saved": 0, "skipped": 0, "message": "Sin picks para guardar"}
     try:
-        credentials, project_id = _credentials()
+        _, project_id = _credentials()
         existing = _existing_keys()
         now_utc = datetime.datetime.now(datetime.timezone.utc).isoformat()
         rows = []
@@ -142,13 +193,13 @@ def guardar_picks_ligamx(picks):
             f"https://sheets.googleapis.com/v4/spreadsheets/{SPREADSHEET_ID}/values/{rng}:append"
             "?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS"
         )
-        r = requests.post(
+        _google_request(
+            "POST",
             url,
-            headers={"Authorization": f"Bearer {credentials.token}", "Content-Type": "application/json"},
+            "escritura",
             json={"majorDimension": "ROWS", "values": rows},
             timeout=20,
         )
-        _raise_google_error(r, "escritura")
         return {
             "ok": True,
             "saved": len(rows),
