@@ -5,7 +5,7 @@ from .feature_engineering import add_rolling_features, current_match_features, n
 
 
 class PredictorML:
-    """Modelo ML V2 entrenado solo con informacion disponible antes del partido."""
+    """Modelo ML entrenado solo con información disponible antes del partido."""
 
     def __init__(self, random_state=42):
         self.model_1x2 = RandomForestClassifier(
@@ -53,7 +53,6 @@ class PredictorML:
         ]
         return d.dropna(subset=required).reset_index(drop=True)
 
-    # Alias temporal para compatibilidad interna.
     def _prep(self, df):
         return self.preparar_dataset(df)
 
@@ -73,6 +72,7 @@ class PredictorML:
         if len(cal) < 50:
             return False
 
+        # Fase 1: entrenar solo con pasado y medir residuos OOS en el bloque final.
         X = tr[self.features]
         self.model_1x2.fit(X, tr.Target_1X2)
         self.reg_goles.fit(X, tr.Total_Goles)
@@ -83,6 +83,16 @@ class PredictorML:
         self.resid_g = (cal.Total_Goles - self.reg_goles.predict(Xc)).to_numpy()
         self.resid_c = (cal.Total_Corners - self.reg_corners.predict(Xc)).to_numpy()
         self.resid_t = (cal.Total_Tarjetas - self.reg_cards.predict(Xc)).to_numpy()
+
+        # Fase 2: conservar esos residuos OOS para calibración, pero reentrenar los
+        # modelos finales con TODO el histórico disponible. Antes se dejaban fuera
+        # hasta ~300 partidos recientes al momento de producir picks.
+        X_all = d[self.features]
+        self.model_1x2.fit(X_all, d.Target_1X2)
+        self.reg_goles.fit(X_all, d.Total_Goles)
+        self.reg_corners.fit(X_all, d.Total_Corners)
+        self.reg_cards.fit(X_all, d.Total_Tarjetas)
+
         self.is_trained = True
         return True
 
@@ -92,7 +102,7 @@ class PredictorML:
     @staticmethod
     def _market_probs(pred, line, resid):
         if resid.size < 50:
-            raise ValueError("Muestra de calibracion insuficiente: NO BET")
+            raise ValueError("Muestra de calibración insuficiente: NO BET")
         line = float(line)
         draws = np.clip(np.rint(float(pred) + resid), 0, None)
         over = float(np.mean(draws > line) * 100.0)
@@ -117,7 +127,8 @@ class PredictorML:
                 "Gana Visita": round(probs.get(0, 0) * 100, 1),
             },
             "Goles_Over_Under": {
-                f"Over {linea_goles}": og, f"Under {linea_goles}": ug,
+                f"Over {linea_goles}": og,
+                f"Under {linea_goles}": ug,
                 f"Push {linea_goles}": pg_push,
             },
             "Corners_Totales": {
@@ -131,7 +142,9 @@ class PredictorML:
                 f"Push {linea_tarjetas} Tarjetas": pt_push,
             },
             "Prediccion_Totales": {
-                "goles": round(pg, 2), "corners": round(pc, 2), "tarjetas": round(pt, 2)
+                "goles": round(pg, 2),
+                "corners": round(pc, 2),
+                "tarjetas": round(pt, 2),
             },
         }
 
