@@ -2,21 +2,68 @@ name: Liquidar Picks Liga MX
 
 on:
   schedule:
-    # 09:30 UTC = 03:30 America/Mexico_City (aprox.; GitHub usa UTC)
-    - cron: '30 9 * * *'
+    # Cada hora al minuto 17 UTC. Evita depender de una sola ejecución diaria.
+    - cron: '17 * * * *'
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/liquidar_picks_ligamx.yml'
 
 permissions:
   contents: read
 
+concurrency:
+  group: liquidar-picks-ligamx
+  cancel-in-progress: false
+
 jobs:
   liquidar:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Liquidar picks pendientes en Cloud Run
+        shell: bash
         run: |
           set -euo pipefail
-          curl --fail --show-error --silent \
-            --retry 3 --retry-delay 10 \
+
+          response="$(curl --fail --show-error --silent \
+            --retry 4 --retry-all-errors --retry-delay 10 \
+            --connect-timeout 20 --max-time 180 \
             -X POST \
-            https://liga-mx-446430563361.us-central1.run.app/api/settle
+            https://liga-mx-446430563361.us-central1.run.app/api/settle)"
+
+          echo "$response"
+
+          RESPONSE="$response" python - <<'PY'
+          import json
+          import os
+          import sys
+
+          raw = os.environ.get("RESPONSE", "")
+          try:
+              data = json.loads(raw)
+          except Exception as exc:
+              print(f"Respuesta inválida del cobrador: {exc}", file=sys.stderr)
+              sys.exit(1)
+
+          if not data.get("ok", False):
+              print(f"El cobrador respondió ok=false: {data}", file=sys.stderr)
+              sys.exit(1)
+
+          errors = data.get("errors") or []
+          settled = int(data.get("settled", 0) or 0)
+          pending = int(data.get("pending", 0) or 0)
+          skipped = int(data.get("skipped", 0) or 0)
+
+          print(
+              f"Resumen settlement: settled={settled} pending_leidos={pending} "
+              f"skipped={skipped} errors={len(errors)}"
+          )
+
+          if errors:
+              print("Advertencias del cobrador:")
+              for err in errors:
+                  print(f"- {err}")
+          PY
