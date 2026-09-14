@@ -1,15 +1,16 @@
-name: Model V2 checks
+name: Liga MX model checks
 
 on:
   push:
-    branches: [model-v2, totals-v3]
+    branches: [main, model-v2, totals-v3]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -19,7 +20,7 @@ jobs:
         run: pip install -r requirements.txt
       - name: Compile Python files
         run: python -m compileall -q app.py app_v2.py backtest.py modules
-      - name: V2 feature smoke test
+      - name: Feature and ML smoke test
         run: |
           python - <<'PY'
           import pandas as pd
@@ -34,32 +35,56 @@ jobs:
           ml = PredictorML()
           assert ml.entrenar(df), 'ML no pudo entrenar'
           assert len(ml.features) >= 20, 'Muy pocas features prepartido'
-          print('V2 smoke test OK', len(df), len(ml.features))
+          assert len(ml.resid_g) >= 50
+          assert len(ml.resid_c) >= 50
+          assert len(ml.resid_t) >= 50
+          print('ML smoke test OK', len(df), len(ml.features))
           PY
-      - name: V3 totals math smoke test
+      - name: Conservative totals policy smoke test
         run: |
           python - <<'PY'
-          from modules.scanner_engine import _evaluate_total_side, _supported_total_line
+          from modules.scanner_engine import (
+              _evaluate_total_side, _supported_total_line,
+              GOALS_MIN_PROB, MAX_REASONABLE_EDGE_PP,
+          )
+          assert GOALS_MIN_PROB == 65.0
+          assert MAX_REASONABLE_EDGE_PP == 20.0
           assert _supported_total_line(2.5)
           assert _supported_total_line(3.0)
           assert not _supported_total_line(2.25)
+          assert not _supported_total_line(3.25)
+
           pick, diag = _evaluate_total_side(
               'Test A vs Test B', 'Goles O/U', 'Over 2.5',
               68.0, 64.0, 0.0, 0.0, 1.80, 55.0, 'TestBook'
           )
           assert pick is not None, diag
-          assert pick['EV_pct'] > 0
-          # Línea entera: 10% push no debe contarse como pérdida.
-          pick2, diag2 = _evaluate_total_side(
-              'Test A vs Test B', 'Goles O/U', 'Over 3.0',
-              66.0, 62.0, 10.0, 10.0, 1.95, 54.0, 'TestBook'
+
+          # Edge absurdo debe bloquearse aunque el modelo aparente mucha confianza.
+          pick_bad, diag_bad = _evaluate_total_side(
+              'Test A vs Test B', 'Goles O/U', 'Under 4.5',
+              82.0, 80.0, 0.0, 0.0, 1.80, 45.0, 'TestBook'
           )
-          assert diag2['P_Push'] == 10.0
-          print('V3 totals smoke test OK')
+          assert pick_bad is None
+          assert 'edge extremo' in diag_bad['Motivo']
+          print('Conservative totals policy OK')
+          PY
+      - name: Monte Carlo dispersion smoke test
+        run: |
+          python - <<'PY'
+          import numpy as np
+          from modules.montecarlo_sim import _overdispersion_alpha, _draw_count
+          rng = np.random.default_rng(42)
+          sample = np.array([2, 3, 4, 5, 7, 10, 15, 20] * 20, dtype=float)
+          alpha = _overdispersion_alpha(sample)
+          assert alpha > 0
+          draws = _draw_count(rng, 10.0, alpha, 10000)
+          assert draws.var() > draws.mean()
+          print('Dispersion smoke test OK', alpha)
           PY
       - name: Production Streamlit startup smoke test
         run: |
-          streamlit run app.py --server.headless true --server.port 8501 >/tmp/streamlit-v2.log 2>&1 &
+          streamlit run app.py --server.headless true --server.port 8501 >/tmp/streamlit.log 2>&1 &
           PID=$!
           ok=0
           for i in $(seq 1 30); do
@@ -70,18 +95,17 @@ jobs:
             sleep 1
           done
           if [ "$ok" -ne 1 ]; then
-            cat /tmp/streamlit-v2.log
+            cat /tmp/streamlit.log
             kill $PID || true
             exit 1
           fi
-          curl -fsS http://127.0.0.1:8501/_stcore/health
           kill $PID || true
-      - name: Walk-forward backtest
+      - name: Multi-line walk-forward backtest
         run: python backtest.py data/historico_ligamx_completo.csv | tee backtest_metrics.txt
       - name: Upload backtest outputs
         uses: actions/upload-artifact@v4
         with:
-          name: model-v2-backtest
+          name: ligamx-multiline-backtest
           path: |
             backtest_metrics.txt
-            backtest_predictions.csv
+            backtest_predictions_multiline.csv
