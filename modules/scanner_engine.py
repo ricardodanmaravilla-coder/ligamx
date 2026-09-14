@@ -7,6 +7,11 @@ from .odds_engine import obtener_cuotas_partido, remove_vig_three_way, remove_vi
 
 LIGA_MX_ID = 262
 LIGA_MX_SEASON = 2026
+MAX_REASONABLE_EDGE_PP = 20.0
+PUBLIC_OU_KINDS = {"goles"}
+GOALS_MIN_PROB = 65.0
+GOALS_MIN_EDGE = 5.0
+GOALS_MIN_EV = 4.0
 
 
 def combinar_probabilidades(p_stat, p_ml, w_stat=0.55, w_ml=0.45):
@@ -30,9 +35,12 @@ def _market_probabilities_no_vig_1x2(cuotas):
 
 
 def _supported_total_line(line):
+    """Solo líneas enteras o medias; .25/.75 requieren liquidación asiática explícita."""
     try:
         q = round(float(line) * 4) / 4
-        return abs(q - float(line)) < 1e-9 and (abs((float(line) * 2) - round(float(line) * 2)) < 1e-9)
+        return abs(q - float(line)) < 1e-9 and (
+            abs((float(line) * 2) - round(float(line) * 2)) < 1e-9
+        )
     except Exception:
         return False
 
@@ -58,9 +66,12 @@ def _total_spec(kind, line):
     )
 
 
-def _evaluate_total_side(partido, market_name, side, p_stat, p_ml, push_stat, push_ml,
-                         odd, market_p, bookmaker, min_prob=60.0, min_edge=5.0,
-                         min_ev=4.0, max_disagreement=12.0):
+def _evaluate_total_side(
+    partido, market_name, side, p_stat, p_ml, push_stat, push_ml,
+    odd, market_p, bookmaker, min_prob=GOALS_MIN_PROB, min_edge=GOALS_MIN_EDGE,
+    min_ev=GOALS_MIN_EV, max_disagreement=12.0,
+    max_edge=MAX_REASONABLE_EDGE_PP,
+):
     p_stat = float(p_stat)
     p_ml = float(p_ml)
     push_stat = float(push_stat or 0.0)
@@ -70,8 +81,6 @@ def _evaluate_total_side(partido, market_name, side, p_stat, p_ml, push_stat, pu
     allowed = _disagreement_limit(p_stat, p_ml, max_disagreement)
     p_ensemble = combinar_probabilidades(p_stat, p_ml)
 
-    # Para líneas enteras comparamos el mercado con probabilidad condicional
-    # sobre decisiones (win/loss), ya que el push devuelve el stake.
     decisive = max(1e-9, 100.0 - p_push)
     p_cond = p_ensemble / decisive * 100.0
     edge = p_cond - float(market_p)
@@ -88,6 +97,10 @@ def _evaluate_total_side(partido, market_name, side, p_stat, p_ml, push_stat, pu
         reasons.append(f"prob. condicional {p_cond:.1f}<{min_prob:.1f}%")
     if edge < min_edge:
         reasons.append(f"edge {edge:.1f}<{min_edge:.1f} pp")
+    if edge > max_edge:
+        reasons.append(
+            f"edge extremo {edge:.1f}>{max_edge:.1f} pp: posible descalibración/dato anómalo"
+        )
     if ev < min_ev:
         reasons.append(f"EV {ev:.1f}<{min_ev:.1f}%")
 
@@ -124,16 +137,18 @@ def _evaluate_total_side(partido, market_name, side, p_stat, p_ml, push_stat, pu
         "Edge_pp": round(edge, 1),
         "EV_pct": round(ev, 1),
         "Bookmaker": bookmaker,
-        "Veredicto": "VALUE BET O/U — V3",
+        "Veredicto": "VALUE BET O/U — V4 CONSERVADOR",
     }
-    diag["Estado"] = "VALUE BET O/U — V3"
-    diag["Motivo"] = "Supera filtros V3"
+    diag["Estado"] = "VALUE BET O/U — V4 CONSERVADOR"
+    diag["Motivo"] = "Supera filtros conservadores y control de edge extremo"
     return pick, diag
 
 
-def evaluar_fixture(local, visita, fixture_id, df_historico, cuotas=None, ml=None,
-                    elo_map=None, min_prob=58.0, min_edge=4.0, min_ev=3.0,
-                    max_disagreement=10.0, return_diagnostics=False):
+def evaluar_fixture(
+    local, visita, fixture_id, df_historico, cuotas=None, ml=None,
+    elo_map=None, min_prob=58.0, min_edge=4.0, min_ev=3.0,
+    max_disagreement=10.0, return_diagnostics=False,
+):
     diagnostics = []
     df = clean_history(df_historico)
     local, visita = normalize_team(local), normalize_team(visita)
@@ -178,12 +193,10 @@ def evaluar_fixture(local, visita, fixture_id, df_historico, cuotas=None, ml=Non
     bookmaker = cuotas.get("bookmaker_name", cuotas.get("bookmaker_id", "N/A"))
     out = []
 
-    # 1X2 validado OOS
+    # 1X2 validado OOS.
     market_probs = _market_probabilities_no_vig_1x2(cuotas)
     if market_probs:
-        markets = [
-            ("Gana Local", "1"), ("Empate", "X"), ("Gana Visita", "2")
-        ]
+        markets = [("Gana Local", "1"), ("Empate", "X"), ("Gana Visita", "2")]
         for name, key in markets:
             p_stat = float(mc["Resultado_1X2"][name])
             p_ml = float(mlp["Resultado_1X2"][name])
@@ -195,48 +208,84 @@ def evaluar_fixture(local, visita, fixture_id, df_historico, cuotas=None, ml=Non
             edge = p_ensemble - market_p
             ev = (p_ensemble / 100.0 * float(odd) - 1.0) * 100.0 if odd else -999
             reasons = []
-            if not odd or float(odd) <= 1.01: reasons.append("sin cuota válida")
-            if min(p_stat, p_ml) < 52.0: reasons.append("uno de los modelos <52%")
-            if disagreement > allowed: reasons.append(f"desacuerdo {disagreement:.1f}>{allowed:.1f} pp")
-            if p_ensemble < min_prob: reasons.append(f"ensemble {p_ensemble:.1f}<{min_prob:.1f}%")
-            if edge < min_edge: reasons.append(f"edge {edge:.1f}<{min_edge:.1f} pp")
-            if ev < min_ev: reasons.append(f"EV {ev:.1f}<{min_ev:.1f}%")
+            if not odd or float(odd) <= 1.01:
+                reasons.append("sin cuota válida")
+            if min(p_stat, p_ml) < 52.0:
+                reasons.append("uno de los modelos <52%")
+            if disagreement > allowed:
+                reasons.append(f"desacuerdo {disagreement:.1f}>{allowed:.1f} pp")
+            if p_ensemble < min_prob:
+                reasons.append(f"ensemble {p_ensemble:.1f}<{min_prob:.1f}%")
+            if edge < min_edge:
+                reasons.append(f"edge {edge:.1f}<{min_edge:.1f} pp")
+            if edge > MAX_REASONABLE_EDGE_PP:
+                reasons.append(
+                    f"edge extremo {edge:.1f}>{MAX_REASONABLE_EDGE_PP:.1f} pp: revisar calibración"
+                )
+            if ev < min_ev:
+                reasons.append(f"EV {ev:.1f}<{min_ev:.1f}%")
+
             diag = {
-                "Mercado": name, "Bookmaker": bookmaker,
-                "P_Estadistico": round(p_stat,1), "P_ML": round(p_ml,1),
-                "P_Ensemble": round(p_ensemble,1), "Desacuerdo_pp": round(disagreement,1),
-                "Limite_Desacuerdo_pp": round(allowed,1), "Cuota": round(float(odd),2) if odd else None,
-                "P_Mercado_NoVig": round(market_p,1), "Edge_pp": round(edge,1), "EV_pct": round(ev,1)
+                "Mercado": name,
+                "Bookmaker": bookmaker,
+                "P_Estadistico": round(p_stat, 1),
+                "P_ML": round(p_ml, 1),
+                "P_Ensemble": round(p_ensemble, 1),
+                "Desacuerdo_pp": round(disagreement, 1),
+                "Limite_Desacuerdo_pp": round(allowed, 1),
+                "Cuota": round(float(odd), 2) if odd else None,
+                "P_Mercado_NoVig": round(market_p, 1),
+                "Edge_pp": round(edge, 1),
+                "EV_pct": round(ev, 1),
             }
             if reasons:
-                diag["Estado"]="NO BET"; diag["Motivo"]="; ".join(reasons)
+                diag["Estado"] = "NO BET"
+                diag["Motivo"] = "; ".join(reasons)
             else:
-                diag["Estado"]="VALUE BET 1X2"; diag["Motivo"]="Supera todos los filtros"
-                out.append({**diag, "Partido": partido, "Veredicto":"VALUE BET 1X2"})
+                diag["Estado"] = "VALUE BET 1X2"
+                diag["Motivo"] = "Supera todos los filtros"
+                out.append({**diag, "Partido": partido, "Veredicto": "VALUE BET 1X2"})
             diagnostics.append(diag)
     else:
-        diagnostics.append({"Mercado":"1X2","Estado":"NO BET","Motivo":"No hay 1/X/2 completo para no-vig"})
+        diagnostics.append({"Mercado": "1X2", "Estado": "NO BET", "Motivo": "No hay 1/X/2 completo para no-vig"})
 
-    # O/U V3: exige línea real y ambas cuotas de la misma casa.
+    # O/U: por ahora SOLO goles puede convertirse en pick. Corners y tarjetas
+    # siguen calculándose para diagnóstico, pero no se publican hasta demostrar
+    # calibración suficiente en walk-forward multi-línea.
     for kind, line in (("goles", lg), ("corners", lc), ("tarjetas", lt)):
-        if line is None:
-            diagnostics.append({"Mercado":f"{kind.title()} O/U","Estado":"NO BET","Motivo":"Sin línea real en API-Football"})
+        if kind not in PUBLIC_OU_KINDS:
+            diagnostics.append({
+                "Mercado": f"{kind.title()} O/U",
+                "Estado": "ANÁLISIS SOLO",
+                "Motivo": "Mercado temporalmente deshabilitado como pick hasta validar calibración multi-línea",
+            })
             continue
+        if line is None:
+            diagnostics.append({"Mercado": f"{kind.title()} O/U", "Estado": "NO BET", "Motivo": "Sin línea real en API-Football"})
+            continue
+
         line = float(line)
         if not _supported_total_line(line):
-            diagnostics.append({"Mercado":f"{kind.title()} O/U {line}","Estado":"NO BET","Motivo":"Línea asiática de cuarto aún no soportada"})
+            diagnostics.append({
+                "Mercado": f"{kind.title()} O/U {line}",
+                "Estado": "NO BET",
+                "Motivo": "Línea asiática de cuarto aún no soportada; no se arriesga stake sin liquidación correcta",
+            })
             continue
+
         market_name, section, over_model_key, under_model_key, push_key, over_odd_key, under_odd_key = _total_spec(kind, line)
         over_odd, under_odd = cuotas.get(over_odd_key), cuotas.get(under_odd_key)
         if not over_odd or not under_odd:
-            diagnostics.append({"Mercado":f"{market_name} {line}","Estado":"NO BET","Motivo":"Faltan cuotas Over/Under completas"})
+            diagnostics.append({"Mercado": f"{market_name} {line}", "Estado": "NO BET", "Motivo": "Faltan cuotas Over/Under completas"})
             continue
+
         market_over, market_under = remove_vig_two_way(over_odd, under_odd)
         mcsec, mlsec = mc.get(section, {}), mlp.get(section, {})
         if over_model_key not in mcsec or over_model_key not in mlsec:
-            diagnostics.append({"Mercado":f"{market_name} {line}","Estado":"NO BET","Motivo":"Modelo no produjo la línea solicitada"})
+            diagnostics.append({"Mercado": f"{market_name} {line}", "Estado": "NO BET", "Motivo": "Modelo no produjo la línea solicitada"})
             continue
-        push_mc, push_ml = mcsec.get(push_key,0.0), mlsec.get(push_key,0.0)
+
+        push_mc, push_ml = mcsec.get(push_key, 0.0), mlsec.get(push_key, 0.0)
         for side, mk, odd, mp in (
             (f"Over {line}", over_model_key, over_odd, market_over),
             (f"Under {line}", under_model_key, under_odd, market_under),
@@ -245,46 +294,58 @@ def evaluar_fixture(local, visita, fixture_id, df_historico, cuotas=None, ml=Non
                 partido, market_name, side,
                 mcsec[mk], mlsec[mk], push_mc, push_ml,
                 odd, mp, bookmaker,
+                min_prob=GOALS_MIN_PROB,
+                min_edge=GOALS_MIN_EDGE,
+                min_ev=GOALS_MIN_EV,
             )
             diagnostics.append(diag)
             if pick:
                 out.append(pick)
 
-    out = sorted(out, key=lambda x: (x.get("EV_pct",0), x.get("Edge_pp",0)), reverse=True)
+    out = sorted(out, key=lambda x: (x.get("EV_pct", 0), x.get("Edge_pp", 0)), reverse=True)
     return (out, diagnostics) if return_diagnostics else out
 
 
 def escanear_jornada_actual(df_historico=None):
     import requests
     from .stats_engine import cargar_datos
+
     if df_historico is None:
         df_historico = cargar_datos()
     df = clean_history(df_historico)
     api_key = os.environ.get("API_SPORTS_KEY")
     if not api_key:
         return []
+
     ml = PredictorML()
     if not ml.entrenar(df):
         return []
     table = SistemaEloLigaMX().calcular_historico(df)
     elo_map = dict(zip(table.Equipo, table.ELO_Rating))
+
     try:
         r = requests.get(
             "https://v3.football.api-sports.io/fixtures",
             headers={"x-apisports-key": api_key},
-            params={"league": LIGA_MX_ID, "season": LIGA_MX_SEASON, "next": 15}, timeout=12,
+            params={"league": LIGA_MX_ID, "season": LIGA_MX_SEASON, "next": 9},
+            timeout=12,
         )
         payload = r.json() if r.status_code == 200 else {}
         fixtures = [] if payload.get("errors") else payload.get("response", [])
     except Exception:
         return []
-    out=[]
-    for f in fixtures:
+
+    out = []
+    for f in fixtures[:9]:
         try:
             out.extend(evaluar_fixture(
-                f["teams"]["home"]["name"], f["teams"]["away"]["name"],
-                f["fixture"]["id"], df, ml=ml, elo_map=elo_map
+                f["teams"]["home"]["name"],
+                f["teams"]["away"]["name"],
+                f["fixture"]["id"],
+                df,
+                ml=ml,
+                elo_map=elo_map,
             ))
         except Exception:
             continue
-    return sorted(out, key=lambda x:(x.get("EV_pct",0),x.get("Edge_pp",0)), reverse=True)
+    return sorted(out, key=lambda x: (x.get("EV_pct", 0), x.get("Edge_pp", 0)), reverse=True)
