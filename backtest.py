@@ -6,6 +6,11 @@ from sklearn.metrics import brier_score_loss, log_loss
 from modules.ml_engine import PredictorML
 from modules.feature_engineering import clean_history
 
+GOAL_LINES = [1.5, 2.5, 3.5]
+CORNER_LINES = [8.5, 9.5, 10.5, 11.5, 12.5]
+CARD_LINES = [3.5, 4.5, 5.5, 6.5]
+CONF_THRESHOLDS = [0.55, 0.60, 0.65, 0.70, 0.75, 0.80]
+
 
 def _selective_binary_metrics(df, p_col, y_col, threshold=0.60):
     p = df[p_col].astype(float)
@@ -14,15 +19,47 @@ def _selective_binary_metrics(df, p_col, y_col, threshold=0.60):
     sel_under = p <= (1.0 - threshold)
     selected = sel_over | sel_under
     if not selected.any():
-        return {"n": 0, "accuracy": None, "avg_conf": None}
+        return {"n": 0, "accuracy": None, "avg_conf": None, "calibration_gap_pp": None}
     pred = np.where(sel_over[selected], 1, 0)
     actual = y[selected].to_numpy()
     conf = np.where(sel_over[selected], p[selected], 1.0 - p[selected])
+    acc = float(np.mean(pred == actual))
+    avg_conf = float(np.mean(conf))
     return {
         "n": int(selected.sum()),
-        "accuracy": float(np.mean(pred == actual)),
-        "avg_conf": float(np.mean(conf)),
+        "accuracy": acc,
+        "avg_conf": avg_conf,
+        "calibration_gap_pp": float((avg_conf - acc) * 100.0),
     }
+
+
+def _calibration_bins(df, p_col, y_col):
+    p = df[p_col].astype(float)
+    y = df[y_col].astype(int)
+    bins = []
+    edges = np.arange(0.50, 0.851, 0.05)
+    for lo in edges[:-1]:
+        hi = lo + 0.05
+        mask_hi = (p >= lo) & (p < hi)
+        mask_lo = (p <= 1.0 - lo) & (p > 1.0 - hi)
+        selected = mask_hi | mask_lo
+        if not selected.any():
+            continue
+        chosen_conf = np.where(mask_hi[selected], p[selected], 1.0 - p[selected])
+        chosen_pred = np.where(mask_hi[selected], 1, 0)
+        actual = y[selected].to_numpy()
+        bins.append({
+            "bucket": f"{int(lo*100)}-{int(hi*100)}%",
+            "n": int(selected.sum()),
+            "avg_conf": round(float(np.mean(chosen_conf)), 4),
+            "accuracy": round(float(np.mean(chosen_pred == actual)), 4),
+            "gap_pp": round(float((np.mean(chosen_conf) - np.mean(chosen_pred == actual)) * 100), 2),
+        })
+    return bins
+
+
+def _line_key(prefix, line):
+    return f"{prefix}_{str(line).replace('.', '_')}"
 
 
 def walk_forward(csv_path, min_train=800, step=150):
@@ -41,25 +78,46 @@ def walk_forward(csv_path, min_train=800, step=150):
             continue
 
         for _, r in test.iterrows():
+            base = {
+                "Fecha": r.Fecha,
+                "Local": r.Local,
+                "Visitante": r.Visitante,
+                "y": int(r.Target_1X2),
+                "Total_Goles": float(r.Total_Goles),
+                "Total_Corners": float(r.Total_Corners),
+                "Total_Tarjetas": float(r.Total_Tarjetas),
+            }
+
             try:
-                p = ml.predecir_fila_preparada(
-                    r, linea_goles=2.5, linea_corners=9.5, linea_tarjetas=4.5
-                )
+                pbase = ml.predecir_fila_preparada(r, 2.5, 9.5, 4.5)
             except Exception:
                 continue
-            rows.append({
-                "Fecha": r.Fecha, "Local": r.Local, "Visitante": r.Visitante,
-                "y": int(r.Target_1X2),
-                "pA": p["Resultado_1X2"]["Gana Visita"] / 100.0,
-                "pD": p["Resultado_1X2"]["Empate"] / 100.0,
-                "pH": p["Resultado_1X2"]["Gana Local"] / 100.0,
-                "og25": p["Goles_Over_Under"]["Over 2.5"] / 100.0,
-                "yog25": int(r.Total_Goles > 2.5),
-                "oc95": p["Corners_Totales"]["Over 9.5 Corners"] / 100.0,
-                "yoc95": int(r.Total_Corners > 9.5),
-                "ot45": p["Tarjetas_Totales"]["Over 4.5 Tarjetas"] / 100.0,
-                "yot45": int(r.Total_Tarjetas > 4.5),
+
+            base.update({
+                "pA": pbase["Resultado_1X2"]["Gana Visita"] / 100.0,
+                "pD": pbase["Resultado_1X2"]["Empate"] / 100.0,
+                "pH": pbase["Resultado_1X2"]["Gana Local"] / 100.0,
             })
+
+            for line in GOAL_LINES:
+                p = ml.predecir_fila_preparada(r, line, 9.5, 4.5)
+                k = _line_key("g", line)
+                base[f"p_{k}"] = p["Goles_Over_Under"][f"Over {line}"] / 100.0
+                base[f"y_{k}"] = int(r.Total_Goles > line)
+
+            for line in CORNER_LINES:
+                p = ml.predecir_fila_preparada(r, 2.5, line, 4.5)
+                k = _line_key("c", line)
+                base[f"p_{k}"] = p["Corners_Totales"][f"Over {line} Corners"] / 100.0
+                base[f"y_{k}"] = int(r.Total_Corners > line)
+
+            for line in CARD_LINES:
+                p = ml.predecir_fila_preparada(r, 2.5, 9.5, line)
+                k = _line_key("t", line)
+                base[f"p_{k}"] = p["Tarjetas_Totales"][f"Over {line} Tarjetas"] / 100.0
+                base[f"y_{k}"] = int(r.Total_Tarjetas > line)
+
+            rows.append(base)
 
     out = pd.DataFrame(rows)
     if out.empty:
@@ -71,16 +129,30 @@ def walk_forward(csv_path, min_train=800, step=150):
         "n": len(out),
         "logloss_1x2": float(log_loss(y, probs, labels=[0, 1, 2])),
         "accuracy_1x2": float(np.mean(np.argmax(probs, axis=1) == y)),
-        "brier_goals_o25": float(brier_score_loss(out.yog25, out.og25)),
-        "brier_corners_o95": float(brier_score_loss(out.yoc95, out.oc95)),
-        "brier_cards_o45": float(brier_score_loss(out.yot45, out.ot45)),
-        "selective_60_goals": _selective_binary_metrics(out, "og25", "yog25", 0.60),
-        "selective_60_corners": _selective_binary_metrics(out, "oc95", "yoc95", 0.60),
-        "selective_60_cards": _selective_binary_metrics(out, "ot45", "yot45", 0.60),
-        "selective_65_goals": _selective_binary_metrics(out, "og25", "yog25", 0.65),
-        "selective_65_corners": _selective_binary_metrics(out, "oc95", "yoc95", 0.65),
-        "selective_65_cards": _selective_binary_metrics(out, "ot45", "yot45", 0.65),
+        "markets": {},
     }
+
+    groups = [
+        ("goals", GOAL_LINES, "g"),
+        ("corners", CORNER_LINES, "c"),
+        ("cards", CARD_LINES, "t"),
+    ]
+    for market, lines, prefix in groups:
+        metrics["markets"][market] = {}
+        for line in lines:
+            k = _line_key(prefix, line)
+            pcol, ycol = f"p_{k}", f"y_{k}"
+            info = {
+                "brier": float(brier_score_loss(out[ycol], out[pcol])),
+                "calibration_bins": _calibration_bins(out, pcol, ycol),
+                "selective": {},
+            }
+            for threshold in CONF_THRESHOLDS:
+                info["selective"][str(int(threshold * 100))] = _selective_binary_metrics(
+                    out, pcol, ycol, threshold
+                )
+            metrics["markets"][market][str(line)] = info
+
     return out, metrics
 
 
@@ -88,4 +160,4 @@ if __name__ == "__main__":
     path = sys.argv[1] if len(sys.argv) > 1 else "data/historico_ligamx_completo.csv"
     rows, metrics = walk_forward(path)
     print(metrics)
-    rows.to_csv("backtest_predictions.csv", index=False)
+    rows.to_csv("backtest_predictions_multiline.csv", index=False)
