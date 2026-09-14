@@ -13,6 +13,48 @@ from modules.settler_ligamx import liquidar_picks_pendientes
 app = core.app
 
 
+PRODUCTION_MODEL_VERSION = "ligamx-v5-conservative"
+
+
+def _is_quarter_line(text):
+    """Bloquea temporalmente .25/.75 hasta tener settlement asiático end-to-end."""
+    s = str(text or "")
+    return ".25" in s or ".75" in s
+
+
+def production_filter(picks):
+    """Política de publicación derivada de la auditoría de calibración.
+
+    - 1X2 conserva sus filtros internos.
+    - Goles O/U exige probabilidad efectiva >=65%, edge >=5 pp y EV >=4%.
+    - Corners y tarjetas quedan sólo para análisis hasta validar calibración.
+    - Líneas .25/.75 no se publican mientras el cobrador no liquide medias ganancias/pérdidas.
+    - Edge >20 pp se considera posible descalibración y no se publica.
+    """
+    out = []
+    for p in picks or []:
+        market = str(p.get("Mercado", ""))
+        if "Corners O/U" in market or "Tarjetas O/U" in market:
+            continue
+        if _is_quarter_line(market):
+            continue
+
+        edge = float(p.get("Edge_pp", 0) or 0)
+        ev = float(p.get("EV_pct", 0) or 0)
+        prob = float(p.get("P_Condicional", p.get("P_Ensemble", 0)) or 0)
+
+        if edge > 20.0:
+            continue
+        if "Goles O/U" in market:
+            if prob < 65.0 or edge < 5.0 or ev < 4.0:
+                continue
+
+        row = dict(p)
+        row["model_version"] = PRODUCTION_MODEL_VERSION
+        out.append(row)
+    return out
+
+
 def optimized_model_state():
     """Carga histórico/features/contexto MC desde Parquet y precalcula forma una sola vez."""
     if core._state["df"] is not None and core._state["ml"] is not None:
@@ -91,10 +133,18 @@ def scan_with_diagnostics():
                     local, away, fid, df,
                     ml=ml, elo_map=em, return_diagnostics=True,
                 )
-                all_picks.extend(core.enrich_pick(p, f) for p in picks)
+                filtered = production_filter(picks)
+                all_picks.extend(core.enrich_pick(p, f) for p in filtered)
                 for d in diag:
                     row = dict(d)
                     row["Partido"] = partido
+                    market = str(row.get("Mercado", ""))
+                    if "Corners O/U" in market or "Tarjetas O/U" in market:
+                        row["Estado"] = "ANÁLISIS SOLO"
+                        row["Motivo"] = "Mercado temporalmente deshabilitado como pick por auditoría de calibración"
+                    elif _is_quarter_line(market):
+                        row["Estado"] = "NO BET"
+                        row["Motivo"] = "Línea .25/.75 bloqueada hasta settlement asiático end-to-end"
                     diagnostics.append(row)
             except Exception as exc:
                 msg = f"{type(exc).__name__}: {exc}"
@@ -109,6 +159,7 @@ def scan_with_diagnostics():
         return jsonify(core.safe({
             "partidos_analizados": len(upcoming),
             "limite_partidos": core.SCANNER_MAX_FIXTURES,
+            "model_version": PRODUCTION_MODEL_VERSION,
             "picks": all_picks,
             "diagnostics": diagnostics,
             "sheet": sheet_status,
@@ -138,3 +189,13 @@ def settle_ligamx_picks_get():
         return jsonify(liquidar_picks_pendientes())
     except Exception as exc:
         return jsonify({"ok": False, "error": f"{type(exc).__name__}: {exc}"}), 500
+
+
+@app.get("/health-v5")
+def health_v5():
+    return jsonify({
+        "ok": True,
+        "service": "liga-mx",
+        "model_version": PRODUCTION_MODEL_VERSION,
+        "policy": "1X2 + goles>=65%; corners/tarjetas analysis-only; edge<=20pp; no .25/.75",
+    })
