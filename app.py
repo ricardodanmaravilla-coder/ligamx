@@ -21,8 +21,22 @@ HEADERS = {"x-apisports-key": API_KEY}
 LIGA_MX_ID = 262
 LIGA_MX_SEASON = 2026
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=900)
 def cargar_historico():
+    # Producción: GitHub es la fuente persistente que actualiza el workflow semanal.
+    # Así Cloud Run no queda congelado con el CSV incluido al construir la imagen.
+    remote_url = "https://raw.githubusercontent.com/ricardodanmaravilla-coder/ligamx/main/data/historico_ligamx_completo.csv"
+    try:
+        r = requests.get(remote_url, timeout=15)
+        r.raise_for_status()
+        from io import StringIO
+        df = clean_history(pd.read_csv(StringIO(r.text)))
+        if not df.empty:
+            return df
+    except Exception:
+        pass
+
+    # Fallback seguro para arranque o caída temporal de GitHub.
     for path in ["data/historico_ligamx_completo.csv", "historico_ligamx_completo.csv"]:
         try:
             return clean_history(pd.read_csv(path))
