@@ -4,6 +4,7 @@ Las cuotas solo se aceptan cuando se verifica fecha y ambos equipos.
 Nunca se convierten odds historicas en odds prepartido actuales.
 """
 import os
+import hashlib
 import re
 import unicodedata
 from datetime import datetime, timezone
@@ -32,20 +33,47 @@ def team_key(name):
     raw = " ".join(raw.split())
     return ALIASES.get(raw, raw)
 
-def _post_striker(tool, body):
-    key = os.getenv("STRIKER_API_KEY")
-    if not key:
+def _striker_keys():
+    """Three authorized accounts; legacy single key remains supported."""
+    names = ("STRIKER_API_KEY_1", "STRIKER_API_KEY_2", "STRIKER_API_KEY_3")
+    keys = [os.getenv(name, "").strip() for name in names]
+    if not any(keys):
+        keys = [os.getenv("STRIKER_API_KEY", "").strip()]
+    return list(dict.fromkeys(k for k in keys if k))
+
+
+def _post_striker(tool, body, account_index=0):
+    keys = _striker_keys()
+    if not keys:
         return {}
+    key = keys[account_index % len(keys)]
     try:
-        r = requests.post(
+        response = requests.post(
             f"{STRIKER_BASE}/{tool}", headers={"x-api-key": key},
             json=body, timeout=TIMEOUT,
         )
-        r.raise_for_status()
-        data = r.json()
+        # Never log credentials, authorization headers or full payload.
+        if response.status_code in (429, 402, 403):
+            return {"_quota_unavailable": True}
+        response.raise_for_status()
+        data = response.json()
         return data if isinstance(data, dict) else {}
     except (requests.RequestException, ValueError):
         return {}
+
+
+def _account_for_fixture(local, visita, date):
+    """Stable partitioning avoids rotating keys for each call of same fixture.
+
+    NOTE: Shared credit accounting is NOT provided; enforce budgets centrally
+    with a datastore before any production high-frequency usage.
+    """
+    keys = _striker_keys()
+    if not keys:
+        return 0
+    digest = hashlib.sha256(f"{date}:{team_key(local)}:{team_key(visita)}".encode()).digest()
+    return int.from_bytes(digest[:8], "big") % len(keys)
+
 
 def _american_to_decimal(value):
     try:
@@ -58,14 +86,15 @@ def _american_to_decimal(value):
 
 def cuotas_striker(local, visita, fecha):
     """Recupera snapshot por game_id verificado; no usa fixture_id de API-Football."""
-    if not os.getenv("STRIKER_API_KEY") or not local or not visita or not fecha:
+    if not _striker_keys() or not local or not visita or not fecha:
         return {}
     date = str(fecha)[:10]
     try:
         datetime.strptime(date, "%Y-%m-%d")
     except ValueError:
         return {}
-    games = _post_striker("list_games", {"date": date, "limit": 100}).get("games", [])
+    account = _account_for_fixture(local, visita, date)
+    games = _post_striker("list_games", {"date": date, "limit": 100}, account).get("games", [])
     matches = [
         g for g in games
         if g.get("date") == date
@@ -75,7 +104,7 @@ def cuotas_striker(local, visita, fecha):
     ]
     if len(matches) != 1:
         return {}  # Sin identificacion inequivoca => NO BET.
-    response = _post_striker("get_odds", {"game_id": str(matches[0]["game_id"])})
+    response = _post_striker("get_odds", {"game_id": str(matches[0]["game_id"])}, account)
     priced = [g for g in response.get("games", []) if str(g.get("game_id")) == str(matches[0]["game_id"])]
     if len(priced) != 1:
         return {}
@@ -103,7 +132,25 @@ def cuotas_striker(local, visita, fecha):
                 pass
         if all(snap.get(k) for k in ("1", "X", "2")):
             candidates.append(snap)
-    # Excluir snapshots de resultados ya finalizados y precios posteriores al inicio.\n    # El endpoint contiene historicos: no confundirlos con cuotas accionables.\n    if game.get("status") != "scheduled":\n        return {}\n    try:\n        starts = datetime.fromisoformat(game["starts_at"].replace("Z", "+00:00"))\n    except (KeyError, ValueError, TypeError):\n        return {}\n    valid_candidates = []\n    for snap in candidates:\n        try:\n            observed = datetime.fromisoformat(snap["captured_at"].replace("Z", "+00:00"))\n            age_hours = (datetime.now(timezone.utc) - observed).total_seconds() / 3600\n            if observed < starts and 0 <= age_hours <= 3:\n                valid_candidates.append(snap)\n        except (KeyError, ValueError, AttributeError, TypeError):\n            pass\n    candidates = valid_candidates\n    # No mezclar casas; la mejor cobertura completa en una sola casa.
+    # Excluir snapshots de resultados ya finalizados y precios posteriores al inicio.
+    # El endpoint contiene historicos: no confundirlos con cuotas accionables.
+    if game.get("status") != "scheduled":
+        return {}
+    try:
+        starts = datetime.fromisoformat(game["starts_at"].replace("Z", "+00:00"))
+    except (KeyError, ValueError, TypeError):
+        return {}
+    valid_candidates = []
+    for snap in candidates:
+        try:
+            observed = datetime.fromisoformat(snap["captured_at"].replace("Z", "+00:00"))
+            age_hours = (datetime.now(timezone.utc) - observed).total_seconds() / 3600
+            if observed < starts and 0 <= age_hours <= 3:
+                valid_candidates.append(snap)
+        except (KeyError, ValueError, AttributeError, TypeError):
+            pass
+    candidates = valid_candidates
+    # No mezclar casas; la mejor cobertura completa en una sola casa.
     return max(candidates, key=lambda x: len(x)) if candidates else {}
 
 def descargar_historico_football_data():
