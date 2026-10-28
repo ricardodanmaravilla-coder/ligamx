@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 import pandas as pd
 import requests
 
-STRIKER_BASE = "https://mcp.strikerapi.com/v1"
+STRIKER_BASE = "https://mcp.strikerapi.com/v1/ligamx"
 FOOTBALL_DATA_MEX_CSV = "https://www.football-data.co.uk/new/MEX.csv"
 TIMEOUT = 15
 
@@ -39,7 +39,7 @@ def _post_striker(tool, body):
     try:
         r = requests.post(
             f"{STRIKER_BASE}/{tool}", headers={"x-api-key": key},
-            json=dict(body, league="ligamx"), timeout=TIMEOUT,
+            json=body, timeout=TIMEOUT,
         )
         r.raise_for_status()
         data = r.json()
@@ -103,7 +103,7 @@ def cuotas_striker(local, visita, fecha):
                 pass
         if all(snap.get(k) for k in ("1", "X", "2")):
             candidates.append(snap)
-    # No mezclar casas; la mejor cobertura completa en una sola casa.
+    # Excluir snapshots de resultados ya finalizados y precios posteriores al inicio.\n    # El endpoint contiene historicos: no confundirlos con cuotas accionables.\n    if game.get("status") != "scheduled":\n        return {}\n    try:\n        starts = datetime.fromisoformat(game["starts_at"].replace("Z", "+00:00"))\n    except (KeyError, ValueError, TypeError):\n        return {}\n    valid_candidates = []\n    for snap in candidates:\n        try:\n            observed = datetime.fromisoformat(snap["captured_at"].replace("Z", "+00:00"))\n            age_hours = (datetime.now(timezone.utc) - observed).total_seconds() / 3600\n            if observed < starts and 0 <= age_hours <= 3:\n                valid_candidates.append(snap)\n        except (KeyError, ValueError, AttributeError, TypeError):\n            pass\n    candidates = valid_candidates\n    # No mezclar casas; la mejor cobertura completa en una sola casa.
     return max(candidates, key=lambda x: len(x)) if candidates else {}
 
 def descargar_historico_football_data():
