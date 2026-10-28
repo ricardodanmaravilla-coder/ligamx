@@ -161,7 +161,7 @@ else:
                 if local not in elo_map or visita not in elo_map:
                     raise ValueError("Equipo sin ELO historico suficiente: NO BET")
 
-                cuotas=obtener_cuotas_partido(fixture_id)
+                cuotas=obtener_cuotas_partido(fixture_id, local=local, visita=visita, fecha=partido.get('fecha'))
                 lg,lc,lt=line_or_none(cuotas,"goles"),line_or_none(cuotas,"corners"),line_or_none(cuotas,"tarjetas")
                 tech_g,tech_c,tech_t=lg if lg is not None else 2.5,lc if lc is not None else 9.5,lt if lt is not None else 4.5
 
