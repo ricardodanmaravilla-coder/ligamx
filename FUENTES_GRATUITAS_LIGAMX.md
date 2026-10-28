@@ -34,7 +34,7 @@ Conservar la tabla original de features `data/historico_ligamx_completo.csv`; lo
 * Se elige una sola casa para el snapshot 1X2; no se mezclan cuotas.
 * Sin precios completos, sin datos o sin coincidencia fiable => **NO BET**.
 * El modulo NO infiere lineas de corners o tarjetas cuando el proveedor no las publica.
-* Las cuotas no garantizan vigencia: revisar `captured_at` del snapshot antes de publicar picks reales.
+* Solo son accionables snapshots prepartido de como maximo 3 horas, con estado scheduled. Las cuotas no garantizan vigencia: revisar `captured_at` del snapshot antes de publicar picks reales.
 * Los endpoints consumen creditos; el resultado puede variar con la cobertura gratuita y el presupuesto.
 
 ## Referencias
@@ -48,3 +48,7 @@ Conservar la tabla original de features `data/historico_ligamx_completo.csv`; lo
 ## Estado
 
 Adaptador StrikerAPI agregado, fallback en `modules/odds_engine.py` conectado a `app.py` y `app_v2.py`. La integracion no se ha validado con credenciales reales y no hay pruebas de despliegue. Football-Data tiene descargador separado, sin alterar los datos historicos originales.
+
+## Uso de varias cuentas (Terminos vigentes 18 octubre 2026)
+
+StrikerAPI prohibe expresamente eludir limites de creditos, rate limits o cuotas usando muchas cuentas. No implementar rotacion de claves de cuentas diferentes para ampliar artificialmente el plan gratuito. Mantener una unica cuenta autorizada para este proyecto; las otras claves no se integran ni se cargan en Cloud Run sin permiso escrito del proveedor. Contactar support@strikerapi.com si existe una necesidad legitima de varias cuentas. Ver https://strikerapi.com/terms (seccion 7). La clave activa se configura en Secret Manager como STRIKER_API_KEY.
