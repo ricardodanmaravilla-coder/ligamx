@@ -10,12 +10,16 @@
 
 ## Configuracion
 
-En Streamlit Cloud > App settings > Secrets, agregar claves sin subirlas al repositorio:
+En **Google Cloud Run**, crear tres secretos en Secret Manager y montarlos como variables de entorno (no subir claves a GitHub):
 
-```toml
-API_SPORTS_KEY = "TU_CLAVE_API_FOOTBALL"
-STRIKER_API_KEY = "TU_CLAVE_STRIKER"
+```text
+STRIKER_API_KEY_1 -> secreto striker-api-key-1:latest
+STRIKER_API_KEY_2 -> secreto striker-api-key-2:latest
+STRIKER_API_KEY_3 -> secreto striker-api-key-3:latest
+API_SPORTS_KEY    -> secreto existente
 ```
+
+Asignar al service account de Cloud Run acceso `roles/secretmanager.secretAccessor` sobre cada secreto. Configurar solo en la revisión del servicio autorizado. La variable antigua `STRIKER_API_KEY` sirve como compatibilidad si no están disponibles las tres nuevas.
 
 ## Uso del CSV historico sin sobrescribir la base existente
 
@@ -49,6 +53,10 @@ Conservar la tabla original de features `data/historico_ligamx_completo.csv`; lo
 
 Adaptador StrikerAPI agregado, fallback en `modules/odds_engine.py` conectado a `app.py` y `app_v2.py`. La integracion no se ha validado con credenciales reales y no hay pruebas de despliegue. Football-Data tiene descargador separado, sin alterar los datos historicos originales.
 
-## Uso de varias cuentas (Terminos vigentes 18 octubre 2026)
+## Uso de tres cuentas autorizadas
 
-StrikerAPI prohibe expresamente eludir limites de creditos, rate limits o cuotas usando muchas cuentas. No implementar rotacion de claves de cuentas diferentes para ampliar artificialmente el plan gratuito. Mantener una unica cuenta autorizada para este proyecto; las otras claves no se integran ni se cargan en Cloud Run sin permiso escrito del proveedor. Contactar support@strikerapi.com si existe una necesidad legitima de varias cuentas. Ver https://strikerapi.com/terms (seccion 7). La clave activa se configura en Secret Manager como STRIKER_API_KEY.
+El usuario confirma contar con autorización de StrikerAPI para utilizar tres cuentas en este proyecto. El adaptador asigna cada partido de forma **determinista** a una de las claves `STRIKER_API_KEY_1`, `STRIKER_API_KEY_2`, `STRIKER_API_KEY_3` y utiliza esa misma cuenta para `list_games` y `get_odds`. No es un contador global ni un balanceador según créditos restantes; por seguridad NO reintenta con otra cuenta cuando hay errores 402/403/429.
+
+**Pendiente antes de uso intensivo:** implementar presupuesto persistente por cuenta y mes (p. ej. Firestore + transacciones) y caché compartida entre instancias (p. ej. Firestore/Redis). Cloud Run puede ejecutar múltiples instancias y el almacenamiento en memoria no ofrece contabilización fiable. Los 500 créditos por cuenta son presupuestos independientes solo en la medida en que StrikerAPI lo haya aprobado expresamente; confirmar alcance de autorización y los cargos por herramienta. Nunca guardar claves ni la carta de autorización en el repositorio público.
+
+**No verificado:** desplegar nueva revisión, configurar secretos, validar contrato de respuestas en vivo, revisar logs y ejecutar pruebas sobre un fixture real. Hasta entonces, el estado es código preparado pero no operativo en Cloud Run.
