@@ -39,7 +39,7 @@ def _candidate_from_book(book):
     return candidate
 
 
-def obtener_cuotas_partido(fixture_id):
+def obtener_cuotas_partido(fixture_id, local=None, visita=None, fecha=None):
     """
     Devuelve un snapshot coherente de UNA sola casa.
 
@@ -47,8 +47,12 @@ def obtener_cuotas_partido(fixture_id):
     cuotas vacías aunque API-Football tuviera mercado 1X2 en otra casa. Ahora
     consultamos todas las casas del fixture y priorizamos una con 1/X/2 completo.
     """
+    from .external_free_sources import cuotas_striker
+    def alternativa():
+        return cuotas_striker(local, visita, fecha)
+
     if not fixture_id or not API_KEY:
-        return {}
+        return alternativa()
 
     try:
         r = requests.get(
@@ -58,10 +62,10 @@ def obtener_cuotas_partido(fixture_id):
             timeout=12,
         )
     except Exception:
-        return {}
+        return alternativa()
 
     if r.status_code != 200:
-        return {}
+        return alternativa()
 
     try:
         payload = r.json()
@@ -69,15 +73,15 @@ def obtener_cuotas_partido(fixture_id):
         return {}
 
     if payload.get("errors"):
-        return {}
+        return alternativa()
 
     response = payload.get("response", [])
     if not response:
-        return {}
+        return alternativa()
 
     books = response[0].get("bookmakers", [])
     if not books:
-        return {}
+        return alternativa()
 
     candidates = [_candidate_from_book(book) for book in books]
 
@@ -96,7 +100,7 @@ def obtener_cuotas_partido(fixture_id):
     # Si no existe 1X2 completo, devolvemos el snapshot más rico SOLO para diagnóstico.
     # El scanner seguirá respondiendo NO BET porque no puede quitar el vig 1X2.
     candidates = [c for c in candidates if len(c) > 2]
-    return max(candidates, key=len) if candidates else {}
+    return max(candidates, key=len) if candidates else alternativa()
 
 
 def _extract_total(vals, out, kind, label):
