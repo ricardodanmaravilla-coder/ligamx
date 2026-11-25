@@ -1,8 +1,6 @@
 name: Actualizar BD Liga MX
 
 on:
-  schedule:
-    - cron: '0 9 * * 3'
   workflow_dispatch:
 
 permissions:

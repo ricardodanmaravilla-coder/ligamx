@@ -1,9 +1,6 @@
 name: Liquidar Picks Liga MX
 
 on:
-  schedule:
-    # Cada hora al minuto 17 UTC. Evita depender de una sola ejecución diaria.
-    - cron: '17 * * * *'
   workflow_dispatch:
   push:
     branches:

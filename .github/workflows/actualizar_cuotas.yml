@@ -1,9 +1,6 @@
 name: Actualizar Cuotas Jornada Liga MX
 
 on:
-  schedule:
-    # Se ejecuta automáticamente todos los viernes a las 16:00 UTC (10:00 AM CDMX, antes de los juegos de fin de semana)
-    - cron: '0 16 * * 5'
   workflow_dispatch: # Te permite darle clic y ejecutarlo manualmente desde GitHub cuando tú quieras
 
 jobs:
